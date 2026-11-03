@@ -1,0 +1,51 @@
+[
+  {
+    "name": "Louisville",
+    "lat": 38.224728,
+    "lng": -85.740614,
+    "sourceUrl": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_gaz_place_21.txt"
+  },
+  {
+    "name": "Bardstown",
+    "lat": 37.817665,
+    "lng": -85.455345,
+    "sourceUrl": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_gaz_place_21.txt"
+  },
+  {
+    "name": "Lexington",
+    "lat": 38.040678,
+    "lng": -84.458272,
+    "sourceUrl": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_gaz_place_21.txt"
+  },
+  {
+    "name": "Frankfort",
+    "lat": 38.194966,
+    "lng": -84.865877,
+    "sourceUrl": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_gaz_place_21.txt"
+  },
+  {
+    "name": "Lawrenceburg",
+    "lat": 38.033873,
+    "lng": -84.904701,
+    "label": { "dx": -6, "dy": 0, "anchor": "end" },
+    "sourceUrl": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_gaz_place_21.txt"
+  },
+  {
+    "name": "Loretto",
+    "lat": 37.642039,
+    "lng": -85.393147,
+    "sourceUrl": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_gaz_place_21.txt"
+  },
+  {
+    "name": "Owensboro",
+    "lat": 37.757146,
+    "lng": -87.116725,
+    "sourceUrl": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_gaz_place_21.txt"
+  },
+  {
+    "name": "Bowling Green",
+    "lat": 36.975653,
+    "lng": -86.435962,
+    "sourceUrl": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_gaz_place_21.txt"
+  }
+]

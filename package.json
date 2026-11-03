@@ -1,0 +1,38 @@
+{
+  "name": "bourbon-guide",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "check:data": "tsx scripts/check-data.ts",
+    "prebuild": "npm run check:data",
+    "build": "next build",
+    "lint": "eslint",
+    "tsc": "tsc --noEmit",
+    "build:icons": "tsx scripts/build-icons.ts",
+    "build:outline": "tsx scripts/build-outline.ts"
+  },
+  "dependencies": {
+    "d3-geo": "^3.1.2",
+    "next": "16.4.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "topojson-client": "^3.1.0",
+    "us-atlas": "^3.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/d3-geo": "^3.1.1",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/topojson-client": "^3.1.5",
+    "@types/topojson-specification": "^1.0.5",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.1",
+    "sharp": "^0.34.0",
+    "tailwindcss": "^4",
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}

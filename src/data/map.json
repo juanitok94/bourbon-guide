@@ -1,0 +1,22 @@
+{
+  "id": "ky-bourbon",
+  "title": "Bourbon Guide",
+  "kicker": "AN UNOFFICIAL GUIDE TO KENTUCKY DISTILLERIES",
+  "state": "KY",
+  "stateName": "Kentucky",
+  "fips": "21",
+  "regions": [
+    { "id": "louisville", "label": "Louisville" },
+    { "id": "bardstown", "label": "Bardstown" },
+    { "id": "central", "label": "Lexington & Frankfort" },
+    { "id": "elsewhere", "label": "Elsewhere in Kentucky" }
+  ],
+  "accent": "#a8452b",
+  "credits": ["Map outline: U.S. Census Bureau"],
+  "trademarks": [
+    {
+      "term": "Kentucky Bourbon Trail",
+      "notice": "Kentucky Bourbon Trail® is a registered trademark of the Kentucky Distillers' Association. This guide is not affiliated with or endorsed by the KDA."
+    }
+  ]
+}
