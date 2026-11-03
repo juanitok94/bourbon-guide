@@ -23,11 +23,36 @@ export type MapConfig = {
 
 export const MAP: MapConfig = mapConfig
 
+// Matches src/data/groups.json. Ownership groups, sourced from each group's own corporate site.
+export type Group = {
+  id: string
+  name: string
+  shortName: string
+  marker: string // single capital letter shown on the pin, so colour is never the only cue
+  color: string // #rrggbb pin fill; must be >= 4.5:1 against --bg (#0f0d0b)
+  hq: string | null
+  website: string | null
+  sourceUrl: string | null // required (https) once verifiedOn is set
+  verifiedOn: string | null // YYYY-MM-DD
+}
+
+// Matches src/data/brands.json. Brand names are plain text only (no logos, no bottle images).
+export type Brand = {
+  id: string
+  name: string
+  groupId: string // must exist in groups.json
+  stopId: string | null // the stop where the group's own site says it is made; else null
+  sourceUrl: string | null // required (https) once verifiedOn is set
+  verifiedOn: string | null // YYYY-MM-DD
+}
+
 // Matches src/data/stops.json exactly. Every fact needs a source and a verifiedOn date.
+// `groupId` is a KY-guide addition to the shared family shape (null = independent).
 export type Stop = {
   id: string
   mapId: string // must equal map.json id
   state: string // must equal map.json state
+  groupId: string | null // must exist in groups.json when set
   name: string
   trails: string[] // program names, e.g. ["Kentucky Bourbon Trail"]; [] if none. No ® in data.
   toursByAppointment: boolean

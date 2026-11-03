@@ -31,6 +31,14 @@ To update the guide: edit `src/data/stops.json`, run `check:data`, rebuild.
   without noting them. `stateName` and `trademarks` are optional family fields added by this guide.
 - Records: `src/data/stops.json`, type `Stop` in `src/data/types.ts`. `mapId` = map.json id, `state` = map.json
   state, `region` = one of map.json's region ids (or null). `trails` = program names, `[]` if none.
+- KY-specific additions (noted per the family rule): `Stop.groupId` (an id from `src/data/groups.json`, or null
+  for independents), plus `src/data/groups.json` (ownership groups: name, shortName, one-letter marker, pin colour,
+  hq, website) and `src/data/brands.json` (brand names as plain text, `stopId` only where the group's own site says
+  the brand is made there). check:data enforces ids, cross-references, https sources and pin-colour contrast
+  (>= 4.5:1 on --bg). The marker letter always shows, so colour is never the only cue.
+- Region rule (no guessing): `region` = the nearest hub by straight-line distance from the Census point for the
+  stop's city or ZIP (Census Gazetteer 2023 place/ZCTA files): Louisville; Bardstown; Lexington or Frankfort
+  (`central`). Use `elsewhere` when no hub is within 40 km.
 
 ## Stack
 Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
@@ -60,6 +68,10 @@ Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
 - Every fact needs a source and a `verifiedOn` date. Unverified entries stay `status: "unknown"`, `verifiedOn: null`.
 - Source = the distillery's OWN site, else the Kentucky Distillers' Association or the Kentucky Department of
   Alcoholic Beverage Control. Never directories, Yelp, search summaries or memory.
+- Ownership-group stops: find them on the group's OWN corporate site, then confirm each place on its own site.
+  `sourceNote` = "Listed by <group> corporate site". Production-only sites (no public visits) are not added.
+  If the group's site and recent news disagree (sale, closure, pause), the group's site wins; record the
+  conflict in `note` with the news URL. Distilling paused but visitor center open = `status: "open"`.
 - Never guess. Unconfirmed field = null. If sources conflict, the distillery's own site wins; report it.
 - No personal names in data; business details only.
 - Never use or link goatwhiskey.net (serves gambling spam).
@@ -97,3 +109,4 @@ Passport or visit tracking, accounts, ratings, reviews, ticketing or purchasing,
 ## Lab Notes (append mistakes: date - what failed - why - what to do instead)
 - 2026-11-03 - A long bash heredoc with many files failed to parse - use the Write tool for multi-file creation.
 - 2026-11-03 - City labels Lawrenceburg and Lexington collided on the KY map - check labels visually after adding cities; set `label` offsets in cities.json.
+- 2026-11-03 - Fetch summarizers padded corporate pages with general knowledge - read raw HTML (curl + strip tags) or rendered page text for sourcing; never trust a summary.

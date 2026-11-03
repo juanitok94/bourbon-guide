@@ -1,0 +1,26 @@
+[
+  { "id": "jim-beam", "name": "Jim Beam", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
+  { "id": "makers-mark", "name": "Maker's Mark", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
+  { "id": "knob-creek", "name": "Knob Creek", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
+  { "id": "basil-hayden", "name": "Basil Hayden", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
+  { "id": "bookers", "name": "Booker's", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
+  { "id": "bakers", "name": "Baker's", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
+
+  { "id": "buffalo-trace", "name": "Buffalo Trace", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
+  { "id": "blantons", "name": "Blanton's", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
+  { "id": "eagle-rare", "name": "Eagle Rare", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
+  { "id": "e-h-taylor", "name": "E.H. Taylor", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
+  { "id": "w-l-weller", "name": "W.L. Weller", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
+  { "id": "pappy-van-winkle", "name": "Pappy Van Winkle", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
+  { "id": "1792-bourbon", "name": "1792 Bourbon", "groupId": "sazerac", "stopId": null, "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
+  { "id": "sazerac-rye", "name": "Sazerac Rye", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=whiskey", "verifiedOn": "2026-11-03" },
+
+  { "id": "woodford-reserve", "name": "Woodford Reserve", "groupId": "brown-forman", "stopId": "woodford-reserve-distillery", "sourceUrl": "https://www.brown-forman.com/brand/woodford-reserve", "verifiedOn": "2026-11-03" },
+  { "id": "old-forester", "name": "Old Forester", "groupId": "brown-forman", "stopId": null, "sourceUrl": "https://www.brown-forman.com/brand/old-forester", "verifiedOn": "2026-11-03" },
+
+  { "id": "evan-williams", "name": "Evan Williams", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/brands/evan-williams-bourbon/", "verifiedOn": "2026-11-03" },
+  { "id": "elijah-craig", "name": "Elijah Craig", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/brands/elijah-craig-bourbon/", "verifiedOn": "2026-11-03" },
+  { "id": "heaven-hill-bottled-in-bond", "name": "Heaven Hill Bottled-in-Bond", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/brands/heaven-hill-bottled-in-bond/", "verifiedOn": "2026-11-03" },
+  { "id": "larceny", "name": "Larceny", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/our-portfolio/", "verifiedOn": "2026-11-03" },
+  { "id": "old-fitzgerald", "name": "Old Fitzgerald", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/our-portfolio/", "verifiedOn": "2026-11-03" }
+]

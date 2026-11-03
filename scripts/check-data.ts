@@ -1,9 +1,9 @@
-// Validates src/data/map.json, src/data/stops.json and src/data/cities.json.
+// Validates src/data/map.json, stops.json, groups.json, brands.json and cities.json.
 // Run: npm run check:data (also runs before every build). --verbose lists every warning.
 // Fails (exit 1) on rule violations; warns on missing details, which are expected until verified.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { City, Stop } from '../src/data/types'
+import type { Brand, City, Group, Stop } from '../src/data/types'
 import { MAP } from '../src/data/types'
 
 const read = <T>(file: string) => JSON.parse(readFileSync(join(process.cwd(), file), 'utf8')) as T
@@ -13,6 +13,8 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/
 const HEX = /^#[0-9a-fA-F]{6}$/
 
 const data = read<Stop[]>('src/data/stops.json')
+const groups = read<Group[]>('src/data/groups.json')
+const brands = read<Brand[]>('src/data/brands.json')
 const cities = read<City[]>('src/data/cities.json')
 const outline = read<{ fips: string; bounds: { south: number; north: number; west: number; east: number } }>(
   'src/data/outline.json',
@@ -22,6 +24,28 @@ const warnings: string[] = []
 
 const blank = (v: unknown) => typeof v !== 'string' || v.trim() === ''
 const BOX = outline.bounds
+// WCAG relative-luminance contrast, for group pin fills against --bg.
+const BG = '#0f0d0b'
+function luminance(hex: string): number {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  })
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+function contrast(a: string, b: string): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x)
+  return (hi + 0.05) / (lo + 0.05)
+}
+// Shared source rule: an https sourceUrl is required once verifiedOn is set.
+function checkSource(at: string, rec: { sourceUrl: string | null; verifiedOn: string | null }) {
+  if (rec.verifiedOn !== null) {
+    if (!DATE.test(rec.verifiedOn)) errors.push(`${at}: verifiedOn must be YYYY-MM-DD`)
+    if (blank(rec.sourceUrl) || !rec.sourceUrl!.startsWith('https://'))
+      errors.push(`${at}: verifiedOn is set but sourceUrl is missing or not https://`)
+  }
+  if (rec.sourceUrl !== null && !rec.sourceUrl.startsWith('https://')) errors.push(`${at}: sourceUrl must start with https://`)
+}
 const inBox = (lat: number, lng: number) => lat >= BOX.south && lat <= BOX.north && lng >= BOX.west && lng <= BOX.east
 
 // --- map.json
@@ -52,6 +76,27 @@ for (const c of cities) {
   if (!inBox(c.lat, c.lng)) errors.push(`cities.json ${c.name}: outside ${MAP.state}'s bounding box`)
 }
 
+// --- groups.json
+const groupIds = new Set<string>()
+const markers = new Set<string>()
+for (const g of groups) {
+  const at = `groups.json ${g.id ?? '(no id)'}`
+  if (blank(g.id)) errors.push(`${at}: missing id`)
+  else if (groupIds.has(g.id)) errors.push(`${at}: duplicate id`)
+  else groupIds.add(g.id)
+  if (blank(g.name) || blank(g.shortName)) errors.push(`${at}: needs name and shortName`)
+  if (!/^[A-Z]$/.test(g.marker)) errors.push(`${at}: marker must be one capital letter`)
+  else if (markers.has(g.marker)) errors.push(`${at}: duplicate marker "${g.marker}"`)
+  else markers.add(g.marker)
+  if (!HEX.test(g.color)) errors.push(`${at}: color must be #rrggbb`)
+  else if (contrast(g.color, BG) < 4.5) errors.push(`${at}: color ${g.color} is below 4.5:1 on ${BG}`)
+  if (g.website !== null && !g.website.startsWith('https://')) errors.push(`${at}: website must be https`)
+  checkSource(at, g)
+  if (g.verifiedOn === null) warnings.push(`${at}: not verified`)
+}
+const groupColors = groups.map((g) => g.color.toLowerCase())
+if (new Set(groupColors).size !== groupColors.length) errors.push('groups.json: colors must be distinct')
+
 // --- stops.json
 if (!Array.isArray(data)) errors.push('stops.json must be an array')
 const ids = new Set<string>()
@@ -62,6 +107,8 @@ data.forEach((d, i) => {
   else ids.add(d.id)
   if (d.mapId !== MAP.id) errors.push(`${at}: mapId must be "${MAP.id}" (got "${d.mapId}")`)
   if (d.state !== MAP.state) errors.push(`${at}: state must be "${MAP.state}" (got "${d.state}")`)
+  if (d.groupId === undefined) errors.push(`${at}: groupId is required (null for independents)`)
+  else if (d.groupId !== null && !groupIds.has(d.groupId)) errors.push(`${at}: unknown groupId "${d.groupId}"`)
   if (blank(d.name)) errors.push(`${at}: missing name`)
   if (blank(d.sourceNote)) errors.push(`${at}: missing sourceNote`)
   if (!STATUSES.includes(d.status)) errors.push(`${at}: status must be open, closed or unknown (got "${d.status}")`)
@@ -75,14 +122,8 @@ data.forEach((d, i) => {
     if (d.trails.some((t) => /[®™]/.test(t))) errors.push(`${at}: write trail names without ®/™ (the UI adds the mark)`)
   }
 
-  if (d.verifiedOn !== null) {
-    if (!DATE.test(d.verifiedOn)) errors.push(`${at}: verifiedOn must be YYYY-MM-DD`)
-    if (blank(d.sourceUrl) || !d.sourceUrl!.startsWith('https://'))
-      errors.push(`${at}: verifiedOn is set but sourceUrl is missing or not https://`)
-  } else {
-    warnings.push(`${at}: not verified`)
-  }
-  if (d.sourceUrl !== null && !d.sourceUrl.startsWith('https://')) errors.push(`${at}: sourceUrl must start with https://`)
+  checkSource(at, d)
+  if (d.verifiedOn === null) warnings.push(`${at}: not verified`)
   if (d.website !== null && !d.website.startsWith('https://')) warnings.push(`${at}: website is not https`)
 
   if ((d.lat === null) !== (d.lng === null)) errors.push(`${at}: lat and lng must both be set or both null`)
@@ -90,6 +131,20 @@ data.forEach((d, i) => {
   if (d.verifiedOn !== null && d.address === null) warnings.push(`${at}: verified but address is null`)
   if (d.verifiedOn !== null && d.lat === null) warnings.push(`${at}: no coordinates yet (no pin)`)
 })
+
+// --- brands.json
+const brandIds = new Set<string>()
+for (const b of brands) {
+  const at = `brands.json ${b.id ?? '(no id)'}`
+  if (blank(b.id)) errors.push(`${at}: missing id`)
+  else if (brandIds.has(b.id)) errors.push(`${at}: duplicate id`)
+  else brandIds.add(b.id)
+  if (blank(b.name)) errors.push(`${at}: missing name`)
+  if (!groupIds.has(b.groupId)) errors.push(`${at}: unknown groupId "${b.groupId}"`)
+  if (b.stopId !== null && !ids.has(b.stopId)) errors.push(`${at}: unknown stopId "${b.stopId}"`)
+  checkSource(at, b)
+  if (b.verifiedOn === null) warnings.push(`${at}: not verified`)
+}
 
 const verified = data.filter((d) => d.verifiedOn !== null).length
 const pinned = data.filter((d) => d.lat !== null && d.lng !== null).length
@@ -101,6 +156,13 @@ errors.forEach((e) => console.error(`error: ${e}`))
 console.log(
   `check:data ${MAP.id} | total ${data.length} | on map ${pinned} | verified ${verified} | unverified ${data.length - verified} | cities ${cities.length}`,
 )
+for (const g of groups) {
+  const s = data.filter((d) => d.groupId === g.id).length
+  const b = brands.filter((x) => x.groupId === g.id).length
+  console.log(`  ${g.marker} ${g.name.padEnd(24)} stops ${s} | brands ${b}`)
+}
+const independents = data.filter((d) => d.groupId === null).length
+if (independents) console.log(`    Independent              stops ${independents}`)
 if (errors.length) {
   console.error(`${errors.length} error(s)`)
   process.exit(1)

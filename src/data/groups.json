@@ -1,0 +1,46 @@
+[
+  {
+    "id": "suntory",
+    "name": "Suntory Global Spirits",
+    "shortName": "Beam family",
+    "marker": "B",
+    "color": "#6ea8e6",
+    "hq": "New York, NY",
+    "website": "https://www.suntoryglobalspirits.com",
+    "sourceUrl": "https://www.suntoryglobalspirits.com/about-us",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "sazerac",
+    "name": "Sazerac",
+    "shortName": "Sazerac",
+    "marker": "S",
+    "color": "#e3b448",
+    "hq": "Louisville, KY",
+    "website": "https://www.sazerac.com",
+    "sourceUrl": "https://www.sazerac.com/distilleries-and-facilities/",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "brown-forman",
+    "name": "Brown-Forman",
+    "shortName": "Brown-Forman",
+    "marker": "F",
+    "color": "#6fc28b",
+    "hq": "Louisville, KY",
+    "website": "https://www.brown-forman.com",
+    "sourceUrl": "https://www.brown-forman.com/where-we-operate",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "heaven-hill",
+    "name": "Heaven Hill",
+    "shortName": "Heaven Hill",
+    "marker": "H",
+    "color": "#e88aa6",
+    "hq": "Louisville, KY",
+    "website": "https://heavenhill.com",
+    "sourceUrl": "https://heavenhill.com/through-the-years/",
+    "verifiedOn": "2026-11-03"
+  }
+]
