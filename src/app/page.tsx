@@ -2,6 +2,7 @@ import Explorer from '@/components/Explorer'
 import Notice21 from '@/components/Notice21'
 import stops from '@/data/stops.json'
 import { MAP, type Stop } from '@/data/types'
+import { GROUPS } from '@/lib/groups'
 import { computeLayout } from '@/lib/map-layout'
 import { PLACE } from '@/lib/site'
 
@@ -17,7 +18,7 @@ export default function Home() {
           {MAP.title}
         </h1>
         <p className="tabular mt-4 text-sm tracking-wide text-muted">
-          {entries.length} in the guide · {verified} verified · {MAP.regions.length} regions
+          {entries.length} in the guide · {verified} verified · {GROUPS.length} groups
         </p>
         <p className="mx-auto mt-4 max-w-2xl text-muted">
           An unofficial guide to {PLACE}&apos;s distilleries. Details are being verified one at a time.

@@ -99,7 +99,10 @@ Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
 - The key floats in a gutter to the right of the state on desktop (clipped on phones) and becomes chips under the map on phones. Pin graphics are shared between the map and the key (`PinGraphic`).
 
 ## Visitor UI vs admin views
-- The visitor UI has only search by name and a region dropdown (from map.json; Reset shows only when one is set; "Showing X of N" only while narrowed). Closed entries sit in a collapsed "Closed (N)" section; their pins stay on the map.
+- The visitor UI has search by name, a region dropdown (from map.json) and ownership-group chips above the map. Reset (clears all three) and "Showing X of N" appear whenever anything narrows the list.
+- Group chips (`GroupChips`): multi-select toggles with aria-pressed, 44px tall, default all on. "All groups" turns every group on; turning off the last group turns them all back on (never an empty map). The chips are the key for pin colors and marker letters, so the map key shows shapes and status only. Independent stops (groupId null) show only while all groups are on.
+- The selection lives in the URL (`?groups=sazerac,brown-forman`; all groups = no parameter), read through `useSyncExternalStore` and written with `history.replaceState`. Unknown ids fall back to all groups. The static HTML always renders all groups.
+- One group selected: a group panel (name, HQ, Kentucky stops, all brands, website). Two or more but not all: a compare table (real <table>, column and row headers). Cards show "Part of <group>" and the brands made there (brands.json `stopId`); brands with a null stopId appear only in the group panel. Closed entries sit in a collapsed "Closed (N)" section; their pins stay on the map.
 - With no entries, the map still shows the outline and the list says "Distilleries are being added and verified."
 - Admin views (verified counts, unverified lists, missing coordinates) live in `npm run check:data` (`--verbose`), never in the visitor UI.
 

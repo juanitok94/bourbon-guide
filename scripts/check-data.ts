@@ -24,8 +24,9 @@ const warnings: string[] = []
 
 const blank = (v: unknown) => typeof v !== 'string' || v.trim() === ''
 const BOX = outline.bounds
-// WCAG relative-luminance contrast, for group pin fills against --bg.
-const BG = '#0f0d0b'
+// WCAG relative-luminance contrast, for group colours against the dark surfaces they sit on
+// (--bg for pins, --surface and --raised for chips, cards and panels). Keep in sync with globals.css.
+const SURFACES = { '--bg': '#0f0d0b', '--surface': '#1a1613', '--raised': '#231d18' }
 function luminance(hex: string): number {
   const [r, g, b] = [1, 3, 5].map((i) => {
     const c = parseInt(hex.slice(i, i + 2), 16) / 255
@@ -89,7 +90,11 @@ for (const g of groups) {
   else if (markers.has(g.marker)) errors.push(`${at}: duplicate marker "${g.marker}"`)
   else markers.add(g.marker)
   if (!HEX.test(g.color)) errors.push(`${at}: color must be #rrggbb`)
-  else if (contrast(g.color, BG) < 4.5) errors.push(`${at}: color ${g.color} is below 4.5:1 on ${BG}`)
+  else
+    for (const [name, hex] of Object.entries(SURFACES)) {
+      const c = contrast(g.color, hex)
+      if (c < 4.5) errors.push(`${at}: color ${g.color} is ${c.toFixed(2)}:1 on ${name}; AA needs 4.5:1`)
+    }
   if (g.website !== null && !g.website.startsWith('https://')) errors.push(`${at}: website must be https`)
   checkSource(at, g)
   if (g.verifiedOn === null) warnings.push(`${at}: not verified`)

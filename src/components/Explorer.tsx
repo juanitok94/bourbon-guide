@@ -1,8 +1,23 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useSyncExternalStore } from 'react'
+import GroupChips from '@/components/GroupChips'
+import GroupMark from '@/components/GroupMark'
+import { BrandPills, GroupCompare, GroupPanel } from '@/components/GroupSummary'
 import StateMap from '@/components/StateMap'
 import { MAP, type Stop } from '@/data/types'
+import {
+  ALL_GROUP_IDS,
+  GROUPS,
+  brandsAt,
+  groupOf,
+  notifyUrl,
+  parseGroups,
+  readSearch,
+  subscribeToUrl,
+  toggleGroup,
+  writeGroups,
+} from '@/lib/groups'
 import type { MapLayout } from '@/lib/map-layout'
 import { withMarks } from '@/lib/trademarks'
 
@@ -57,6 +72,17 @@ function Badges({ d }: { d: Stop }) {
   )
 }
 
+function GroupLine({ d }: { d: Stop }) {
+  const group = groupOf(d)
+  if (!group) return null
+  return (
+    <span className="mt-2 flex items-center gap-2 text-sm text-muted">
+      <GroupMark group={group} size="sm" />
+      Part of {group.name}
+    </span>
+  )
+}
+
 function Card({
   d,
   onMap,
@@ -73,6 +99,12 @@ function Card({
       <Badges d={d} />
       <span className="mt-2 block font-display text-xl leading-snug font-semibold">{d.name}</span>
       <span className="mt-0.5 block text-sm text-muted">{d.city ?? 'Location not yet verified'}</span>
+      <GroupLine d={d} />
+      {brandsAt(d.id).length > 0 && (
+        <span className="mt-2 block">
+          <BrandPills brands={brandsAt(d.id)} label={`Brands made at ${d.name}`} />
+        </span>
+      )}
       {(!onMap || !d.verifiedOn) && (
         <span className="mt-2 block text-xs text-muted">
           {[!onMap ? 'Not on map yet' : null, !d.verifiedOn ? 'Details not yet verified' : null].filter(Boolean).join(' · ')}
@@ -120,6 +152,7 @@ function DetailPanel({ d, onClose }: { d: Stop; onClose: () => void }) {
         <div>
           <h2 className="font-display text-2xl leading-tight font-semibold">{d.name}</h2>
           <p className="mt-1 text-sm text-muted">{d.city ?? 'Location not yet verified'}</p>
+          <GroupLine d={d} />
         </div>
         <button
           type="button"
@@ -159,30 +192,45 @@ function DetailPanel({ d, onClose }: { d: Stop; onClose: () => void }) {
 export default function Explorer({ entries, layout }: { entries: Stop[]; layout: MapLayout }) {
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS)
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  // Ownership groups live in the URL (?groups=), so links are shareable. The static HTML renders all
+  // groups (server snapshot); the client then reads the real address bar.
+  const search = useSyncExternalStore(subscribeToUrl, readSearch, () => '')
+  const groups = useMemo(() => parseGroups(search), [search])
+  const setGroups = (next: string[]) => {
+    writeGroups(next)
+    notifyUrl()
+  }
 
   const total = entries.length
+  const allGroups = groups.length === ALL_GROUP_IDS.length
 
   const visible = useMemo(() => {
     const q = filters.query.trim().toLowerCase()
     return entries
       .filter((d) => {
+        // Independents (no group) show only while every group is on.
+        if (!allGroups && (d.groupId === null || !groups.includes(d.groupId))) return false
         if (filters.region !== 'all' && d.region !== filters.region) return false
         if (q && !d.name.toLowerCase().includes(q)) return false
         return true
       })
       .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
-  }, [entries, filters])
+  }, [entries, filters, groups, allGroups])
 
   const pinIds = useMemo(() => new Set(layout.pins.map((p) => p.id)), [layout])
   const mapped = useMemo(() => visible.filter((d) => pinIds.has(d.id)), [visible, pinIds])
   // A selection only counts while its entry is still shown.
   const selected = visible.find((d) => d.id === selectedId && pinIds.has(d.id)) ?? null
-  const filtersActive = filters.query.trim() !== '' || filters.region !== 'all'
+  const filtersActive = filters.query.trim() !== '' || filters.region !== 'all' || !allGroups
+  const selectedGroups = GROUPS.filter((g) => groups.includes(g.id))
   const openList = useMemo(() => visible.filter((d) => d.status !== 'closed'), [visible])
   const closedList = useMemo(() => visible.filter((d) => d.status === 'closed'), [visible])
 
   const update = (patch: Partial<Filters>) => setFilters((f) => ({ ...f, ...patch }))
-  const reset = () => setFilters(DEFAULT_FILTERS)
+  const reset = () => {
+    setFilters(DEFAULT_FILTERS)
+    setGroups(ALL_GROUP_IDS)
+  }
 
   const closePanel = () => setSelectedId(null)
 
@@ -197,11 +245,16 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
 
   return (
     <div>
+      <GroupChips
+        selected={groups}
+        onToggle={(id) => setGroups(toggleGroup(groups, id))}
+        onAll={() => setGroups(ALL_GROUP_IDS)}
+      />
       <StateMap layout={layout} entries={mapped} selectedId={selected?.id ?? null} onSelect={setSelectedId} />
       {selected && <DetailPanel d={selected} onClose={closePanel} />}
       {total > 0 && mapped.length === 0 && (
         <p className="mt-3 text-sm text-muted">
-          {!filtersActive
+          {layout.pins.length === 0 || !filtersActive
             ? 'No distilleries are on the map yet. Every distillery is in the list below.'
             : 'Nothing to show on the map for these filters.'}
         </p>
@@ -211,6 +264,8 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
         <h2 id="filters-heading" className="font-display text-3xl font-semibold tracking-tight">
           All distilleries
         </h2>
+        {selectedGroups.length === 1 && <GroupPanel group={selectedGroups[0]} entries={entries} />}
+        {selectedGroups.length > 1 && !allGroups && <GroupCompare groups={selectedGroups} entries={entries} />}
         {total === 0 ? (
           <div role="status" className="mt-6 rounded-xl border border-line bg-surface p-6 text-center">
             <p className="font-display text-xl font-semibold">{EMPTY_MESSAGE}</p>

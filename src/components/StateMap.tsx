@@ -1,10 +1,13 @@
 'use client'
 
 // Static night-style state map: an SVG drawn from build-time data. No tiles, no map library, no panning.
-// Pins (only for entries with verified lat/lng): --accent bottle tag (tours by appointment), --teal circle
-// (distillery), --closed with an X (closed). The state outline comes from map.json's FIPS code.
+// Pins (only for entries with verified lat/lng) take their ownership group's colour and marker letter
+// (groups.json; the group chips above the map are the key for these). Shape: bottle tag = tours by
+// appointment, circle otherwise. Closed = --closed with an X. Independents (no group) = --teal, no letter.
+// The state outline comes from map.json's FIPS code.
 import type { KeyboardEvent } from 'react'
 import { MAP, type Stop } from '@/data/types'
+import { groupOf } from '@/lib/groups'
 import type { MapLayout } from '@/lib/map-layout'
 import { PLACE } from '@/lib/site'
 
@@ -25,6 +28,7 @@ export function pinLabel(d: Stop): string {
   const parts = [
     d.name,
     d.city,
+    groupOf(d)?.name ?? null,
     d.toursByAppointment ? 'tours by appointment' : null,
     d.status === 'closed' ? 'closed' : null,
   ]
@@ -32,8 +36,18 @@ export function pinLabel(d: Stop): string {
 }
 
 // The real pin graphic, shared by the map and the key.
-export function PinGraphic({ shape, closed = false }: { shape: PinShape; closed?: boolean }) {
-  const fill = closed ? 'var(--closed)' : shape === 'bottle' ? 'var(--accent)' : 'var(--teal)'
+export function PinGraphic({
+  shape,
+  closed = false,
+  color = 'var(--teal)',
+  marker = null,
+}: {
+  shape: PinShape
+  closed?: boolean
+  color?: string
+  marker?: string | null
+}) {
+  const fill = closed ? 'var(--closed)' : color
   const centerY = shape === 'bottle' ? 3 : 0
   return (
     <>
@@ -48,6 +62,18 @@ export function PinGraphic({ shape, closed = false }: { shape: PinShape; closed?
           strokeWidth="2.5"
           strokeLinecap="round"
         />
+      ) : marker ? (
+        <text
+          y={centerY}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontSize="12.5"
+          fontWeight="700"
+          fill="var(--bg)"
+          style={{ fontFamily: 'var(--font-sans)' }}
+        >
+          {marker}
+        </text>
       ) : (
         <circle cy={centerY} r="3.2" fill="var(--bg)" />
       )}
@@ -103,9 +129,9 @@ function Compass() {
   )
 }
 
+// Shapes and status only; group colours and letters are keyed by the group chips above the map.
 const KEY: { label: string; shape: PinShape; closed?: boolean }[] = [
   { label: 'Tours by appointment', shape: 'bottle' },
-  { label: 'Distillery', shape: 'circle' },
   { label: 'Closed', shape: 'circle', closed: true },
 ]
 
@@ -117,6 +143,7 @@ function MapKey() {
         <Compass />
       </div>
       <h2 className="sr-only md:hidden">Map key</h2>
+      <p className="mb-1.5 hidden text-xs text-muted md:block">Pin colors and letters match the group chips above the map.</p>
       <ul className="flex flex-wrap gap-2 md:flex-col md:gap-0.5">
         {KEY.map((k) => (
           <li
@@ -124,7 +151,7 @@ function MapKey() {
             className="flex items-center gap-1.5 rounded-full border border-line bg-raised py-0.5 pr-3 pl-1 text-xs text-text md:gap-2 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:text-sm"
           >
             <svg viewBox="-17 -17 34 34" className="h-6 w-6 shrink-0" aria-hidden="true">
-              <PinGraphic shape={k.shape} closed={k.closed} />
+              <PinGraphic shape={k.shape} closed={k.closed} color="var(--muted)" />
             </svg>
             {k.label}
           </li>
@@ -223,6 +250,7 @@ export default function StateMap({
         {ordered.map((d) => {
           const p = pinById.get(d.id)!
           const selected = d.id === selectedId
+          const group = groupOf(d)
           return (
             <g
               key={d.id}
@@ -237,7 +265,12 @@ export default function StateMap({
               onKeyDown={(e) => onKey(e, d.id)}
             >
               <circle r="17" fill="transparent" />
-              <PinGraphic shape={shapeOf(d)} closed={d.status === 'closed'} />
+              <PinGraphic
+                shape={shapeOf(d)}
+                closed={d.status === 'closed'}
+                color={group?.color}
+                marker={group?.marker ?? null}
+              />
             </g>
           )
         })}
