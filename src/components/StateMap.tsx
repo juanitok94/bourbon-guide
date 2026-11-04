@@ -137,12 +137,18 @@ const KEY: { label: string; shape: PinShape; closed?: boolean }[] = [
 
 function MapKey() {
   return (
-    <div className="border-t border-line bg-surface px-3 py-3 md:absolute md:right-3 md:bottom-3 md:w-56 md:rounded-xl md:border md:bg-bg/70 md:p-2.5 md:backdrop-blur-md">
-      <div className="hidden items-center justify-between md:flex">
-        <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">Map key</h2>
-        <Compass />
+    <section
+      aria-labelledby="map-key-heading"
+      className="border-t border-line bg-surface px-3 py-3 md:absolute md:right-3 md:bottom-3 md:w-56 md:rounded-xl md:border md:bg-bg/70 md:p-2.5 md:backdrop-blur-md"
+    >
+      <div className="mb-1.5 flex items-center justify-between md:mb-0">
+        <h2 id="map-key-heading" className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+          Map key
+        </h2>
+        <span className="hidden md:block">
+          <Compass />
+        </span>
       </div>
-      <h2 className="sr-only md:hidden">Map key</h2>
       <p className="mb-1.5 hidden text-xs text-muted md:block">Pin colors and letters match the group chips above the map.</p>
       <ul className="flex flex-wrap gap-2 md:flex-col md:gap-0.5">
         {KEY.map((k) => (
@@ -157,7 +163,7 @@ function MapKey() {
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   )
 }
 
@@ -218,13 +224,13 @@ export default function StateMap({
 
         <g aria-hidden="true" style={{ fontFamily: 'var(--font-sans)' }}>
           {layout.cities.map((c) => {
-            const o = c.label ?? { dx: 6, dy: 0, anchor: 'start' as const }
-            const moved = o.dy !== 0 || Math.abs(o.dx) > 6
+            const o = c.label
+            const moved = o.leader
             const tx = c.x + o.dx
             const ty = c.y + o.dy
             return (
               <g key={c.name}>
-                {moved && <line x1={c.x} y1={c.y} x2={tx} y2={ty} stroke="var(--muted)" strokeOpacity="0.6" strokeWidth="0.8" />}
+                {moved && <line x1={c.x} y1={c.y} x2={tx} y2={o.dx === 0 ? ty - Math.sign(o.dy) * 6 : ty} stroke="var(--muted)" strokeOpacity="0.6" strokeWidth="0.8" />}
                 <circle cx={c.x} cy={c.y} r="2.4" fill="var(--muted)" />
                 <text
                   x={tx}

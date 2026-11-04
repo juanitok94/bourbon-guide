@@ -79,6 +79,7 @@ function GroupLine({ d }: { d: Stop }) {
     <span className="mt-2 flex items-center gap-2 text-sm text-muted">
       <GroupMark group={group} size="sm" />
       Part of {group.name}
+      {group.shortName !== group.name && ` (${group.shortName})`}
     </span>
   )
 }
@@ -102,7 +103,7 @@ function Card({
       <GroupLine d={d} />
       {brandsAt(d.id).length > 0 && (
         <span className="mt-2 block">
-          <BrandPills brands={brandsAt(d.id)} label={`Brands made at ${d.name}`} />
+          <BrandPills brands={brandsAt(d.id)} label={`Brands at ${d.name}`} />
         </span>
       )}
       {(!onMap || !d.verifiedOn) && (

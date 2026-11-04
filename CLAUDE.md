@@ -20,6 +20,7 @@ npm run tsc            # tsc --noEmit, required before finishing any task
 npm run check:data     # --verbose lists every warning
 npm run build:outline  # regenerate src/data/outline.json after changing map.json fips
 npm run build:icons    # regenerate icons after changing map.json accent
+npm run geocode        # fill lat/lng from OSM Nominatim for verified addresses (-- --dry to preview)
 npm run fabric:export  # CSVs for Microsoft Fabric (-- --push to upload)
 npm run fabric:pull    # stage data from Fabric (-- --local, -- --apply)
 ```
@@ -35,9 +36,11 @@ To update the guide: edit `src/data/stops.json`, run `check:data`, rebuild.
   state, `region` = one of map.json's region ids (or null). `trails` = program names, `[]` if none.
 - KY-specific additions (noted per the family rule): `Stop.groupId` (an id from `src/data/groups.json`, or null
   for independents), plus `src/data/groups.json` (ownership groups: name, shortName, one-letter marker, pin colour,
-  hq, website) and `src/data/brands.json` (brand names as plain text, `stopId` only where the group's own site says
-  the brand is made there). check:data enforces ids, cross-references, https sources and pin-colour contrast
+  hq, website) and `src/data/brands.json` (brand names as plain text, `stopId` only where the group's or the brand's
+  own site says the brand is made there or offers its visitor experience there; sourceUrl = that page). check:data enforces ids, cross-references, https sources and pin-colour contrast
   (>= 4.5:1 on --bg). The marker letter always shows, so colour is never the only cue.
+- `Stop.geocodeSource` (KY-guide addition): who produced lat/lng, e.g. "OpenStreetMap Nominatim"; required by
+  check:data whenever lat/lng are set.
 - Region rule (no guessing): `region` = the nearest hub by straight-line distance from the Census point for the
   stop's city or ZIP (Census Gazetteer 2023 place/ZCTA files): Louisville; Bardstown; Lexington or Frankfort
   (`central`). Use `elsewhere` when no hub is within 40 km.
@@ -85,7 +88,10 @@ Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
 - No personal names in data; business details only.
 - Never use or link goatwhiskey.net (serves gambling spam).
 - `sourceUrl` must be https and is required once `verifiedOn` is set. ids are unique. status is open, closed or unknown.
-- `lat`/`lng` only after the address is verified (5 decimals). Pins appear only for entries with lat/lng; the
+- `lat`/`lng` only after the address is verified (5 decimals). `npm run geocode` (OSM Nominatim, 1.1 s between
+  requests) accepts a result only if it is in the state, inside the bounding box, matches the stop's city and is a
+  house-number or named-place match (never a bare road midpoint); otherwise it logs "needs manual check". A manual
+  fix still needs a source; set `geocodeSource` to it. Pins appear only for entries with lat/lng; the
   list shows "Not on map yet" otherwise. check:data rejects coordinates outside the state's bounding box.
 - Renames, mergers: explain in `note`. Never delete entries; closed ones stay with a Closed badge.
 - Verify mappings (region, trail, city) against explicit sources. Never assume order.
@@ -122,3 +128,5 @@ Passport or visit tracking, accounts, ratings, reviews, ticketing or purchasing,
 - 2026-11-03 - A long bash heredoc with many files failed to parse - use the Write tool for multi-file creation.
 - 2026-11-03 - City labels Lawrenceburg and Lexington collided on the KY map - check labels visually after adding cities; set `label` offsets in cities.json.
 - 2026-11-03 - Fetch summarizers padded corporate pages with general knowledge - read raw HTML (curl + strip tags) or rendered page text for sourcing; never trust a summary.
+- 2026-11-03 - Nominatim returned bare road midpoints (no house number) that passed the state/city checks; McCracken Pike's was miles from Woodford Reserve - geocode rejects highway-level matches; never accept a road centroid as a stop's location.
+- 2026-11-03 - Pins on city dots hid the city labels - map-layout places labels around pins automatically; still check the map visually after adding pins.

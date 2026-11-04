@@ -41,13 +41,13 @@ export type Brand = {
   id: string
   name: string
   groupId: string // must exist in groups.json
-  stopId: string | null // the stop where the group's own site says it is made; else null
+  stopId: string | null // a stop where the group's or brand's own site says it is made or offers its visitor experience; else null
   sourceUrl: string | null // required (https) once verifiedOn is set
   verifiedOn: string | null // YYYY-MM-DD
 }
 
 // Matches src/data/stops.json exactly. Every fact needs a source and a verifiedOn date.
-// `groupId` is a KY-guide addition to the shared family shape (null = independent).
+// `groupId` and `geocodeSource` are KY-guide additions to the shared family shape (null = independent / not geocoded).
 export type Stop = {
   id: string
   mapId: string // must equal map.json id
@@ -61,6 +61,7 @@ export type Stop = {
   address: string | null
   lat: number | null
   lng: number | null
+  geocodeSource: string | null // e.g. "OpenStreetMap Nominatim"; set whenever lat/lng are filled by a geocoder
   phone: string | null
   website: string | null
   hoursNote: string | null

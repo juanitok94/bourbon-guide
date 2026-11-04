@@ -11,6 +11,7 @@
     "tsc": "tsc --noEmit",
     "build:icons": "tsx scripts/build-icons.ts",
     "build:outline": "tsx scripts/build-outline.ts",
+    "geocode": "tsx scripts/geocode.ts",
     "fabric:export": "tsx scripts/fabric/export.ts",
     "fabric:pull": "tsx scripts/fabric/pull.ts"
   },

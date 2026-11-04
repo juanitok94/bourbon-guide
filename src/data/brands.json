@@ -1,6 +1,6 @@
 [
-  { "id": "jim-beam", "name": "Jim Beam", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
-  { "id": "makers-mark", "name": "Maker's Mark", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
+  { "id": "jim-beam", "name": "Jim Beam", "groupId": "suntory", "stopId": "james-b-beam-distilling-co", "sourceUrl": "https://www.jimbeam.com/en-us/", "verifiedOn": "2026-11-03" },
+  { "id": "makers-mark", "name": "Maker's Mark", "groupId": "suntory", "stopId": "makers-mark-distillery", "sourceUrl": "https://www.makersmark.com/", "verifiedOn": "2026-11-03" },
   { "id": "knob-creek", "name": "Knob Creek", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
   { "id": "basil-hayden", "name": "Basil Hayden", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
   { "id": "bookers", "name": "Booker's", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
@@ -16,10 +16,10 @@
   { "id": "sazerac-rye", "name": "Sazerac Rye", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=whiskey", "verifiedOn": "2026-11-03" },
 
   { "id": "woodford-reserve", "name": "Woodford Reserve", "groupId": "brown-forman", "stopId": "woodford-reserve-distillery", "sourceUrl": "https://www.brown-forman.com/brand/woodford-reserve", "verifiedOn": "2026-11-03" },
-  { "id": "old-forester", "name": "Old Forester", "groupId": "brown-forman", "stopId": null, "sourceUrl": "https://www.brown-forman.com/brand/old-forester", "verifiedOn": "2026-11-03" },
+  { "id": "old-forester", "name": "Old Forester", "groupId": "brown-forman", "stopId": "old-forester-distilling-co", "sourceUrl": "https://www.oldforester.com/distillery/", "verifiedOn": "2026-11-03" },
 
-  { "id": "evan-williams", "name": "Evan Williams", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/brands/evan-williams-bourbon/", "verifiedOn": "2026-11-03" },
-  { "id": "elijah-craig", "name": "Elijah Craig", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/brands/elijah-craig-bourbon/", "verifiedOn": "2026-11-03" },
+  { "id": "evan-williams", "name": "Evan Williams", "groupId": "heaven-hill", "stopId": "evan-williams-bourbon-experience", "sourceUrl": "https://evanwilliams.com/plan-your-trip", "verifiedOn": "2026-11-03" },
+  { "id": "elijah-craig", "name": "Elijah Craig", "groupId": "heaven-hill", "stopId": "heaven-hill-bourbon-experience", "sourceUrl": "https://elijahcraig.com/", "verifiedOn": "2026-11-03" },
   { "id": "heaven-hill-bottled-in-bond", "name": "Heaven Hill Bottled-in-Bond", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/brands/heaven-hill-bottled-in-bond/", "verifiedOn": "2026-11-03" },
   { "id": "larceny", "name": "Larceny", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/our-portfolio/", "verifiedOn": "2026-11-03" },
   { "id": "old-fitzgerald", "name": "Old Fitzgerald", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/our-portfolio/", "verifiedOn": "2026-11-03" }

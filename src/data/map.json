@@ -12,7 +12,7 @@
     { "id": "elsewhere", "label": "Elsewhere in Kentucky" }
   ],
   "accent": "#a8452b",
-  "credits": ["Map outline: U.S. Census Bureau"],
+  "credits": ["Map outline: U.S. Census Bureau", "Locations: © OpenStreetMap contributors"],
   "trademarks": [
     {
       "term": "Kentucky Bourbon Trail",

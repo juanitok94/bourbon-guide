@@ -133,6 +133,7 @@ data.forEach((d, i) => {
 
   if ((d.lat === null) !== (d.lng === null)) errors.push(`${at}: lat and lng must both be set or both null`)
   if (d.lat !== null && d.lng !== null && !inBox(d.lat, d.lng)) errors.push(`${at}: lat/lng outside ${MAP.state}'s bounding box`)
+  if (d.lat !== null && !d.geocodeSource) errors.push(`${at}: geocodeSource is required once lat/lng are set`)
   if (d.verifiedOn !== null && d.address === null) warnings.push(`${at}: verified but address is null`)
   if (d.verifiedOn !== null && d.lat === null) warnings.push(`${at}: no coordinates yet (no pin)`)
 })

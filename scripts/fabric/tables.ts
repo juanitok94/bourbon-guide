@@ -21,7 +21,7 @@ export const TABLES: TableDef[] = [
     file: 'src/data/stops.json',
     columns: [
       s('id'), s('mapId'), s('state'), s('groupId', true), s('name'), j('trails'), b('toursByAppointment'),
-      s('region', true), s('city', true), s('address', true), n('lat'), n('lng'), s('phone', true),
+      s('region', true), s('city', true), s('address', true), n('lat'), n('lng'), s('geocodeSource', true), s('phone', true),
       s('website', true), s('hoursNote', true), s('status'), s('blurb', true), s('sourceUrl', true),
       s('sourceNote'), s('verifiedOn', true), s('note', true),
     ],
