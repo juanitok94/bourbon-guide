@@ -261,7 +261,7 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
         </h2>
         {total > 0 && (
           <>
-            <div className="grid grid-cols-[minmax(0,4fr)_minmax(0,5fr)] gap-2 rounded-xl border border-line bg-surface p-2 md:grid-cols-[minmax(0,1fr)_13rem_19rem]">
+            <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-2 rounded-xl border border-line bg-surface p-2 md:grid-cols-[minmax(0,1fr)_13rem_19rem]">
               <label className="col-span-2 md:col-span-1">
                 <span className="sr-only">Search by name</span>
                 <input
@@ -272,12 +272,13 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
                   className={`${CONTROL} ${FIELD_TEXT}`}
                 />
               </label>
-              <label className="relative min-w-0">
+              {/* A native select's text can't wrap, so the visible label is a span and the real select sits over it, invisible. */}
+              <label className="relative block min-w-0">
                 <span className="sr-only">Region</span>
                 <select
                   value={filters.region}
                   onChange={(e) => update({ region: e.target.value })}
-                  className={`${CONTROL} ${FIELD_TEXT} appearance-none truncate pr-8`}
+                  className={`peer absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0 ${FIELD_TEXT}`}
                 >
                   <option value="all">Region: All</option>
                   {MAP.regions.map((r) => (
@@ -286,7 +287,13 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
                     </option>
                   ))}
                 </select>
-                <Chevron className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2" />
+                <span
+                  aria-hidden="true"
+                  className={`${CONTROL} ${FIELD_TEXT} flex h-full items-center justify-between gap-1.5 leading-tight max-md:px-2.5 peer-hover:border-amber peer-focus-visible:border-amber peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-amber`}
+                >
+                  <span className="min-w-0">{MAP.regions.find((r) => r.id === filters.region)?.label ?? 'Region: All'}</span>
+                  <Chevron />
+                </span>
               </label>
               <GroupsDropdown
                 selected={groups}

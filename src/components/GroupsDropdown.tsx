@@ -6,9 +6,9 @@ import { useEffect, useId, useRef, useState } from 'react'
 import GroupMark from '@/components/GroupMark'
 import { ALL_GROUP_IDS, GROUPS } from '@/lib/groups'
 
-// Every control in the filter bar shares this: same height (44px) and border.
+// Every control in the filter bar shares this: at least 44px tall (a wrapped phone label can grow) and one border.
 export const CONTROL =
-  'block h-11 w-full rounded-lg border border-line bg-raised px-3 text-text transition-colors hover:border-amber focus-visible:border-amber'
+  'block min-h-11 w-full rounded-lg border border-line bg-raised px-3 text-text transition-colors hover:border-amber focus-visible:border-amber'
 // Inputs and selects stay at 16px on phones, or iOS zooms the page when they take focus.
 export const FIELD_TEXT = 'text-base md:text-sm'
 
@@ -29,6 +29,12 @@ export function groupsLabel(selected: string[]): string {
   if (selected.length > 2) return `Groups: ${selected.length} selected`
   const names = GROUPS.filter((g) => selected.includes(g.id)).map((g) => g.shortName)
   return `Groups: ${names.join(', ')}`
+}
+
+// Phones have no room for two names: "Groups: 2 selected" once more than one group is picked.
+export function groupsLabelShort(selected: string[]): string {
+  if (selected.length > 1 && selected.length < ALL_GROUP_IDS.length) return `Groups: ${selected.length} selected`
+  return groupsLabel(selected)
 }
 
 export default function GroupsDropdown({
@@ -88,9 +94,10 @@ export default function GroupsDropdown({
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => setOpen((o) => !o)}
-        className={`${CONTROL} flex items-center justify-between gap-2 text-left text-sm`}
+        className={`${CONTROL} flex h-full items-center justify-between gap-1.5 text-left text-sm leading-tight max-md:px-2.5`}
       >
-        <span className="min-w-0 truncate">{groupsLabel(selected)}</span>
+        <span className="min-w-0 md:hidden">{groupsLabelShort(selected)}</span>
+        <span className="hidden min-w-0 truncate md:inline">{groupsLabel(selected)}</span>
         <Chevron className={open ? 'rotate-180' : ''} />
       </button>
       <div
