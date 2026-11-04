@@ -20,7 +20,7 @@ export const TABLES: TableDef[] = [
     name: 'stops',
     file: 'src/data/stops.json',
     columns: [
-      s('id'), s('mapId'), s('state'), s('groupId', true), s('name'), j('trails'), b('toursByAppointment'),
+      s('id'), s('mapId'), s('state'), s('groupId', true), s('scale'), s('name'), j('trails'), b('toursByAppointment'),
       s('region', true), s('city', true), s('address', true), n('lat'), n('lng'), s('geocodeSource', true), s('phone', true),
       s('website', true), s('hoursNote', true), s('status'), s('blurb', true), s('sourceUrl', true),
       s('sourceNote'), s('verifiedOn', true), s('note', true),
@@ -31,7 +31,7 @@ export const TABLES: TableDef[] = [
     file: 'src/data/groups.json',
     columns: [
       s('id'), s('name'), s('shortName'), s('marker'), s('color'), s('hq', true), s('website', true),
-      s('sourceUrl', true), s('verifiedOn', true),
+      s('ownership', true), s('ownershipSourceUrl', true), s('sourceUrl', true), s('verifiedOn', true),
     ],
   },
   {

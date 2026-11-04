@@ -8,17 +8,17 @@ import { ALL_GROUP_IDS, GROUPS } from '@/lib/groups'
 
 // Every control in the filter bar shares this: at least 44px tall (a wrapped phone label can grow) and one border.
 export const CONTROL =
-  'block min-h-11 w-full rounded-lg border border-line bg-raised px-3 text-text transition-colors hover:border-amber focus-visible:border-amber'
+  'block min-h-11 w-full border-[1.5px] border-gold bg-transparent px-3 text-cream transition-colors hover:bg-wine-deep'
 // Inputs and selects stay at 16px on phones, or iOS zooms the page when they take focus.
 export const FIELD_TEXT = 'text-base md:text-sm'
 
-const ROW = 'flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-3 text-sm text-text hover:bg-surface'
-const CHECKBOX = 'h-5 w-5 shrink-0 accent-accent'
+const ROW = 'flex min-h-11 cursor-pointer items-center gap-3 px-3 text-sm text-cream hover:bg-wine'
+const CHECKBOX = 'h-5 w-5 shrink-0 accent-gold'
 
 export function Chevron({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 12 12" className={`h-3 w-3 shrink-0 text-muted ${className}`} aria-hidden="true">
-      <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 12 12" className={`h-3 w-3 shrink-0 text-gold ${className}`} aria-hidden="true">
+      <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" />
     </svg>
   )
 }
@@ -94,7 +94,7 @@ export default function GroupsDropdown({
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => setOpen((o) => !o)}
-        className={`${CONTROL} flex h-full items-center justify-between gap-1.5 text-left text-sm leading-tight max-md:px-2.5`}
+        className={`${CONTROL} flex h-full items-center justify-between gap-1.5 text-left text-sm leading-tight`}
       >
         <span className="min-w-0 md:hidden">{groupsLabelShort(selected)}</span>
         <span className="hidden min-w-0 truncate md:inline">{groupsLabel(selected)}</span>
@@ -105,9 +105,9 @@ export default function GroupsDropdown({
         role="group"
         aria-label="Ownership groups"
         hidden={!open}
-        className="absolute right-0 z-20 mt-1 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-line bg-raised p-1 shadow-lg shadow-bg"
+        className="absolute left-0 z-20 mt-1 w-72 max-w-[calc(100vw-2rem)] border-[1.5px] border-gold bg-wine-deep p-1"
       >
-        <label className={`${ROW} mb-1 border-b border-line`}>
+        <label className={`${ROW} mb-1 border-b border-gold/40`}>
           <input type="checkbox" checked={all} onChange={onAll} className={CHECKBOX} />
           All groups
         </label>

@@ -1,18 +1,14 @@
 import type { Group } from '@/data/types'
 
-// A group's marker letter in a circle. "filled": group colour behind a --bg letter; otherwise an outline
-// with the letter in the group colour. Colours come from groups.json (checked for AA on --bg/--surface/--raised).
-export default function GroupMark({ group, filled = true, size = 'md' }: { group: Group; filled?: boolean; size?: 'sm' | 'md' }) {
-  const box = size === 'sm' ? 'h-5 w-5 text-[11px]' : 'h-6 w-6 text-xs'
+// A group's stamp: a square in --wine-deep with the marker letter and border in the group's colour, tilted like the
+// ones on the map. Colours come from groups.json (check:data keeps them at AA on --wine-deep).
+export default function GroupMark({ group, size = 'md' }: { group: Group; size?: 'sm' | 'md' }) {
+  const box = size === 'sm' ? 'h-5 w-5 text-sm' : 'h-6 w-6 text-base'
   return (
     <span
       aria-hidden="true"
-      className={`inline-flex shrink-0 items-center justify-center rounded-full border-2 font-bold leading-none ${box}`}
-      style={
-        filled
-          ? { backgroundColor: group.color, borderColor: group.color, color: 'var(--bg)' }
-          : { borderColor: group.color, color: group.color }
-      }
+      className={`inline-flex shrink-0 -rotate-[4deg] items-center justify-center border-[1.6px] bg-wine-deep font-stencil leading-none font-extrabold ${box}`}
+      style={{ borderColor: group.color, color: group.color }}
     >
       {group.marker}
     </span>

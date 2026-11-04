@@ -3,15 +3,18 @@
 import mapConfig from './map.json'
 
 export type Status = 'open' | 'closed' | 'unknown'
+export type Scale = 'major' | 'independent'
 
 export type RegionDef = { id: string; label: string }
 export type Trademark = { term: string; notice: string }
 
-// Matches src/data/map.json. `stateName` and `trademarks` are optional family fields.
+// Matches src/data/map.json. `stateName`, `trademarks`, `seoTitle` and `seoDescription` are optional family fields.
 export type MapConfig = {
   id: string
   title: string
   kicker: string
+  seoTitle?: string // the <title> and social title; falls back to title
+  seoDescription?: string // the meta description; falls back to siteDescription()
   state: string // USPS code, e.g. "KY"
   stateName?: string
   fips: string // state FIPS code used by build:outline
@@ -32,6 +35,8 @@ export type Group = {
   color: string // #rrggbb pin fill; must be >= 4.5:1 against --bg (#0f0d0b)
   hq: string | null
   website: string | null
+  ownership: string | null // only what the group's own corporate site states; null = rows show "Part of <name>"
+  ownershipSourceUrl: string | null // required (https) when ownership is set
   sourceUrl: string | null // required (https) once verifiedOn is set
   verifiedOn: string | null // YYYY-MM-DD
 }
@@ -47,12 +52,13 @@ export type Brand = {
 }
 
 // Matches src/data/stops.json exactly. Every fact needs a source and a verifiedOn date.
-// `groupId` and `geocodeSource` are KY-guide additions to the shared family shape (null = independent / not geocoded).
+// `groupId`, `scale` and `geocodeSource` are KY-guide additions to the shared family shape (null = independent / not geocoded).
 export type Stop = {
   id: string
   mapId: string // must equal map.json id
   state: string // must equal map.json state
   groupId: string | null // must exist in groups.json when set
+  scale: Scale // major requires a groupId; independent requires groupId null
   name: string
   trails: string[] // program names, e.g. ["Kentucky Bourbon Trail"]; [] if none. No ® in data.
   toursByAppointment: boolean

@@ -1,18 +1,28 @@
 'use client'
 
-// Static night-style state map: an SVG drawn from build-time data. No tiles, no map library. Zooming to a region
-// only changes the viewBox (instant under prefers-reduced-motion); pins and labels keep their on-screen size.
-// Pins (only for entries with verified lat/lng) take their ownership group's colour and marker letter
-// (groups.json; MapKey under the map is the key for these). Shape: bottle tag = tours by appointment,
-// circle otherwise. Independents (no group) = --teal, no letter.
-// The state outline comes from map.json's FIPS code; region areas from regions.json (npm run build:regions).
+// The map island: the state inside a ringed oval, drawn at build time. No tiles, no map library. Zooming to a region
+// only changes the nested viewBox (instant under prefers-reduced-motion); stamps, dots and labels keep their on-screen
+// size. Majors are square stamps grouped into callouts with leader lines to their true positions; independents are
+// gold dots. The outline comes from map.json's FIPS code, the oval from src/lib/island.ts, regions from regions.json.
 import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent } from 'react'
 import GroupMark from '@/components/GroupMark'
 import regionsData from '@/data/regions.json'
 import { MAP, type Stop } from '@/data/types'
 import { GROUPS, groupOf } from '@/lib/groups'
 import type { MapLayout } from '@/lib/map-layout'
-import { CITY_PX, PIN_BASE, PIN_PX, REGION_PX, fitView, lerpView, placeLabels, placePins, type Rect } from '@/lib/map-view'
+import {
+  DOT_R,
+  LABEL_PX,
+  STAMP_PX,
+  fitView,
+  inOval,
+  layoutCallouts,
+  lerpView,
+  placeCities,
+  placeDots,
+  toPx,
+  type Rect,
+} from '@/lib/map-view'
 import type { RegionArea } from '@/lib/regions'
 import { PLACE } from '@/lib/site'
 
@@ -20,88 +30,34 @@ const REGIONS = regionsData as RegionArea[]
 const ZOOM_MS = 450
 const PHONE_QUERY = '(max-width: 767.98px)'
 const DEFAULT_PX_W = 992 // the column's full width, used until the browser has measured it
-
-// Local coordinates, centred on (0,0).
-export const BOTTLE = 'M-4.5 -15 H4.5 V-7 Q10.5 -5 10.5 -1 V12 Q10.5 15 7.5 15 H-7.5 Q-10.5 15 -10.5 12 V-1 Q-10.5 -5 -4.5 -7 Z'
-
-export type PinShape = 'bottle' | 'circle'
-
-export function shapeOf(d: Stop): PinShape {
-  return d.toursByAppointment ? 'bottle' : 'circle'
-}
+const LINE_H = 13
+const STAMP_TILT = -4
 
 export function pinLabel(d: Stop): string {
   const parts = [
     d.name,
     d.city,
-    groupOf(d)?.name ?? null,
+    groupOf(d)?.shortName ?? 'Independent',
     d.toursByAppointment ? 'tours by appointment' : null,
   ]
   return parts.filter(Boolean).join(', ')
 }
 
-// The real pin graphic, shared by the map and the key.
-export function PinGraphic({
-  shape,
-  color = 'var(--teal)',
-  marker = null,
-}: {
-  shape: PinShape
-  color?: string
-  marker?: string | null
-}) {
-  const centerY = shape === 'bottle' ? 3 : 0
-  return (
-    <>
-      <circle className="dg-ring" r="21" fill="none" strokeWidth="2.5" />
-      <g fill={color} stroke="var(--bg)" strokeWidth="2" strokeLinejoin="round">
-        {shape === 'bottle' ? <path d={BOTTLE} /> : <circle r="12.5" />}
-      </g>
-      {marker ? (
-        <text
-          y={centerY}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize="12.5"
-          fontWeight="700"
-          fill="var(--bg)"
-          style={{ fontFamily: 'var(--font-sans)' }}
-        >
-          {marker}
-        </text>
-      ) : (
-        <circle cy={centerY} r="3.2" fill="var(--bg)" />
-      )}
-    </>
-  )
-}
-
-// One quiet, non-interactive row under the map: each group's marker and colour, plus the appointment shape
-// when a pin uses it.
-export function MapKey({ showTours }: { showTours: boolean }) {
-  // The dots show only on wider screens, where the row stays on one line; on phones a wrap would strand one.
-  const dot = (
-    <span aria-hidden="true" className="mr-1.5 hidden sm:inline">
-      ·
-    </span>
-  )
+// One quiet, non-interactive row under the map: each group's stamp, plus the independents' dot when any are shown.
+export function MapKey({ showIndependents }: { showIndependents: boolean }) {
   const item = 'flex items-center gap-1.5'
   return (
-    <ul aria-label="Map key" className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-muted">
-      {GROUPS.map((g, i) => (
+    <ul aria-label="Map key" className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-muted">
+      {GROUPS.map((g) => (
         <li key={g.id} className={item}>
-          {i > 0 && dot}
           <GroupMark group={g} size="sm" />
           {g.shortName}
         </li>
       ))}
-      {showTours && (
+      {showIndependents && (
         <li className={item}>
-          {dot}
-          <svg viewBox="-17 -17 34 34" className="h-5 w-5 shrink-0" aria-hidden="true">
-            <PinGraphic shape="bottle" color="var(--muted)" />
-          </svg>
-          Tours by appointment
+          <span aria-hidden="true" className="dg-dot" />
+          Independent
         </li>
       )}
     </ul>
@@ -117,10 +73,11 @@ const readPhone = () => window.matchMedia(PHONE_QUERY).matches
 
 const distilleries = (n: number) => `${n} ${n === 1 ? 'distillery' : 'distilleries'}`
 const regionName = (id: string) => MAP.regions.find((r) => r.id === id)?.label ?? id
-// The viewBox for a region, or the whole state when it has no area on the map.
-function viewFor(regionId: string, mapW: number, mapH: number): Rect {
+
+// The view for a region, or the whole island when it has no area on the map.
+function viewFor(regionId: string, whole: Rect): Rect {
   const area = REGIONS.find((r) => r.id === regionId)?.area
-  return area ? fitView(area, mapW, mapH) : { x: 0, y: 0, w: mapW, h: mapH }
+  return area ? fitView(area, whole) : whole
 }
 
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
@@ -152,10 +109,10 @@ export default function StateMap({
   // Where focus goes after a zoom, because the control just used goes away.
   const focusAfter = useRef<string | null>(null)
 
-  const mapW = layout.width
-  const mapH = layout.height
+  const { x: wholeX, y: wholeY, w: wholeW, h: wholeH } = layout.island
+  const whole: Rect = { x: wholeX, y: wholeY, w: wholeW, h: wholeH }
   const active = REGIONS.find((r) => r.id === regionId) ?? null
-  const [view, setView] = useState<Rect>({ x: 0, y: 0, w: mapW, h: mapH })
+  const [view, setView] = useState<Rect>(whole)
   const [moving, setMoving] = useState(false)
   const viewRef = useRef<Rect>(view)
 
@@ -171,7 +128,7 @@ export default function StateMap({
 
   useEffect(() => {
     const from = viewRef.current
-    const targetView = viewFor(regionId, mapW, mapH)
+    const targetView = viewFor(regionId, { x: wholeX, y: wholeY, w: wholeW, h: wholeH })
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const duration = animate && !reduce ? ZOOM_MS : 0
     let frame = 0
@@ -187,7 +144,7 @@ export default function StateMap({
     }
     frame = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(frame)
-  }, [regionId, mapW, mapH, animate])
+  }, [regionId, wholeX, wholeY, wholeW, wholeH, animate])
 
   useEffect(() => {
     const want = focusAfter.current
@@ -206,201 +163,263 @@ export default function StateMap({
     onRegion('all')
   }
 
-  const u = view.w / pxW // map units per screen pixel
   const pinById = new Map(layout.pins.map((p) => [p.id, p]))
-  const shown = entries.filter((d) => pinById.has(d.id))
-  const positions = placePins(
-    shown.map((d) => ({
+  const stops = entries.filter((d) => pinById.has(d.id))
+  const majors = stops.filter((d) => d.scale === 'major')
+  const independents = stops.filter((d) => d.scale === 'independent')
+  const stopById = new Map(stops.map((d) => [d.id, d]))
+
+  // Callouts are laid out for where the zoom is heading, so they hold still while their leaders follow the moving map.
+  const targetView = viewFor(regionId, whole)
+  const { frame, callouts } = layoutCallouts({
+    pins: majors.map((d) => ({
       id: d.id,
+      lat: d.lat!,
+      lng: d.lng!,
       x: pinById.get(d.id)!.x0,
       y: pinById.get(d.id)!.y0,
-      bound: active ? null : REGIONS.find((r) => r.id === d.region)?.target,
+      city: d.city,
+      region: d.region,
     })),
-    view,
+    avoid: [...independents.map((d) => ({ x: pinById.get(d.id)!.x0, y: pinById.get(d.id)!.y0 })), ...layout.cities],
+    view: targetView,
+    whole,
     pxW,
+  })
+  const dotSpots = placeDots(
+    independents.map((d) => ({ id: d.id, x: pinById.get(d.id)!.x0, y: pinById.get(d.id)!.y0 })),
+    view,
+    frame.ew,
   )
-  // Selected pin draws last so it sits on top.
-  const ordered = [...shown].sort((a, b) => Number(a.id === selectedId) - Number(b.id === selectedId))
-  const pinK = (u * PIN_PX) / PIN_BASE
-
-  const showRegionButtons = !active
-  // Labels stay hidden during the zoom, so they don't jump between spots frame to frame.
-  const labels = moving
-    ? { cities: [], regions: [] }
-    : placeLabels({
+  const cx = frame.ex + frame.ew / 2
+  const cy = frame.ey + frame.eh / 2
+  const majorSpots = callouts.flatMap((c) => c.cells.map((cell) => toPx(frame, view, cell.pin.x, cell.pin.y)))
+  const cityLabels = moving
+    ? []
+    : placeCities({
+        frame,
         view,
-        pxW,
-        pins: [...positions.values()],
         cities: layout.cities,
-        regions: active ? [] : REGIONS.map((r) => ({ id: r.id, label: regionName(r.id), box: r.target })),
+        callouts,
+        spots: [...majorSpots, ...[...dotSpots.values()].map((p) => toPx(frame, view, p.x, p.y))],
       })
 
-  // On a phone's whole-state view the regions are the targets, so pins are drawn but not interactive.
-  const pinsLive = !isPhone || active !== null
+  // On a phone's whole-state view the regions are the targets for dots: there is no room to give each one 44px.
+  const dotsLive = !isPhone || active !== null
+  const showRegionButtons = !active
 
-  const onPinKey = (e: KeyboardEvent<SVGGElement>, id: string) => {
+  const onKey = (e: KeyboardEvent<SVGGElement>, run: () => void) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
-      onSelect(id)
+      run()
     }
   }
-  const onRegionKey = (e: KeyboardEvent<SVGGElement>, id: string) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      zoomTo(id)
-    }
-  }
+
+  const leaders = callouts.flatMap((c) =>
+    c.cells.map((cell) => {
+      const spot = toPx(frame, view, cell.pin.x, cell.pin.y)
+      const y1 = cell.cy + (spot.y < cell.cy ? -STAMP_PX / 2 : STAMP_PX / 2)
+      return { key: cell.pin.id, x1: cell.cx, y1, x2: spot.x, y2: spot.y }
+    }),
+  )
 
   return (
     <>
-      <div ref={wrapRef} className="relative overflow-hidden rounded-2xl border border-line bg-ocean">
+      <div ref={wrapRef} className={pxW === DEFAULT_PX_W ? 'dg-island-unmeasured' : undefined}>
         <svg
           ref={svgRef}
-          viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`}
+          viewBox={`0 0 ${frame.pxW} ${frame.pxH}`}
           role="group"
           aria-label={`Map of ${PLACE} distilleries (${MAP.title}). The list below the map is the accessible alternative to this map.`}
           className="block h-auto w-full"
         >
           <defs>
-            <filter id="state-glow" x="-10%" y="-20%" width="120%" height="140%">
-              <feGaussianBlur stdDeviation="12" />
-            </filter>
-            <linearGradient id="terrain" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stopColor="#2b2118" />
-              <stop offset="0.45" stopColor="#1c1915" />
-              <stop offset="1" stopColor="#191a19" />
-            </linearGradient>
+            <clipPath id="island-clip">
+              <ellipse cx={cx} cy={cy} rx={frame.ew / 2} ry={frame.eh / 2} />
+            </clipPath>
           </defs>
-          <rect width={layout.width} height={layout.height} fill="var(--ocean)" />
-          <path d={layout.path} fill="var(--amber)" opacity="0.22" filter="url(#state-glow)" />
-          <path d={layout.path} fill="url(#terrain)" />
-          <path d={layout.counties} fill="none" stroke="var(--county)" strokeWidth="0.8" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-          <path
-            d={layout.path}
-            fill="none"
-            stroke="var(--amber)"
-            strokeOpacity="0.6"
-            strokeWidth="1"
-            strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
-          />
 
-          {showRegionButtons
-            ? REGIONS.map((r) => {
-                const n = regionCounts[r.id] ?? 0
-                return (
-                  <g
-                    key={r.id}
-                    data-region={r.id}
-                    className="dg-region"
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Zoom to ${regionName(r.id)}, ${distilleries(n)}`}
-                    onClick={() => zoomTo(r.id)}
-                    onKeyDown={(e) => onRegionKey(e, r.id)}
-                  >
-                    <rect
-                      className="dg-region-box"
-                      x={r.target.x}
-                      y={r.target.y}
-                      width={r.target.w}
-                      height={r.target.h}
-                      rx={10 * u}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  </g>
-                )
-              })
-            : null}
+          {/* Outward from the oval: gold border, a wine gap, then the cream ring. */}
+          <ellipse cx={cx} cy={cy} rx={frame.ew / 2 + 6} ry={frame.eh / 2 + 6} fill="none" stroke="var(--cream)" strokeWidth="2" />
+          <ellipse cx={cx} cy={cy} rx={frame.ew / 2} ry={frame.eh / 2} fill="var(--cream)" stroke="var(--gold)" strokeWidth="2" />
 
-          <g aria-hidden="true" pointerEvents="none" style={{ fontFamily: 'var(--font-sans)' }}>
-            {labels.cities.map((c) => (
-              <g key={c.text}>
-                {c.leader && (
-                  <line x1={c.cx} y1={c.cy} x2={c.x} y2={c.y} stroke="var(--muted)" strokeOpacity="0.6" strokeWidth={0.8 * u} />
-                )}
-                <circle cx={c.cx} cy={c.cy} r={2.4 * u} fill="var(--muted)" />
+          <g clipPath="url(#island-clip)">
+            <svg x={frame.ex} y={frame.ey} width={frame.ew} height={frame.eh} viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`}>
+              <path
+                d={layout.path}
+                fill="var(--paper)"
+                stroke="var(--wine-deep)"
+                strokeWidth="1.4"
+                strokeLinejoin="round"
+                vectorEffect="non-scaling-stroke"
+              />
+              {showRegionButtons &&
+                REGIONS.map((r) => {
+                  const n = regionCounts[r.id] ?? 0
+                  return (
+                    <g
+                      key={r.id}
+                      data-region={r.id}
+                      className="dg-region"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Zoom to ${regionName(r.id)}, ${distilleries(n)}`}
+                      onClick={() => zoomTo(r.id)}
+                      onKeyDown={(e) => onKey(e, () => zoomTo(r.id))}
+                    >
+                      <rect
+                        className="dg-region-box"
+                        x={r.target.x}
+                        y={r.target.y}
+                        width={r.target.w}
+                        height={r.target.h}
+                        vectorEffect="non-scaling-stroke"
+                      />
+                    </g>
+                  )
+                })}
+            </svg>
+          </g>
+
+          <g aria-hidden="true" pointerEvents="none">
+            {/* Each leader is gold across the page and wine-deep over the island, so it reads on both. */}
+            {leaders.map((l) => (
+              <line key={l.key} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke="var(--gold)" strokeWidth="1" />
+            ))}
+            <g clipPath="url(#island-clip)">
+              {leaders.map((l) => (
+                <g key={l.key}>
+                  <line x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke="var(--wine-deep)" strokeWidth="1" />
+                  <circle cx={l.x2} cy={l.y2} r="2.5" fill="var(--wine-deep)" />
+                </g>
+              ))}
+            </g>
+            {cityLabels.map((c) => (
+              <g key={c.name}>
+                <circle cx={c.dotX} cy={c.dotY} r="2" fill="var(--wine-deep)" fillOpacity="0.7" />
                 <text
                   data-city-label
                   x={c.x}
                   y={c.y}
                   textAnchor={c.anchor}
                   dominantBaseline="central"
-                  fontSize={CITY_PX * u}
-                  fontWeight="600"
-                  letterSpacing={1.1 * u}
-                  fill="var(--muted)"
-                  stroke="var(--bg)"
-                  strokeOpacity="0.8"
-                  strokeWidth={3 * u}
+                  fontSize={LABEL_PX}
+                  fill="var(--wine-deep)"
+                  stroke="var(--paper)"
+                  strokeWidth="3"
                   paintOrder="stroke"
+                  style={{ fontFamily: 'var(--font-mono)', fontWeight: 500 }}
                 >
-                  {c.text.toUpperCase()}
+                  {c.name}
                 </text>
               </g>
             ))}
-            {labels.regions.map((r) => (
-              <text
-                key={r.id}
-                data-region-label
-                x={r.x}
-                y={r.y}
-                textAnchor={r.anchor}
-                dominantBaseline="central"
-                fontSize={REGION_PX * u}
-                fontWeight="700"
-                fill="var(--amber)"
-                stroke="var(--bg)"
-                strokeOpacity="0.85"
-                strokeWidth={3 * u}
-                paintOrder="stroke"
-              >
-                {r.text}
-              </text>
-            ))}
+            {callouts.map((c) =>
+              c.lines.map((line, i) => (
+                <text
+                  key={`${c.key}-${i}`}
+                  data-callout-label
+                  x={c.x + c.w / 2}
+                  y={(c.labelAbove ? c.y : c.y + c.h - c.lines.length * LINE_H) + LINE_H * (i + 0.5)}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fontSize={LABEL_PX}
+                  letterSpacing="0.4"
+                  fill={c.inBand ? 'var(--cream)' : 'var(--wine-deep)'}
+                  stroke={c.inBand ? 'none' : 'var(--paper)'}
+                  strokeWidth={c.inBand ? 0 : 3}
+                  paintOrder="stroke"
+                  style={{ fontFamily: 'var(--font-mono)', fontWeight: 500 }}
+                >
+                  {line}
+                </text>
+              )),
+            )}
           </g>
 
-          {ordered.map((d) => {
-            const p = positions.get(d.id)
-            if (!p) return null
-            const selected = d.id === selectedId
-            const group = groupOf(d)
+          {independents.map((d) => {
+            const at = dotSpots.get(d.id)
+            if (!at) return null
+            const p = toPx(frame, view, at.x, at.y)
+            if (!inOval(frame, p.x, p.y)) return null
             return (
               <g
                 key={d.id}
                 data-pin={d.id}
                 className="dg-pin"
-                transform={`translate(${p.x} ${p.y}) scale(${pinK})`}
-                style={pinsLive ? undefined : { pointerEvents: 'none' }}
-                {...(pinsLive
+                transform={`translate(${p.x} ${p.y})`}
+                style={dotsLive ? undefined : { pointerEvents: 'none' }}
+                {...(dotsLive
                   ? {
                       role: 'button',
                       tabIndex: 0,
                       'aria-label': pinLabel(d),
-                      'aria-expanded': selected,
-                      'aria-controls': selected ? 'map-panel' : undefined,
+                      'aria-expanded': d.id === selectedId,
+                      'aria-controls': d.id === selectedId ? `card-${d.id}-details` : undefined,
                       onClick: () => onSelect(d.id),
-                      onKeyDown: (e: KeyboardEvent<SVGGElement>) => onPinKey(e, d.id),
+                      onKeyDown: (e: KeyboardEvent<SVGGElement>) => onKey(e, () => onSelect(d.id)),
                     }
                   : { 'aria-hidden': true })}
               >
-                <circle r="20" fill="transparent" />
-                <PinGraphic shape={shapeOf(d)} color={group?.color} marker={group?.marker ?? null} />
+                <circle r="22" fill="transparent" />
+                <circle className="dg-ring-casing" r={DOT_R + 5} fill="none" />
+                <circle className="dg-ring" r={DOT_R + 5} fill="none" />
+                <circle r={DOT_R} fill="var(--gold)" stroke="var(--wine-deep)" strokeWidth="0.8" />
               </g>
             )
           })}
+
+          {callouts.flatMap((c) =>
+            c.cells.map((cell) => {
+              const d = stopById.get(cell.pin.id)
+              const group = d ? groupOf(d) : null
+              if (!d || !group) return null
+              const half = STAMP_PX / 2
+              return (
+                <g
+                  key={d.id}
+                  data-pin={d.id}
+                  className="dg-pin"
+                  transform={`translate(${cell.cx} ${cell.cy})`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={pinLabel(d)}
+                  aria-expanded={d.id === selectedId}
+                  aria-controls={d.id === selectedId ? `card-${d.id}-details` : undefined}
+                  onClick={() => onSelect(d.id)}
+                  onKeyDown={(e) => onKey(e, () => onSelect(d.id))}
+                >
+                  <rect x="-22" y="-22" width="44" height="44" fill="transparent" />
+                  <g transform={`rotate(${STAMP_TILT})`}>
+                    <rect className="dg-ring-casing" x={-half - 4} y={-half - 4} width={STAMP_PX + 8} height={STAMP_PX + 8} fill="none" />
+                    <rect className="dg-ring" x={-half - 4} y={-half - 4} width={STAMP_PX + 8} height={STAMP_PX + 8} fill="none" />
+                    <rect x={-half} y={-half} width={STAMP_PX} height={STAMP_PX} fill="var(--wine-deep)" stroke={group.color} strokeWidth="1.6" />
+                    <text
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fontSize="19"
+                      fill={group.color}
+                      style={{ fontFamily: 'var(--font-stencil)', fontWeight: 800 }}
+                    >
+                      {group.marker}
+                    </text>
+                  </g>
+                </g>
+              )
+            }),
+          )}
         </svg>
       </div>
 
       {REGIONS.length > 0 && (
-        <div className="mt-2 flex min-h-11 flex-wrap items-center justify-center gap-x-3 text-sm text-muted">
+        <div className="mt-2 flex min-h-6 flex-wrap items-center justify-center gap-x-3 text-xs text-muted">
           {active ? (
             <>
               <button
                 ref={wholeRef}
                 type="button"
                 onClick={zoomOut}
-                className="min-h-11 rounded-lg border border-line bg-surface px-4 font-semibold text-amber transition-colors hover:border-amber"
+                className="min-h-11 border-[1.5px] border-gold px-4 text-sm text-gold transition-colors hover:bg-wine-deep"
               >
                 Whole state
               </button>

@@ -25,10 +25,10 @@ export default function SiteFooter() {
     'Built by Peachy Kean DevOps, LLC',
   ].filter(Boolean)
   return (
-    <footer className="mt-16 border-t border-line bg-raised">
-      <div className="mx-auto max-w-5xl px-4 py-8 text-center text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-        <p className="leading-relaxed">{parts.join(' · ')}</p>
-        <div className="mt-3 space-y-1.5 font-normal normal-case leading-relaxed tracking-normal">
+    <footer className="mx-auto mt-12 max-w-5xl px-4 pb-8">
+      <div className="dg-ruled pt-5 text-center text-[11px] text-muted">
+        <p className="leading-relaxed tracking-[0.08em] uppercase">{parts.join(' · ')}</p>
+        <div className="mt-3 space-y-1.5 leading-relaxed">
           {MAP.trademarks?.map((t) => <p key={t.term}>{t.notice}</p>)}
           {MAP.credits.map((c) => (
             <p key={c}>{c}</p>

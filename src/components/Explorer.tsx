@@ -10,23 +10,36 @@ import { MAP, type Stop } from '@/data/types'
 import {
   ALL_GROUP_IDS,
   ALL_REGIONS,
+  ALL_TRAILS,
+  BRANDS,
+  DEFAULT_SHOW,
   GROUPS,
+  SHOW_OPTIONS,
   brandsAt,
   groupOf,
   notifyUrl,
+  ownershipLine,
   parseGroups,
   parseRegion,
+  parseShow,
+  parseTrail,
   readSearch,
   subscribeToUrl,
   toggleGroup,
   writeGroups,
   writeRegion,
+  writeShow,
+  writeTrail,
+  type Show,
 } from '@/lib/groups'
 import type { MapLayout } from '@/lib/map-layout'
 import { withMarks } from '@/lib/trademarks'
 
-const FOCUS_TARGET = 'min-h-11 rounded-lg px-4 text-sm font-semibold'
-const PILL = 'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold'
+const PILL = 'inline-flex items-center border border-gold/60 px-2 py-0.5 text-xs text-cream'
+const TEXT_BUTTON = 'min-h-11 border-[1.5px] border-gold px-4 text-sm text-gold transition-colors hover:bg-wine-deep'
+const EMPTY_MESSAGE = 'Distilleries are being added and verified.'
+const NO_INDEPENDENTS = 'Independent distilleries are being added and verified.'
+const DEFINITION = 'Majors are the groups shown in this guide. Independents are every other distillery.'
 
 function formatDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number)
@@ -39,210 +52,185 @@ function formatDate(iso: string): string {
   })
 }
 
-const EMPTY_MESSAGE = 'Distilleries are being added and verified.'
-
-function TrailPills({ d }: { d: Stop }) {
-  return (
-    <>
-      {d.trails.map((t) => (
-        <span key={t} className={`${PILL} border-amber/60 text-amber`}>
-          {withMarks(t)}
-        </span>
-      ))}
-    </>
-  )
-}
-
-function Badges({ d }: { d: Stop }) {
-  return (
-    <span className="flex flex-wrap items-center gap-2">
-      <TrailPills d={d} />
-      {d.status === 'open' && (
-        <span className={`${PILL} border-line text-text`}>
-          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-amber" />
-          Open
-        </span>
-      )}
-      {d.toursByAppointment && <span className={`${PILL} border-accent text-accent-ink`}>Tours by appointment</span>}
-    </span>
-  )
-}
-
-function GroupLine({ d }: { d: Stop }) {
-  const group = groupOf(d)
-  if (!group) return null
-  return (
-    <span className="mt-2 flex items-center gap-2 text-sm text-muted">
-      <GroupMark group={group} size="sm" />
-      Part of {group.name}
-      {group.shortName !== group.name && ` (${group.shortName})`}
-    </span>
-  )
-}
-
 const directionsUrl = (d: Stop) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${d.name}, ${d.address}`)}`
 
-const CARD_LINK =
-  'inline-flex min-h-11 items-center rounded-lg border border-line px-4 text-sm font-semibold text-accent-ink transition-colors hover:border-accent'
+const ROW_LINK = 'inline-flex min-h-11 items-center border border-gold px-4 text-sm text-gold transition-colors hover:bg-wine-deep'
 const NEW_TAB = <span className="sr-only"> (opens in a new tab)</span>
 
-// Shown under the card's button when it is expanded. Links can't sit inside a button, so this is its sibling.
-function CardDetails({ d, onMap, onShowOnMap }: { d: Stop; onMap: boolean; onShowOnMap: () => void }) {
+// Shown under the row's button when it is expanded. Links can't sit inside a button, so this is its sibling.
+function RowDetails({ d, onMap, onShowOnMap }: { d: Stop; onMap: boolean; onShowOnMap: () => void }) {
   const brands = brandsAt(d.id)
   return (
-    <div id={`card-${d.id}-details`} className="space-y-3 border-t border-line px-4 pt-3 pb-4 text-sm">
-      {d.blurb && <p className="text-text">{d.blurb}</p>}
-      {d.address && <p className="text-text">{d.address}</p>}
+    <div id={`card-${d.id}-details`} className="space-y-3 pt-1 pb-4 pl-9 text-sm">
+      {d.blurb && <p>{d.blurb}</p>}
+      {d.address && <p>{d.address}</p>}
       {d.hoursNote && <p className="text-muted">{d.hoursNote}</p>}
+      <ul aria-label={`About ${d.name}`} className="flex flex-wrap gap-1.5">
+        {d.status === 'open' && <li className={PILL}>Open</li>}
+        {d.toursByAppointment && <li className={PILL}>Tours by appointment</li>}
+        {d.trails.map((t) => (
+          <li key={t} className={PILL}>
+            {withMarks(t)}
+          </li>
+        ))}
+      </ul>
       {brands.length > 0 && <BrandPills brands={brands} label={`Brands at ${d.name}`} />}
       <div className="flex flex-wrap items-center gap-2">
         {onMap ? (
-          <button
-            type="button"
-            onClick={onShowOnMap}
-            className="min-h-11 rounded-lg bg-accent px-4 text-sm font-semibold text-text transition-colors hover:bg-accent/80"
-          >
+          <button type="button" onClick={onShowOnMap} className="min-h-11 bg-gold px-4 text-sm font-semibold text-wine transition-colors hover:bg-cream">
             Show on map
           </button>
         ) : (
           <p className="flex min-h-11 items-center pr-2 text-muted">Not on the map yet</p>
         )}
         {d.address && (
-          <a href={directionsUrl(d)} target="_blank" rel="noopener" className={CARD_LINK}>
+          <a href={directionsUrl(d)} target="_blank" rel="noopener" className={ROW_LINK}>
             Directions{NEW_TAB}
           </a>
         )}
         {d.website && (
-          <a href={d.website} target="_blank" rel="noopener" className={CARD_LINK}>
+          <a href={d.website} target="_blank" rel="noopener" className={ROW_LINK}>
             Website{NEW_TAB}
           </a>
         )}
         {d.phone && (
-          <a href={`tel:${d.phone.replace(/[^\d+]/g, '')}`} className={`${CARD_LINK} tabular`}>
+          <a href={`tel:${d.phone.replace(/[^\d+]/g, '')}`} className={`${ROW_LINK} tabular`}>
             {d.phone}
           </a>
         )}
       </div>
-      {d.verifiedOn && (
+      {d.verifiedOn ? (
         <p className="flex flex-wrap items-center gap-x-1 text-xs text-muted">
           <span>Last verified: {formatDate(d.verifiedOn)}</span>
           {d.sourceUrl && (
             <>
               <span aria-hidden="true">·</span>
-              <a
-                href={d.sourceUrl}
-                target="_blank"
-                rel="noopener"
-                className="inline-flex min-h-11 items-center px-1 text-accent-ink underline underline-offset-2"
-              >
+              <a href={d.sourceUrl} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center px-1 text-gold underline underline-offset-2">
                 Source{NEW_TAB}
               </a>
             </>
           )}
         </p>
+      ) : (
+        <p className="text-xs text-muted">Details not yet verified</p>
       )}
     </div>
   )
 }
 
-function Card({
+function Row({
   d,
+  number,
+  brandNote,
   onMap,
   isExpanded,
+  isHighlighted,
   onToggle,
   onShowOnMap,
 }: {
   d: Stop
+  number: number
+  brandNote: string | null
   onMap: boolean
   isExpanded: boolean
+  isHighlighted: boolean
   onToggle: () => void
   onShowOnMap: () => void
 }) {
-  const color = groupOf(d)?.color
-  // Hover and focus styles belong to the button alone: nothing else in a card should look clickable.
+  const group = groupOf(d)
+  const city = d.city ?? 'Location not yet verified'
+  const owner =
+    d.scale === 'major' && group ? ownershipLine(group) : ['Independent', ...d.trails.map(withMarks)].join(' · ')
   return (
-    <li
-      id={`card-${d.id}`}
-      className="scroll-mt-4 rounded-xl border border-l-4 border-line bg-surface"
-      style={{ borderLeftColor: isExpanded ? (color ?? 'var(--amber)') : 'transparent' }}
-    >
+    <li id={`card-${d.id}`} data-highlighted={isHighlighted || undefined} className="dg-row scroll-mt-4">
       <button
         id={`card-${d.id}-button`}
         type="button"
         aria-expanded={isExpanded}
         aria-controls={isExpanded ? `card-${d.id}-details` : undefined}
         onClick={onToggle}
-        className="flex min-h-11 w-full items-start justify-between gap-3 rounded-[inherit] p-4 text-left transition-colors hover:bg-raised focus-visible:bg-raised"
+        className="flex min-h-11 w-full items-center gap-3 py-3 text-left transition-colors hover:bg-wine-deep/50"
       >
-        <span className="min-w-0">
-          <Badges d={d} />
-          <span className="mt-2 block font-display text-xl leading-snug font-semibold">{d.name}</span>
-          <span className="mt-0.5 block text-sm text-muted">{d.city ?? 'Location not yet verified'}</span>
-          <GroupLine d={d} />
-          {((!onMap && !isExpanded) || !d.verifiedOn) && (
-            <span className="mt-2 block text-xs text-muted">
-              {[!onMap && !isExpanded ? 'Not on the map yet' : null, !d.verifiedOn ? 'Details not yet verified' : null]
-                .filter(Boolean)
-                .join(' · ')}
-            </span>
-          )}
+        <span aria-hidden="true" className="flex w-6 shrink-0 justify-center">
+          {group ? <GroupMark group={group} /> : <span className="dg-dot" />}
         </span>
-        <Chevron className={`mt-1 ${isExpanded ? 'rotate-180' : ''}`} />
+        <span className="min-w-0 flex-1">
+          <span className="block font-serif text-lg leading-snug font-semibold">{d.name}</span>
+          <span className="mt-0.5 block text-[10px] leading-snug text-muted">
+            {city} · {owner}
+          </span>
+          {brandNote && <span className="mt-0.5 block text-[10px] leading-snug text-gold">Brand: {brandNote}</span>}
+        </span>
+        <span className="tabular shrink-0 pl-2 text-xs text-muted">{String(number).padStart(2, '0')}</span>
       </button>
-      {isExpanded && <CardDetails d={d} onMap={onMap} onShowOnMap={onShowOnMap} />}
+      {isExpanded && <RowDetails d={d} onMap={onMap} onShowOnMap={onShowOnMap} />}
     </li>
   )
 }
 
-function DetailPanel({ d, onClose }: { d: Stop; onClose: () => void }) {
-  const showSite = d.website && d.verifiedOn
+// A native select's text can't wrap, so the visible label is a span and the real select sits over it, invisible.
+function SelectControl({
+  label,
+  value,
+  allValue,
+  allOption,
+  options,
+  onChange,
+  className = '',
+}: {
+  label: string
+  value: string
+  allValue: string
+  allOption: string
+  options: { id: string; label: string }[]
+  onChange: (id: string) => void
+  className?: string
+}) {
   return (
-    <div
-      id="map-panel"
-      role="region"
-      aria-label={`Details for ${d.name}`}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') onClose()
-      }}
-      className="mt-3 rounded-xl border border-line border-l-4 border-l-amber bg-surface p-4"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="font-display text-2xl leading-tight font-semibold">{d.name}</h2>
-          <p className="mt-1 text-sm text-muted">{d.city ?? 'Location not yet verified'}</p>
-          <GroupLine d={d} />
-        </div>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={`Close details for ${d.name}`}
-          className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg border border-line text-xl leading-none text-text hover:border-accent"
-        >
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <ul className="mt-3 space-y-1 text-sm">
-        {d.trails.map((t) => (
-          <li key={t} className="text-amber">
-            {withMarks(t)}
-          </li>
+    <label className={`relative block min-w-0 ${className}`}>
+      <span className="sr-only">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={`peer absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0 ${FIELD_TEXT}`}
+      >
+        <option value={allValue}>{allOption}</option>
+        {options.map((o) => (
+          <option key={o.id} value={o.id}>
+            {o.label}
+          </option>
         ))}
-        {d.toursByAppointment && <li className="text-accent-ink">Tours by appointment</li>}
-        <li className="text-muted">
-          {d.verifiedOn ? `Last verified: ${formatDate(d.verifiedOn)}` : 'Details not yet verified'}
-        </li>
-      </ul>
-      {showSite && (
-        <a
-          href={d.website!}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex min-h-11 items-center rounded-lg border border-accent px-4 text-sm font-semibold text-accent-ink hover:bg-accent hover:text-text"
-        >
-          Visit website<span className="sr-only"> (opens in a new tab)</span>
-        </a>
-      )}
+      </select>
+      <span
+        aria-hidden="true"
+        className={`${CONTROL} flex h-full items-center justify-between gap-1.5 text-sm leading-tight peer-hover:bg-wine-deep peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gold`}
+      >
+        <span className="min-w-0">{options.find((o) => o.id === value)?.label ?? label}</span>
+        <Chevron />
+      </span>
+    </label>
+  )
+}
+
+function LayerSwitch({ show, onChange }: { show: Show; onChange: (next: Show) => void }) {
+  return (
+    <div role="radiogroup" aria-label="Which distilleries to show" className="grid grid-cols-3 border-[1.5px] border-gold">
+      {SHOW_OPTIONS.map((o) => (
+        <label key={o.id} className="relative block min-w-0 cursor-pointer">
+          <input
+            type="radio"
+            name="show"
+            value={o.id}
+            checked={show === o.id}
+            onChange={() => onChange(o.id)}
+            className="peer absolute inset-0 h-full w-full cursor-pointer appearance-none"
+          />
+          <span className="flex min-h-11 items-center justify-center text-xs text-cream transition-colors peer-checked:bg-gold peer-checked:font-semibold peer-checked:text-wine peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gold sm:text-sm">
+            {o.label}
+          </span>
+        </label>
+      ))}
     </div>
   )
 }
@@ -256,11 +244,17 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
   // A scroll to run once the page has rendered the change that asked for it. Always a new object, so repeating one works.
   const [jump, setJump] = useState<{ to: 'map' | 'card'; id: string } | null>(null)
   const mapRef = useRef<HTMLDivElement>(null)
-  // Ownership groups and the region live in the URL (?groups=, ?region=), so links are shareable. The static HTML renders all
-  // groups (server snapshot); the client then reads the real address bar.
+  // The view, groups, region and trail live in the URL, so links are shareable. The static HTML renders the defaults
+  // (server snapshot); the client then reads the real address bar.
   const search = useSyncExternalStore(subscribeToUrl, readSearch, () => '')
+  const show = useMemo(() => parseShow(search), [search])
   const groups = useMemo(() => parseGroups(search), [search])
   const region = useMemo(() => parseRegion(search), [search])
+  const trailParam = useMemo(() => parseTrail(search), [search])
+  const setShow = (next: Show) => {
+    writeShow(next)
+    notifyUrl()
+  }
   const setGroups = (next: string[]) => {
     writeGroups(next)
     notifyUrl()
@@ -270,20 +264,48 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
     writeRegion(id)
     notifyUrl()
   }
+  const setTrail = (id: string) => {
+    writeTrail(id)
+    notifyUrl()
+  }
 
-  const total = entries.length
+  // The stops in the current view, before any filter. The stats line and "of N" count these.
+  const layer = useMemo(
+    () => (show === 'all' ? entries : entries.filter((d) => (show === 'majors' ? d.scale === 'major' : d.scale === 'independent'))),
+    [entries, show],
+  )
+  const hasMajors = layer.some((d) => d.scale === 'major')
+  const verified = layer.filter((d) => d.verifiedOn !== null).length
+  const groupsInView = new Set(layer.map((d) => d.groupId).filter(Boolean)).size
+  const showGroups = show !== 'independents'
+  const trailOptions = useMemo(
+    () => (show === 'majors' ? [] : [...new Set(layer.flatMap((d) => d.trails))].sort((a, b) => a.localeCompare(b))),
+    [layer, show],
+  )
+  const trail = trailOptions.includes(trailParam) ? trailParam : ALL_TRAILS
   const allGroups = groups.length === ALL_GROUP_IDS.length
 
-  // Everything the group and search filters allow, before the region narrows it.
+  // For each stop, the brands a search hit. Only brands tied to a stop can lead to one.
+  const q = query.trim().toLowerCase()
+  const brandHits = useMemo(() => {
+    const hits = new Map<string, string[]>()
+    if (!q) return hits
+    for (const b of BRANDS) {
+      if (b.stopId && b.name.toLowerCase().includes(q)) hits.set(b.stopId, [...(hits.get(b.stopId) ?? []), b.name])
+    }
+    return hits
+  }, [q])
+
+  // Everything the group, trail and search filters allow, before the region narrows it.
   const inScope = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    return entries.filter((d) => {
-      // Independents (no group) show only while every group is on.
-      if (!allGroups && (d.groupId === null || !groups.includes(d.groupId))) return false
-      if (q && !d.name.toLowerCase().includes(q)) return false
+    return layer.filter((d) => {
+      // Groups apply to Majors only: an independent has no group to filter by.
+      if (d.scale === 'major' && (d.groupId === null || !groups.includes(d.groupId))) return false
+      if (trail !== ALL_TRAILS && !d.trails.includes(trail)) return false
+      if (q && !d.name.toLowerCase().includes(q) && !(d.city ?? '').toLowerCase().includes(q) && !brandHits.has(d.id)) return false
       return true
     })
-  }, [entries, query, groups, allGroups])
+  }, [layer, groups, trail, q, brandHits])
   const regionCounts = useMemo(() => {
     const counts: Record<string, number> = {}
     for (const d of inScope) if (d.region) counts[d.region] = (counts[d.region] ?? 0) + 1
@@ -299,22 +321,21 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
 
   const pinIds = useMemo(() => new Set(layout.pins.map((p) => p.id)), [layout])
   const mapped = useMemo(() => visible.filter((d) => pinIds.has(d.id)), [visible, pinIds])
-  // A selection or an open card only counts while its entry is still shown.
+  // A selection or an open row only counts while its entry is still shown.
   const selected = visible.find((d) => d.id === selectedId && pinIds.has(d.id)) ?? null
   const expanded = visible.find((d) => d.id === expandedId)?.id ?? null
-  const filtersActive = query.trim() !== '' || region !== ALL_REGIONS || !allGroups
+  const filtersActive = q !== '' || region !== ALL_REGIONS || (showGroups && !allGroups) || trail !== ALL_TRAILS
   const selectedGroups = GROUPS.filter((g) => groups.includes(g.id))
 
   const reset = () => {
     setQuery('')
     setRegion(ALL_REGIONS)
     setGroups(ALL_GROUP_IDS)
+    setTrail(ALL_TRAILS)
   }
 
-  const closePanel = () => setSelectedId(null)
-
-  // The open card and the selected pin stay linked: leaving a card also clears its pin and panel.
-  function toggleCard(id: string) {
+  // The open row and the selected pin stay linked: leaving a row also clears its pin.
+  function toggleRow(id: string) {
     const opening = expanded !== id
     setExpandedId(opening ? id : null)
     if (selected?.id !== id || !opening) setSelectedId(null)
@@ -341,18 +362,20 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
       mapRef.current?.querySelector<SVGGElement>(`[data-pin="${jump.id}"]`)?.focus({ preventScroll: true })
     } else {
       document.getElementById(`card-${jump.id}`)?.scrollIntoView({ behavior, block: 'start' })
+      // The row is now the thing in view, so keyboard users continue from there.
+      document.getElementById(`card-${jump.id}-button`)?.focus({ preventScroll: true })
     }
   }, [jump])
 
-  // Escape collapses the open card and leaves focus on it. Only from the card, its pin or nowhere in particular:
-  // the groups menu and the pin's panel have their own Escape, and a search field should keep its focus.
+  // Escape collapses the open row and leaves focus on it. Only from the row, its pin or nowhere in particular:
+  // the groups menu has its own Escape, and a search field should keep its focus.
   useEffect(() => {
     if (!expanded) return
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
-      const card = document.getElementById(`card-${expanded}`)
+      const row = document.getElementById(`card-${expanded}`)
       const target = e.target instanceof Element ? e.target : null
-      if (target && target !== document.body && !card?.contains(target) && !target.closest('.dg-pin')) return
+      if (target && target !== document.body && !row?.contains(target) && !target.closest('.dg-pin')) return
       setExpandedId(null)
       setSelectedId(null)
       document.getElementById(`card-${expanded}-button`)?.focus()
@@ -361,21 +384,43 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [expanded])
 
-  const cards = (list: Stop[]) =>
-    list.map((d) => (
-      <Card
-        key={d.id}
-        d={d}
-        onMap={pinIds.has(d.id)}
-        isExpanded={expanded === d.id}
-        onToggle={() => toggleCard(d.id)}
-        onShowOnMap={() => showOnMap(d)}
-      />
-    ))
+  const trailControl = trailOptions.length > 0 && (
+    <SelectControl
+      label="Trail"
+      value={trail}
+      allValue={ALL_TRAILS}
+      allOption="All trails"
+      options={trailOptions.map((t) => ({ id: t, label: withMarks(t) }))}
+      onChange={setTrail}
+    />
+  )
+  const groupsControl = (
+    <GroupsDropdown selected={groups} onToggle={(id) => setGroups(toggleGroup(groups, id))} onAll={() => setGroups(ALL_GROUP_IDS)} />
+  )
+  // Region spans the row when it has no partner. In All view Groups is a third control on its own full-width row on
+  // phones, and shares one row with the others on wider screens.
+  const regionSpans = show === 'independents' && trailOptions.length === 0
+  const threeControls = show === 'all' && trailOptions.length > 0
+  const regionControl = (
+    <SelectControl
+      label="Region"
+      value={region}
+      allValue={ALL_REGIONS}
+      allOption="All regions"
+      options={MAP.regions}
+      onChange={setRegion}
+      className={regionSpans ? 'col-span-2' : ''}
+    />
+  )
 
   return (
     <div>
-      <div ref={mapRef} className="scroll-mt-4">
+      <p className="tabular text-center text-xs text-muted">
+        {layer.length} in view · {verified} verified
+        {hasMajors && ` · ${groupsInView} ${groupsInView === 1 ? 'group' : 'groups'}`}
+      </p>
+
+      <div ref={mapRef} className="mt-6 scroll-mt-4">
         <StateMap
           layout={layout}
           entries={mapped}
@@ -387,96 +432,106 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
           animate={regionTouched}
         />
       </div>
-      <MapKey showTours={entries.some((d) => d.toursByAppointment && pinIds.has(d.id))} />
-      {selected && <DetailPanel d={selected} onClose={closePanel} />}
-      {total > 0 && mapped.length === 0 && (
-        <p className="mt-3 text-sm text-muted">
+      {show !== 'independents' && <MapKey showIndependents={show === 'all' && layer.some((d) => d.scale === 'independent')} />}
+      {layer.length > 0 && mapped.length === 0 && (
+        <p className="mt-3 text-center text-xs text-muted">
           {layout.pins.length === 0 || !filtersActive
             ? 'No distilleries are on the map yet. Every distillery is in the list below.'
             : 'Nothing to show on the map for these filters.'}
         </p>
       )}
-
-      <div className="mt-6">
+      <div className="mt-3">
         <Notice21 quiet />
       </div>
 
-      <section aria-labelledby="filters-heading" className="mt-10">
+      <section aria-labelledby="filters-heading" className="mt-6">
         <h2 id="filters-heading" className="sr-only">
           Find a distillery
         </h2>
-        {total > 0 && (
-          <>
-            <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-2 rounded-xl border border-line bg-surface p-2 md:grid-cols-[minmax(0,1fr)_13rem_19rem]">
-              <label className="col-span-2 md:col-span-1">
-                <span className="sr-only">Search by name</span>
+        <LayerSwitch show={show} onChange={setShow} />
+        <p className="mt-2 text-[11px] leading-snug text-muted">{DEFINITION}</p>
+
+        {entries.length > 0 && (
+          <div className="mt-4 space-y-2">
+            {layer.length > 0 && (
+              <label className="block">
+                <span className="sr-only">Find a brand or distillery</span>
                 <input
                   type="search"
-                  placeholder="Search by name"
+                  placeholder="Find a brand or distillery"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className={`${CONTROL} ${FIELD_TEXT}`}
                 />
               </label>
-              {/* A native select's text can't wrap, so the visible label is a span and the real select sits over it, invisible. */}
-              <label className="relative block min-w-0">
-                <span className="sr-only">Region</span>
-                <select
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                  className={`peer absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0 ${FIELD_TEXT}`}
-                >
-                  <option value={ALL_REGIONS}>Region: All</option>
-                  {MAP.regions.map((r) => (
-                    <option key={r.id} value={r.id}>
-                      {r.label}
-                    </option>
-                  ))}
-                </select>
-                <span
-                  aria-hidden="true"
-                  className={`${CONTROL} ${FIELD_TEXT} flex h-full items-center justify-between gap-1.5 leading-tight max-md:px-2.5 peer-hover:border-amber peer-focus-visible:border-amber peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-amber`}
-                >
-                  <span className="min-w-0">{MAP.regions.find((r) => r.id === region)?.label ?? 'Region: All'}</span>
-                  <Chevron />
-                </span>
-              </label>
-              <GroupsDropdown
-                selected={groups}
-                onToggle={(id) => setGroups(toggleGroup(groups, id))}
-                onAll={() => setGroups(ALL_GROUP_IDS)}
-              />
+            )}
+            <div className={`grid grid-cols-2 gap-2 ${threeControls ? 'md:grid-cols-3' : ''}`}>
+              {show === 'majors' ? (
+                <>
+                  {groupsControl}
+                  {regionControl}
+                </>
+              ) : (
+                <>
+                  {regionControl}
+                  {trailControl}
+                  {show === 'all' && <div className={threeControls ? 'col-span-2 md:col-span-1' : ''}>{groupsControl}</div>}
+                </>
+              )}
             </div>
             {filtersActive && (
-              <div className="mt-3 flex flex-wrap items-center gap-4">
-                <button type="button" onClick={reset} className={`${FOCUS_TARGET} border border-line bg-surface text-amber hover:border-amber`}>
+              <div className="flex flex-wrap items-center gap-4 pt-1">
+                <button type="button" onClick={reset} className={TEXT_BUTTON}>
                   Reset
                 </button>
-                <p role="status" className="text-sm text-muted">
-                  Showing {visible.length} of {total}
+                <p role="status" className="text-xs text-muted">
+                  Showing {visible.length} of {layer.length}
                 </p>
               </div>
             )}
-          </>
+          </div>
         )}
-        {selectedGroups.length === 1 && <GroupPanel group={selectedGroups[0]} entries={entries} />}
-        {selectedGroups.length > 1 && !allGroups && <GroupCompare groups={selectedGroups} entries={entries} />}
-        {total === 0 ? (
-          <div role="status" className="mt-6 rounded-xl border border-line bg-surface p-6 text-center">
-            <p className="font-display text-xl font-semibold">{EMPTY_MESSAGE}</p>
+
+        {showGroups && selectedGroups.length === 1 && <GroupPanel group={selectedGroups[0]} entries={entries} />}
+        {showGroups && selectedGroups.length > 1 && !allGroups && <GroupCompare groups={selectedGroups} entries={entries} />}
+
+        {entries.length === 0 || layer.length === 0 ? (
+          <div role="status" className="dg-ruled mt-8 py-6 text-center">
+            <p className="font-serif text-xl font-semibold">{entries.length === 0 ? EMPTY_MESSAGE : NO_INDEPENDENTS}</p>
           </div>
         ) : (
           <>
-            <h2 className="mt-10 font-display text-3xl font-semibold tracking-tight">All distilleries</h2>
+            <h2 className="mt-8 text-xs tracking-[0.2em] text-gold uppercase">
+              {SHOW_OPTIONS.find((o) => o.id === show)?.heading ?? SHOW_OPTIONS.find((o) => o.id === DEFAULT_SHOW)?.heading}
+            </h2>
             {visible.length === 0 ? (
-              <div className="mt-6 rounded-xl border border-line bg-surface p-6 text-center">
-                <p className="font-display text-xl font-semibold">No distilleries match</p>
-                <button type="button" onClick={reset} className={`${FOCUS_TARGET} mt-3 bg-accent text-text`}>
+              <div className="dg-ruled mt-2 py-6 text-center">
+                <p className="font-serif text-xl font-semibold">No distilleries match</p>
+                <button type="button" onClick={reset} className={`${TEXT_BUTTON} mt-3`}>
                   Reset
                 </button>
               </div>
             ) : (
-              <ul className="mt-6 grid items-start gap-3 md:grid-cols-2">{cards(visible)}</ul>
+              <ul className="dg-ruled mt-2">
+                {visible.map((d, i) => {
+                  const hits = brandHits.get(d.id)
+                  // A brand named after its distillery needs no note: the row already matched by name.
+                  const brandNote = hits && !d.name.toLowerCase().includes(q) ? hits.join(', ') : null
+                  return (
+                    <Row
+                      key={d.id}
+                      d={d}
+                      number={i + 1}
+                      brandNote={brandNote}
+                      onMap={pinIds.has(d.id)}
+                      isExpanded={expanded === d.id}
+                      isHighlighted={selected?.id === d.id}
+                      onToggle={() => toggleRow(d.id)}
+                      onShowOnMap={() => showOnMap(d)}
+                    />
+                  )
+                })}
+              </ul>
             )}
           </>
         )}

@@ -6,6 +6,7 @@ import { join } from 'node:path'
 import type { Brand, City, Group, Stop } from '../src/data/types'
 import { MAP } from '../src/data/types'
 import { computeRegions, regionProblems, type RegionArea } from '../src/lib/regions'
+import { contrast, readTokens, textPairs } from './contrast'
 
 const read = <T>(file: string) => JSON.parse(readFileSync(join(process.cwd(), file), 'utf8')) as T
 
@@ -26,19 +27,11 @@ const warnings: string[] = []
 
 const blank = (v: unknown) => typeof v !== 'string' || v.trim() === ''
 const BOX = outline.bounds
-// WCAG relative-luminance contrast, for group colours against the dark surfaces they sit on
-// (--bg for pins, --surface and --raised for chips, cards and panels). Keep in sync with globals.css.
-const SURFACES = { '--bg': '#0f0d0b', '--surface': '#1a1613', '--raised': '#231d18' }
-function luminance(hex: string): number {
-  const [r, g, b] = [1, 3, 5].map((i) => {
-    const c = parseInt(hex.slice(i, i + 2), 16) / 255
-    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
-  })
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b
-}
-function contrast(a: string, b: string): number {
-  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x)
-  return (hi + 0.05) / (lo + 0.05)
+// The tokens are defined once, in globals.css; every text pair in use must pass AA (npm run check:contrast prints them).
+const TOKENS = readTokens()
+for (const p of textPairs(TOKENS)) {
+  const c = contrast(p.fg, p.bg)
+  if (c < 4.5) errors.push(`contrast: ${p.name} is ${c.toFixed(2)}:1; AA needs 4.5:1`)
 }
 // Shared source rule: an https sourceUrl is required once verifiedOn is set.
 function checkSource(at: string, rec: { sourceUrl: string | null; verifiedOn: string | null }) {
@@ -58,6 +51,7 @@ if (!/^[A-Z]{2}$/.test(MAP.state)) errors.push('map.json: state must be a 2-lett
 if (!/^\d{2}$/.test(MAP.fips)) errors.push('map.json: fips must be 2 digits')
 if (outline.fips !== MAP.fips) errors.push('outline.json was built for another state: run npm run build:outline')
 if (!HEX.test(MAP.accent)) errors.push('map.json: accent must be #rrggbb')
+if (MAP.accent.toLowerCase() !== TOKENS['--wine'].toLowerCase()) errors.push('map.json: accent must equal --wine in globals.css (icons and theme colour read it)')
 if (!Array.isArray(MAP.credits) || MAP.credits.some(blank)) errors.push('map.json: credits must be non-empty strings')
 const regionIds = new Set<string>()
 for (const r of MAP.regions) {
@@ -93,11 +87,12 @@ for (const g of groups) {
   else markers.add(g.marker)
   if (!HEX.test(g.color)) errors.push(`${at}: color must be #rrggbb`)
   else
-    for (const [name, hex] of Object.entries(SURFACES)) {
-      const c = contrast(g.color, hex)
-      if (c < 4.5) errors.push(`${at}: color ${g.color} is ${c.toFixed(2)}:1 on ${name}; AA needs 4.5:1`)
-    }
+    if (contrast(g.color, TOKENS['--wine-deep']) < 4.5)
+      errors.push(`${at}: color ${g.color} is ${contrast(g.color, TOKENS['--wine-deep']).toFixed(2)}:1 on --wine-deep; AA needs 4.5:1`)
   if (g.website !== null && !g.website.startsWith('https://')) errors.push(`${at}: website must be https`)
+  if (g.ownership !== null && (blank(g.ownership) || blank(g.ownershipSourceUrl) || !g.ownershipSourceUrl!.startsWith('https://')))
+    errors.push(`${at}: ownership needs an https ownershipSourceUrl`)
+  if (g.ownership === null && g.ownershipSourceUrl !== null) errors.push(`${at}: ownershipSourceUrl without ownership`)
   checkSource(at, g)
   if (g.verifiedOn === null) warnings.push(`${at}: not verified`)
 }
@@ -116,6 +111,9 @@ data.forEach((d, i) => {
   if (d.state !== MAP.state) errors.push(`${at}: state must be "${MAP.state}" (got "${d.state}")`)
   if (d.groupId === undefined) errors.push(`${at}: groupId is required (null for independents)`)
   else if (d.groupId !== null && !groupIds.has(d.groupId)) errors.push(`${at}: unknown groupId "${d.groupId}"`)
+  if (d.scale !== 'major' && d.scale !== 'independent') errors.push(`${at}: scale must be major or independent (got "${d.scale}")`)
+  if (d.scale === 'major' && d.groupId === null) errors.push(`${at}: scale major requires a groupId`)
+  if (d.scale === 'independent' && d.groupId !== null) errors.push(`${at}: scale independent requires groupId null`)
   if (blank(d.name)) errors.push(`${at}: missing name`)
   if (blank(d.sourceNote)) errors.push(`${at}: missing sourceNote`)
   if (!STATUSES.includes(d.status)) errors.push(`${at}: status must be open, closed or unknown (got "${d.status}")`)

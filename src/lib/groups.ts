@@ -1,4 +1,4 @@
-// Ownership groups and brands, plus the group and region selections kept in the URL (?groups=a,b&region=x).
+// Ownership groups and brands, plus the selections kept in the URL (?show=all&groups=a,b&region=x&trail=y).
 // Pure helpers; the selection itself is client-side state in Explorer.
 import brandsData from '@/data/brands.json'
 import groupsData from '@/data/groups.json'
@@ -13,6 +13,9 @@ export const groupOf = (d: Stop): Group | null => (d.groupId ? (BY_ID.get(d.grou
 
 export const brandsAt = (stopId: string): Brand[] => BRANDS.filter((b) => b.stopId === stopId)
 export const brandsOf = (groupId: string): Brand[] => BRANDS.filter((b) => b.groupId === groupId)
+
+// What a Major's row says about its owner: only what the group's own site states, else its name.
+export const ownershipLine = (g: Group): string => g.ownership ?? `Part of ${g.name}`
 
 export const URL_PARAM = 'groups'
 
@@ -50,6 +53,45 @@ export function parseRegion(search: string): string {
 
 export function writeRegion(id: string): void {
   writeParam(REGION_PARAM, id === ALL_REGIONS ? null : id)
+}
+
+export type Show = 'majors' | 'independents' | 'all'
+export const DEFAULT_SHOW: Show = 'majors'
+export const SHOW_PARAM = 'show'
+export const SHOW_OPTIONS: { id: Show; label: string; heading: string }[] = [
+  { id: 'majors', label: 'Majors', heading: 'Majors' },
+  { id: 'independents', label: 'Independents', heading: 'Independents' },
+  { id: 'all', label: 'All', heading: 'All distilleries' },
+]
+
+// Reads ?show= from a query string. Unknown values fall back to the default view.
+export function parseShow(search: string): Show {
+  try {
+    const raw = new URLSearchParams(search).get(SHOW_PARAM)
+    return SHOW_OPTIONS.find((o) => o.id === raw)?.id ?? DEFAULT_SHOW
+  } catch {
+    return DEFAULT_SHOW
+  }
+}
+
+export function writeShow(show: Show): void {
+  writeParam(SHOW_PARAM, show === DEFAULT_SHOW ? null : show)
+}
+
+export const TRAIL_PARAM = 'trail'
+export const ALL_TRAILS = 'all'
+
+// Reads ?trail= from a query string. The Explorer ignores a value that isn't among the current view's trails.
+export function parseTrail(search: string): string {
+  try {
+    return new URLSearchParams(search).get(TRAIL_PARAM) ?? ALL_TRAILS
+  } catch {
+    return ALL_TRAILS
+  }
+}
+
+export function writeTrail(trail: string): void {
+  writeParam(TRAIL_PARAM, trail === ALL_TRAILS ? null : trail)
 }
 
 function writeParam(name: string, value: string | null): void {

@@ -1,28 +1,29 @@
 import type { Metadata, Viewport } from 'next'
+import '@fontsource/big-shoulders-stencil-display/800'
+import '@fontsource/fraunces/600'
+import '@fontsource/ibm-plex-mono/500'
+import '@fontsource/ibm-plex-mono/600'
 import SiteFooter from '@/components/SiteFooter'
-import TopBar from '@/components/TopBar'
 import { MAP } from '@/data/types'
-import { fontVars } from '@/lib/fonts'
-import { accentStyle, siteDescription } from '@/lib/site'
+import { SEO_DESCRIPTION, SEO_TITLE, SITE_URL } from '@/lib/site'
 import './globals.css'
 
-const DESCRIPTION = `${siteDescription()} 21+ only.`
-
 export const metadata: Metadata = {
-  title: MAP.title,
-  description: DESCRIPTION,
-  openGraph: { title: MAP.title, description: DESCRIPTION, type: 'website' },
+  ...(SITE_URL ? { metadataBase: new URL(SITE_URL), alternates: { canonical: '/' } } : {}),
+  title: SEO_TITLE,
+  description: SEO_DESCRIPTION,
+  openGraph: { title: SEO_TITLE, description: SEO_DESCRIPTION, type: 'website', siteName: MAP.title },
+  twitter: { card: 'summary', title: SEO_TITLE, description: SEO_DESCRIPTION },
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0f0d0b',
+  themeColor: MAP.accent,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={fontVars} style={accentStyle}>
+    <html lang="en">
       <body>
-        <TopBar />
         {children}
         <SiteFooter />
       </body>

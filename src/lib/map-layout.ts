@@ -1,12 +1,13 @@
 // Build-time layout for the static SVG map. Pure functions, no browser APIs.
 // Pins appear only for entries with verified lat/lng. The outline is built for map.json's state.
 // x0/y0 are the true spots; x/y are spaced for the whole-state view at full size (scripts/report-nudges.ts).
-// On screen, src/lib/map-view.ts re-spaces pins and places labels for the current zoom.
+// On screen, src/lib/map-view.ts groups stamps into callouts and places labels for the current zoom.
 import { geoConicConformal } from 'd3-geo'
 import citiesData from '@/data/cities.json'
 import outline from '@/data/outline.json'
 import type { City, Stop } from '@/data/types'
-import { relax, type Work } from '@/lib/map-view'
+import { computeIsland, islandRect } from '@/lib/island'
+import { relax, type Rect, type Work } from '@/lib/map-view'
 
 export type MapPin = {
   id: string
@@ -17,7 +18,7 @@ export type MapPin = {
   nudged: number // distance (viewBox units) moved by the collision pass
 }
 export type MapCity = { name: string; x: number; y: number; label?: City['label'] }
-export type MapLayout = { path: string; counties: string; width: number; height: number; pins: MapPin[]; cities: MapCity[] }
+export type MapLayout = { path: string; width: number; height: number; island: Rect; pins: MapPin[]; cities: MapCity[] }
 
 export const PIN_RADIUS = 17 // collision radius in viewBox units (map is 1000 wide)
 const MIN_GAP = PIN_RADIUS * 2 + 2
@@ -48,9 +49,9 @@ export function computeLayout(entries: Stop[]): MapLayout {
   const cities = citiesData as City[]
   return {
     path: outline.path,
-    counties: outline.counties,
     width: outline.width,
     height: outline.height,
+    island: islandRect(computeIsland(outline.path)),
     pins: work.map((p) => ({
       id: p.id,
       x0: r1(p.x0),

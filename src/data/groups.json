@@ -7,6 +7,8 @@
     "color": "#6ea8e6",
     "hq": "New York, NY",
     "website": "https://www.suntoryglobalspirits.com",
+    "ownership": "Part of Suntory Global Spirits",
+    "ownershipSourceUrl": "https://www.suntoryglobalspirits.com/about-us",
     "sourceUrl": "https://www.suntoryglobalspirits.com/about-us",
     "verifiedOn": "2026-11-03"
   },
@@ -18,6 +20,8 @@
     "color": "#e3b448",
     "hq": "Louisville, KY",
     "website": "https://www.sazerac.com",
+    "ownership": null,
+    "ownershipSourceUrl": null,
     "sourceUrl": "https://www.sazerac.com/distilleries-and-facilities/",
     "verifiedOn": "2026-11-03"
   },
@@ -29,6 +33,8 @@
     "color": "#6fc28b",
     "hq": "Louisville, KY",
     "website": "https://www.brown-forman.com",
+    "ownership": null,
+    "ownershipSourceUrl": null,
     "sourceUrl": "https://www.brown-forman.com/where-we-operate",
     "verifiedOn": "2026-11-03"
   },
@@ -40,6 +46,8 @@
     "color": "#e88aa6",
     "hq": "Louisville, KY",
     "website": "https://heavenhill.com",
+    "ownership": "Heaven Hill, family-owned",
+    "ownershipSourceUrl": "https://heavenhill.com/through-the-years/",
     "sourceUrl": "https://heavenhill.com/through-the-years/",
     "verifiedOn": "2026-11-03"
   }

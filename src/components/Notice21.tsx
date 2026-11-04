@@ -3,18 +3,14 @@
 export default function Notice21({ quiet = false }: { quiet?: boolean }) {
   if (quiet) {
     return (
-      <p role="note" className="text-center text-xs text-muted">
-        <strong className="font-semibold text-text">21+ ONLY</strong> · This guide is for adults of legal age. Please
-        plan a safe ride.
+      <p role="note" className="text-center text-[11px] leading-snug text-muted">
+        21+ only · This guide is for adults of legal age. Please plan a safe ride.
       </p>
     )
   }
   return (
-    <p
-      role="note"
-      className="flex items-center gap-3 rounded-full border border-line bg-surface/80 py-1.5 pr-4 pl-1.5 text-sm text-muted"
-    >
-      <strong className="rounded-full bg-amber px-2.5 py-0.5 text-xs font-bold tracking-wide text-bg">21+ ONLY</strong>
+    <p role="note" className="flex items-center gap-3 border-y border-gold/60 py-2 text-sm text-muted">
+      <strong className="bg-gold px-2 py-0.5 text-xs font-semibold tracking-wide text-wine">21+ ONLY</strong>
       <span>This guide is for adults of legal age. Please plan a safe ride.</span>
     </p>
   )

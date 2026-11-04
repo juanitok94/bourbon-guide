@@ -16,8 +16,8 @@ export default function ErrorScreen({
 }) {
   return (
     <main className="mx-auto min-h-[60vh] max-w-md px-4 py-12 text-center">
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber">{label}</p>
-      <h1 className="mt-3 font-display text-4xl font-semibold leading-tight tracking-tight">{headline}</h1>
+      <p className="text-xs tracking-[0.28em] text-gold uppercase">{label}</p>
+      <h1 className="mt-3 font-serif text-4xl leading-tight font-semibold tracking-tight">{headline}</h1>
       {body && <p className="mt-3 text-muted">{body}</p>}
       <div className="mt-8 space-y-3">{children}</div>
       <div className="mt-8 text-left">
@@ -27,8 +27,7 @@ export default function ErrorScreen({
   )
 }
 
-export const PRIMARY =
-  'flex min-h-11 w-full items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-text'
+export const PRIMARY = 'flex min-h-11 w-full items-center justify-center bg-gold px-4 text-sm font-semibold text-wine'
 
 export const SECONDARY =
-  'flex min-h-11 w-full items-center justify-center rounded-lg border border-line bg-surface px-4 text-sm font-semibold text-text hover:border-accent'
+  'flex min-h-11 w-full items-center justify-center border border-gold px-4 text-sm text-gold transition-colors hover:bg-wine-deep'

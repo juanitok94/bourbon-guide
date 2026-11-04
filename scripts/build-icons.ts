@@ -1,11 +1,11 @@
-// Builds home-screen icons and src/app/icon.svg from a plain map pin in map.json's accent colour.
+// Builds home-screen icons and src/app/icon.svg: a gold map pin on map.json's accent colour (--wine).
 // Run after changing the pin or the accent: npm run build:icons. Uses sharp.
 import { mkdirSync, writeFileSync } from 'node:fs'
 import sharp from 'sharp'
 import { MAP } from '../src/data/types'
 
-const INK = MAP.accent // --accent
-const BG = '#0f0d0b' // --bg
+const INK = '#e2bf7a' // --gold
+const BG = MAP.accent // --wine
 const PIN =
   'M16 1.5C9.7 1.5 4.8 6.3 4.8 12.4c0 7.9 9.2 17 10.4 18.1a1.1 1.1 0 0 0 1.6 0c1.2-1.1 10.4-10.2 10.4-18.1C27.2 6.3 22.3 1.5 16 1.5Z'
 
