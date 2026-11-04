@@ -20,6 +20,8 @@ npm run tsc            # tsc --noEmit, required before finishing any task
 npm run check:data     # --verbose lists every warning
 npm run build:outline  # regenerate src/data/outline.json after changing map.json fips
 npm run build:icons    # regenerate icons after changing map.json accent
+npm run fabric:export  # CSVs for Microsoft Fabric (-- --push to upload)
+npm run fabric:pull    # stage data from Fabric (-- --local, -- --apply)
 ```
 To update the guide: edit `src/data/stops.json`, run `check:data`, rebuild.
 
@@ -39,6 +41,13 @@ To update the guide: edit `src/data/stops.json`, run `check:data`, rebuild.
 - Region rule (no guessing): `region` = the nearest hub by straight-line distance from the Census point for the
   stop's city or ZIP (Census Gazetteer 2023 place/ZCTA files): Louisville; Bardstown; Lexington or Frankfort
   (`central`). Use `elsewhere` when no hub is within 40 km.
+
+## Microsoft Fabric (scripts only)
+- Stubbed two-way link to a Fabric Lakehouse (OneLake Files area, CSV): `scripts/fabric/`. Not yet run against a real workspace.
+- `npm run fabric:export` writes `fabric-out/{stops,groups,brands}.csv` (offline, always safe); `-- --push` uploads them.
+- `npm run fabric:pull` downloads them into `fabric-in/` and stages JSON; `-- --local` reads `fabric-out/` instead (round-trip test); `-- --apply` replaces `src/data/*.json`, runs check:data, and restores the old files if it fails. Never apply without reviewing the diff; the sourcing rules still apply to data edited in Fabric.
+- CSV columns mirror `types.ts` 1:1 (`scripts/fabric/tables.ts`); export fails if the JSON and schema drift. Add a field in both places.
+- Credentials: `FABRIC_*` in `.env.local` (gitignored; template `.env.example`) or the shell. Scripts only: never import `scripts/fabric` from `src/`, never use `NEXT_PUBLIC_`. The site stays static: no Fabric calls at runtime.
 
 ## Stack
 Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.

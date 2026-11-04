@@ -10,7 +10,9 @@
     "lint": "eslint",
     "tsc": "tsc --noEmit",
     "build:icons": "tsx scripts/build-icons.ts",
-    "build:outline": "tsx scripts/build-outline.ts"
+    "build:outline": "tsx scripts/build-outline.ts",
+    "fabric:export": "tsx scripts/fabric/export.ts",
+    "fabric:pull": "tsx scripts/fabric/pull.ts"
   },
   "dependencies": {
     "d3-geo": "^3.1.2",
