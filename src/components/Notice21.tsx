@@ -1,5 +1,14 @@
 // The 21+ notice. Appears on every page, including 404 and error.
-export default function Notice21() {
+// "quiet" is the slim line under the map on the home page; same wording, less weight.
+export default function Notice21({ quiet = false }: { quiet?: boolean }) {
+  if (quiet) {
+    return (
+      <p role="note" className="text-center text-xs text-muted">
+        <strong className="font-semibold text-text">21+ ONLY</strong> · This guide is for adults of legal age. Please
+        plan a safe ride.
+      </p>
+    )
+  }
   return (
     <p
       role="note"

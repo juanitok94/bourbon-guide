@@ -2,21 +2,18 @@
 
 // Static night-style state map: an SVG drawn from build-time data. No tiles, no map library, no panning.
 // Pins (only for entries with verified lat/lng) take their ownership group's colour and marker letter
-// (groups.json; the group chips above the map are the key for these). Shape: bottle tag = tours by
-// appointment, circle otherwise. Independents (no group) = --teal, no letter.
+// (groups.json; MapKey under the map is the key for these). Shape: bottle tag = tours by appointment,
+// circle otherwise. Independents (no group) = --teal, no letter.
 // The state outline comes from map.json's FIPS code.
 import type { KeyboardEvent } from 'react'
+import GroupMark from '@/components/GroupMark'
 import { MAP, type Stop } from '@/data/types'
-import { groupOf } from '@/lib/groups'
+import { GROUPS, groupOf } from '@/lib/groups'
 import type { MapLayout } from '@/lib/map-layout'
 import { PLACE } from '@/lib/site'
 
 // Local coordinates, centred on (0,0).
 export const BOTTLE = 'M-4.5 -15 H4.5 V-7 Q10.5 -5 10.5 -1 V12 Q10.5 15 7.5 15 H-7.5 Q-10.5 15 -10.5 12 V-1 Q-10.5 -5 -4.5 -7 Z'
-
-// Extra background on the right (viewBox units) so the key can float beside the state on desktop.
-// On phones the SVG is drawn 130% wide and the extra space is clipped, so the state fills the width.
-const KEY_GUTTER = 300
 
 export type PinShape = 'bottle' | 'circle'
 
@@ -70,86 +67,35 @@ export function PinGraphic({
   )
 }
 
-function Compass() {
-  // Hand-drawn style compass rose: uneven kites, a loose dashed ring, a serif N.
-  const kite = (len: number, w: number, filled: boolean) => (
-    <>
-      <path d={`M0 ${-len} L${w} ${-w} L0 0 Z`} fill={filled ? 'var(--amber)' : 'none'} />
-      <path d={`M0 ${-len} L${-w} ${-w} L0 0 Z`} fill="none" />
-    </>
+// One quiet, non-interactive row under the map: each group's marker and colour, plus the appointment shape
+// when a pin uses it.
+export function MapKey({ showTours }: { showTours: boolean }) {
+  // The dots show only on wider screens, where the row stays on one line; on phones a wrap would strand one.
+  const dot = (
+    <span aria-hidden="true" className="mr-1.5 hidden sm:inline">
+      ·
+    </span>
   )
+  const item = 'flex items-center gap-1.5'
   return (
-    <svg
-      viewBox="-30 -32 60 62"
-      className="h-10 w-10 shrink-0"
-      aria-hidden="true"
-      fill="none"
-      stroke="var(--amber)"
-      strokeWidth="1.1"
-      strokeLinejoin="round"
-      strokeLinecap="round"
-    >
-      <circle r="10.5" strokeDasharray="2.2 1.4" opacity="0.8" />
-      <g opacity="0.75">
-        {[45, 135, 225, 315].map((a) => (
-          <g key={a} transform={`rotate(${a})`}>
-            {kite(14.5, 2.2, false)}
-          </g>
-        ))}
-      </g>
-      {[0, 90, 180, 270].map((a) => (
-        <g key={a} transform={`rotate(${a + (a === 90 ? 1.5 : a === 270 ? -1 : 0)})`}>
-          {kite(a === 0 ? 23 : 19, 3.6, true)}
-        </g>
+    <ul aria-label="Map key" className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-muted">
+      {GROUPS.map((g, i) => (
+        <li key={g.id} className={item}>
+          {i > 0 && dot}
+          <GroupMark group={g} size="sm" />
+          {g.shortName}
+        </li>
       ))}
-      <text
-        x="0"
-        y="-26"
-        textAnchor="middle"
-        fontSize="8.5"
-        fontWeight="700"
-        fill="var(--amber)"
-        stroke="none"
-        style={{ fontFamily: 'var(--font-display)' }}
-      >
-        N
-      </text>
-    </svg>
-  )
-}
-
-// Shapes only; group colours and letters are keyed by the group chips above the map.
-const KEY: { label: string; shape: PinShape }[] = [{ label: 'Tours by appointment', shape: 'bottle' }]
-
-function MapKey() {
-  return (
-    <section
-      aria-labelledby="map-key-heading"
-      className="border-t border-line bg-surface px-3 py-3 md:absolute md:right-3 md:bottom-3 md:w-56 md:rounded-xl md:border md:bg-bg/70 md:p-2.5 md:backdrop-blur-md"
-    >
-      <div className="mb-1.5 flex items-center justify-between md:mb-0">
-        <h2 id="map-key-heading" className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-          Map key
-        </h2>
-        <span className="hidden md:block">
-          <Compass />
-        </span>
-      </div>
-      <p className="mb-1.5 hidden text-xs text-muted md:block">Pin colors and letters match the group chips above the map.</p>
-      <ul className="flex flex-wrap gap-2 md:flex-col md:gap-0.5">
-        {KEY.map((k) => (
-          <li
-            key={k.label}
-            className="flex items-center gap-1.5 rounded-full border border-line bg-raised py-0.5 pr-3 pl-1 text-xs text-text md:gap-2 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:text-sm"
-          >
-            <svg viewBox="-17 -17 34 34" className="h-6 w-6 shrink-0" aria-hidden="true">
-              <PinGraphic shape={k.shape} color="var(--muted)" />
-            </svg>
-            {k.label}
-          </li>
-        ))}
-      </ul>
-    </section>
+      {showTours && (
+        <li className={item}>
+          {dot}
+          <svg viewBox="-17 -17 34 34" className="h-5 w-5 shrink-0" aria-hidden="true">
+            <PinGraphic shape="bottle" color="var(--muted)" />
+          </svg>
+          Tours by appointment
+        </li>
+      )}
+    </ul>
   )
 }
 
@@ -179,10 +125,10 @@ export default function StateMap({
   return (
     <div className="relative overflow-hidden rounded-2xl border border-line bg-ocean">
       <svg
-        viewBox={`0 0 ${layout.width + KEY_GUTTER} ${layout.height}`}
+        viewBox={`0 0 ${layout.width} ${layout.height}`}
         role="group"
         aria-label={`Map of ${PLACE} distilleries (${MAP.title}). The list below the map is the accessible alternative to this map.`}
-        className="block h-auto w-[130%] max-w-none md:w-full"
+        className="block h-auto w-full"
       >
         <defs>
           <filter id="state-glow" x="-10%" y="-20%" width="120%" height="140%">
@@ -194,7 +140,7 @@ export default function StateMap({
             <stop offset="1" stopColor="#191a19" />
           </linearGradient>
         </defs>
-        <rect width={layout.width + KEY_GUTTER} height={layout.height} fill="var(--ocean)" />
+        <rect width={layout.width} height={layout.height} fill="var(--ocean)" />
         <path d={layout.path} fill="var(--amber)" opacity="0.22" filter="url(#state-glow)" />
         <path d={layout.path} fill="url(#terrain)" />
         <path d={layout.counties} fill="none" stroke="var(--county)" strokeWidth="0.8" strokeLinejoin="round" />
@@ -266,7 +212,6 @@ export default function StateMap({
           )
         })}
       </svg>
-      <MapKey />
     </div>
   )
 }

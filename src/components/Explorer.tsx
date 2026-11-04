@@ -1,10 +1,11 @@
 'use client'
 
 import { useMemo, useState, useSyncExternalStore } from 'react'
-import GroupChips from '@/components/GroupChips'
 import GroupMark from '@/components/GroupMark'
+import GroupsDropdown, { CONTROL, Chevron, FIELD_TEXT } from '@/components/GroupsDropdown'
 import { BrandPills, GroupCompare, GroupPanel } from '@/components/GroupSummary'
-import StateMap from '@/components/StateMap'
+import Notice21 from '@/components/Notice21'
+import StateMap, { MapKey } from '@/components/StateMap'
 import { MAP, type Stop } from '@/data/types'
 import {
   ALL_GROUP_IDS,
@@ -27,8 +28,6 @@ type Filters = { region: RegionFilter; query: string }
 const DEFAULT_FILTERS: Filters = { region: 'all', query: '' }
 
 const FOCUS_TARGET = 'min-h-11 rounded-lg px-4 text-sm font-semibold'
-const FIELD =
-  'mt-1.5 block min-h-11 w-full rounded-lg border border-line bg-raised px-3 text-base font-normal normal-case tracking-normal text-text focus-visible:border-amber focus-visible:outline-amber'
 const PILL = 'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold'
 
 function formatDate(iso: string): string {
@@ -241,12 +240,8 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
 
   return (
     <div>
-      <GroupChips
-        selected={groups}
-        onToggle={(id) => setGroups(toggleGroup(groups, id))}
-        onAll={() => setGroups(ALL_GROUP_IDS)}
-      />
       <StateMap layout={layout} entries={mapped} selectedId={selected?.id ?? null} onSelect={setSelectedId} />
+      <MapKey showTours={entries.some((d) => d.toursByAppointment && pinIds.has(d.id))} />
       {selected && <DetailPanel d={selected} onClose={closePanel} />}
       {total > 0 && mapped.length === 0 && (
         <p className="mt-3 text-sm text-muted">
@@ -256,43 +251,48 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
         </p>
       )}
 
-      <section aria-labelledby="filters-heading" className="mt-12">
-        <h2 id="filters-heading" className="font-display text-3xl font-semibold tracking-tight">
-          All distilleries
+      <div className="mt-6">
+        <Notice21 quiet />
+      </div>
+
+      <section aria-labelledby="filters-heading" className="mt-10">
+        <h2 id="filters-heading" className="sr-only">
+          Find a distillery
         </h2>
-        {selectedGroups.length === 1 && <GroupPanel group={selectedGroups[0]} entries={entries} />}
-        {selectedGroups.length > 1 && !allGroups && <GroupCompare groups={selectedGroups} entries={entries} />}
-        {total === 0 ? (
-          <div role="status" className="mt-6 rounded-xl border border-line bg-surface p-6 text-center">
-            <p className="font-display text-xl font-semibold">{EMPTY_MESSAGE}</p>
-          </div>
-        ) : (
+        {total > 0 && (
           <>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <label className="block text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-                Search by name
+            <div className="grid grid-cols-[minmax(0,4fr)_minmax(0,5fr)] gap-2 rounded-xl border border-line bg-surface p-2 md:grid-cols-[minmax(0,1fr)_13rem_19rem]">
+              <label className="col-span-2 md:col-span-1">
+                <span className="sr-only">Search by name</span>
                 <input
                   type="search"
+                  placeholder="Search by name"
                   value={filters.query}
                   onChange={(e) => update({ query: e.target.value })}
-                  className={FIELD}
+                  className={`${CONTROL} ${FIELD_TEXT}`}
                 />
               </label>
-              <label className="block text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-                Region
+              <label className="relative min-w-0">
+                <span className="sr-only">Region</span>
                 <select
                   value={filters.region}
                   onChange={(e) => update({ region: e.target.value })}
-                  className={FIELD}
+                  className={`${CONTROL} ${FIELD_TEXT} appearance-none truncate pr-8`}
                 >
-                  <option value="all">All regions</option>
+                  <option value="all">Region: All</option>
                   {MAP.regions.map((r) => (
                     <option key={r.id} value={r.id}>
                       {r.label}
                     </option>
                   ))}
                 </select>
+                <Chevron className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2" />
               </label>
+              <GroupsDropdown
+                selected={groups}
+                onToggle={(id) => setGroups(toggleGroup(groups, id))}
+                onAll={() => setGroups(ALL_GROUP_IDS)}
+              />
             </div>
             {filtersActive && (
               <div className="mt-3 flex flex-wrap items-center gap-4">
@@ -304,7 +304,17 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
                 </p>
               </div>
             )}
-
+          </>
+        )}
+        {selectedGroups.length === 1 && <GroupPanel group={selectedGroups[0]} entries={entries} />}
+        {selectedGroups.length > 1 && !allGroups && <GroupCompare groups={selectedGroups} entries={entries} />}
+        {total === 0 ? (
+          <div role="status" className="mt-6 rounded-xl border border-line bg-surface p-6 text-center">
+            <p className="font-display text-xl font-semibold">{EMPTY_MESSAGE}</p>
+          </div>
+        ) : (
+          <>
+            <h2 className="mt-10 font-display text-3xl font-semibold tracking-tight">All distilleries</h2>
             {visible.length === 0 ? (
               <div className="mt-6 rounded-xl border border-line bg-surface p-6 text-center">
                 <p className="font-display text-xl font-semibold">No distilleries match</p>
