@@ -98,6 +98,28 @@ summary::-webkit-details-marker {
   }
 }
 
+/* Map regions: soft tinted buttons under the pins. SVG outlines are unreliable, so focus thickens the box's stroke. */
+.dg-region {
+  cursor: pointer;
+  outline: none;
+}
+.dg-region-box {
+  fill: var(--amber);
+  fill-opacity: 0.1;
+  stroke: var(--amber);
+  stroke-opacity: 0.45;
+  stroke-width: 1px;
+  transition: fill-opacity 0.15s ease;
+}
+.dg-region:hover .dg-region-box {
+  fill-opacity: 0.2;
+}
+.dg-region:focus-visible .dg-region-box {
+  fill-opacity: 0.2;
+  stroke-opacity: 1;
+  stroke-width: 3px;
+}
+
 /* Map pins: SVG outlines are unreliable, so the pin draws its own amber glow ring. */
 .dg-pin {
   cursor: pointer;

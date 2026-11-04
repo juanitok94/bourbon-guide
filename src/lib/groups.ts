@@ -1,8 +1,8 @@
-// Ownership groups and brands, plus the group selection kept in the URL (?groups=a,b).
+// Ownership groups and brands, plus the group and region selections kept in the URL (?groups=a,b&region=x).
 // Pure helpers; the selection itself is client-side state in Explorer.
 import brandsData from '@/data/brands.json'
 import groupsData from '@/data/groups.json'
-import type { Brand, Group, Stop } from '@/data/types'
+import { MAP, type Brand, type Group, type Stop } from '@/data/types'
 
 export const GROUPS = groupsData as Group[]
 export const BRANDS = brandsData as Brand[]
@@ -32,10 +32,31 @@ export function parseGroups(search: string): string[] {
 
 // Writes the selection back to the address bar without a reload. All groups = no parameter.
 export function writeGroups(selected: string[]): void {
+  writeParam(URL_PARAM, selected.length === ALL_GROUP_IDS.length ? null : selected.join(','))
+}
+
+export const REGION_PARAM = 'region'
+export const ALL_REGIONS = 'all'
+
+// Reads ?region= from a query string. Unknown ids fall back to all regions.
+export function parseRegion(search: string): string {
+  try {
+    const raw = new URLSearchParams(search).get(REGION_PARAM)
+    return MAP.regions.some((r) => r.id === raw) ? raw! : ALL_REGIONS
+  } catch {
+    return ALL_REGIONS
+  }
+}
+
+export function writeRegion(id: string): void {
+  writeParam(REGION_PARAM, id === ALL_REGIONS ? null : id)
+}
+
+function writeParam(name: string, value: string | null): void {
   try {
     const url = new URL(window.location.href)
-    if (selected.length === ALL_GROUP_IDS.length) url.searchParams.delete(URL_PARAM)
-    else url.searchParams.set(URL_PARAM, selected.join(','))
+    if (value === null) url.searchParams.delete(name)
+    else url.searchParams.set(name, value)
     // URLSearchParams encodes commas; keep the readable form (?groups=a,b).
     const href = url.toString().replace(/%2C/gi, ',')
     if (href !== window.location.href) window.history.replaceState(window.history.state, '', href)

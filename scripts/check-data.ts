@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Brand, City, Group, Stop } from '../src/data/types'
 import { MAP } from '../src/data/types'
+import { computeRegions, regionProblems, type RegionArea } from '../src/lib/regions'
 
 const read = <T>(file: string) => JSON.parse(readFileSync(join(process.cwd(), file), 'utf8')) as T
 
@@ -16,7 +17,8 @@ const data = read<Stop[]>('src/data/stops.json')
 const groups = read<Group[]>('src/data/groups.json')
 const brands = read<Brand[]>('src/data/brands.json')
 const cities = read<City[]>('src/data/cities.json')
-const outline = read<{ fips: string; bounds: { south: number; north: number; west: number; east: number } }>(
+const savedRegions = read<RegionArea[]>('src/data/regions.json')
+const outline = read<{ fips: string; width: number; height: number; bounds: { south: number; north: number; west: number; east: number } }>(
   'src/data/outline.json',
 )
 const errors: string[] = []
@@ -137,6 +139,11 @@ data.forEach((d, i) => {
   if (d.verifiedOn !== null && d.address === null) warnings.push(`${at}: verified but address is null`)
   if (d.verifiedOn !== null && d.lat === null) warnings.push(`${at}: no coordinates yet (no pin)`)
 })
+
+// --- regions.json (generated from pins, so it can only go stale)
+if (JSON.stringify(savedRegions) !== JSON.stringify(computeRegions(data, outline.width, outline.height)))
+  errors.push('regions.json is out of date: run npm run build:regions')
+errors.push(...regionProblems(savedRegions))
 
 // --- brands.json
 const brandIds = new Set<string>()

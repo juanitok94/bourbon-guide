@@ -9,23 +9,21 @@ import StateMap, { MapKey } from '@/components/StateMap'
 import { MAP, type Stop } from '@/data/types'
 import {
   ALL_GROUP_IDS,
+  ALL_REGIONS,
   GROUPS,
   brandsAt,
   groupOf,
   notifyUrl,
   parseGroups,
+  parseRegion,
   readSearch,
   subscribeToUrl,
   toggleGroup,
   writeGroups,
+  writeRegion,
 } from '@/lib/groups'
 import type { MapLayout } from '@/lib/map-layout'
 import { withMarks } from '@/lib/trademarks'
-
-type RegionFilter = 'all' | string
-type Filters = { region: RegionFilter; query: string }
-
-const DEFAULT_FILTERS: Filters = { region: 'all', query: '' }
 
 const FOCUS_TARGET = 'min-h-11 rounded-lg px-4 text-sm font-semibold'
 const PILL = 'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold'
@@ -187,43 +185,61 @@ function DetailPanel({ d, onClose }: { d: Stop; onClose: () => void }) {
 }
 
 export default function Explorer({ entries, layout }: { entries: Stop[]; layout: MapLayout }) {
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS)
+  const [query, setQuery] = useState('')
+  // A region change only animates after the visitor has made one; a ?region= link opens already zoomed.
+  const [regionTouched, setRegionTouched] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  // Ownership groups live in the URL (?groups=), so links are shareable. The static HTML renders all
+  // Ownership groups and the region live in the URL (?groups=, ?region=), so links are shareable. The static HTML renders all
   // groups (server snapshot); the client then reads the real address bar.
   const search = useSyncExternalStore(subscribeToUrl, readSearch, () => '')
   const groups = useMemo(() => parseGroups(search), [search])
+  const region = useMemo(() => parseRegion(search), [search])
   const setGroups = (next: string[]) => {
     writeGroups(next)
+    notifyUrl()
+  }
+  const setRegion = (id: string) => {
+    setRegionTouched(true)
+    writeRegion(id)
     notifyUrl()
   }
 
   const total = entries.length
   const allGroups = groups.length === ALL_GROUP_IDS.length
 
-  const visible = useMemo(() => {
-    const q = filters.query.trim().toLowerCase()
-    return entries
-      .filter((d) => {
-        // Independents (no group) show only while every group is on.
-        if (!allGroups && (d.groupId === null || !groups.includes(d.groupId))) return false
-        if (filters.region !== 'all' && d.region !== filters.region) return false
-        if (q && !d.name.toLowerCase().includes(q)) return false
-        return true
-      })
-      .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
-  }, [entries, filters, groups, allGroups])
+  // Everything the group and search filters allow, before the region narrows it.
+  const inScope = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return entries.filter((d) => {
+      // Independents (no group) show only while every group is on.
+      if (!allGroups && (d.groupId === null || !groups.includes(d.groupId))) return false
+      if (q && !d.name.toLowerCase().includes(q)) return false
+      return true
+    })
+  }, [entries, query, groups, allGroups])
+  const regionCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const d of inScope) if (d.region) counts[d.region] = (counts[d.region] ?? 0) + 1
+    return counts
+  }, [inScope])
+  const visible = useMemo(
+    () =>
+      inScope
+        .filter((d) => region === ALL_REGIONS || d.region === region)
+        .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })),
+    [inScope, region],
+  )
 
   const pinIds = useMemo(() => new Set(layout.pins.map((p) => p.id)), [layout])
   const mapped = useMemo(() => visible.filter((d) => pinIds.has(d.id)), [visible, pinIds])
   // A selection only counts while its entry is still shown.
   const selected = visible.find((d) => d.id === selectedId && pinIds.has(d.id)) ?? null
-  const filtersActive = filters.query.trim() !== '' || filters.region !== 'all' || !allGroups
+  const filtersActive = query.trim() !== '' || region !== ALL_REGIONS || !allGroups
   const selectedGroups = GROUPS.filter((g) => groups.includes(g.id))
 
-  const update = (patch: Partial<Filters>) => setFilters((f) => ({ ...f, ...patch }))
   const reset = () => {
-    setFilters(DEFAULT_FILTERS)
+    setQuery('')
+    setRegion(ALL_REGIONS)
     setGroups(ALL_GROUP_IDS)
   }
 
@@ -240,7 +256,16 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
 
   return (
     <div>
-      <StateMap layout={layout} entries={mapped} selectedId={selected?.id ?? null} onSelect={setSelectedId} />
+      <StateMap
+        layout={layout}
+        entries={mapped}
+        selectedId={selected?.id ?? null}
+        onSelect={setSelectedId}
+        regionId={region}
+        regionCounts={regionCounts}
+        onRegion={setRegion}
+        animate={regionTouched}
+      />
       <MapKey showTours={entries.some((d) => d.toursByAppointment && pinIds.has(d.id))} />
       {selected && <DetailPanel d={selected} onClose={closePanel} />}
       {total > 0 && mapped.length === 0 && (
@@ -267,8 +292,8 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
                 <input
                   type="search"
                   placeholder="Search by name"
-                  value={filters.query}
-                  onChange={(e) => update({ query: e.target.value })}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                   className={`${CONTROL} ${FIELD_TEXT}`}
                 />
               </label>
@@ -276,11 +301,11 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
               <label className="relative block min-w-0">
                 <span className="sr-only">Region</span>
                 <select
-                  value={filters.region}
-                  onChange={(e) => update({ region: e.target.value })}
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
                   className={`peer absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0 ${FIELD_TEXT}`}
                 >
-                  <option value="all">Region: All</option>
+                  <option value={ALL_REGIONS}>Region: All</option>
                   {MAP.regions.map((r) => (
                     <option key={r.id} value={r.id}>
                       {r.label}
@@ -291,7 +316,7 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
                   aria-hidden="true"
                   className={`${CONTROL} ${FIELD_TEXT} flex h-full items-center justify-between gap-1.5 leading-tight max-md:px-2.5 peer-hover:border-amber peer-focus-visible:border-amber peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-amber`}
                 >
-                  <span className="min-w-0">{MAP.regions.find((r) => r.id === filters.region)?.label ?? 'Region: All'}</span>
+                  <span className="min-w-0">{MAP.regions.find((r) => r.id === region)?.label ?? 'Region: All'}</span>
                   <Chevron />
                 </span>
               </label>

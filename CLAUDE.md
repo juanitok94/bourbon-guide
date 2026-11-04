@@ -19,12 +19,13 @@ npm run lint
 npm run tsc            # tsc --noEmit, required before finishing any task
 npm run check:data     # --verbose lists every warning
 npm run build:outline  # regenerate src/data/outline.json after changing map.json fips
+npm run build:regions  # regenerate src/data/regions.json after any pin or region change (check:data fails if stale)
 npm run build:icons    # regenerate icons after changing map.json accent
 npm run geocode        # fill lat/lng from OSM Nominatim for verified addresses (-- --dry to preview)
 npm run fabric:export  # CSVs for Microsoft Fabric (-- --push to upload)
 npm run fabric:pull    # stage data from Fabric (-- --local, -- --apply)
 ```
-To update the guide: edit `src/data/stops.json`, run `check:data`, rebuild.
+To update the guide: edit `src/data/stops.json`, run `build:regions` if a pin changed, run `check:data`, rebuild.
 
 ## Map family (config-driven)
 - Everything state-specific lives in `src/data/map.json` (id, title, kicker, state, stateName, fips, regions,
@@ -104,23 +105,24 @@ Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
 - Everything interactive is keyboard reachable, has a visible focus ring and a 44px minimum target.
 - `aria-pressed` on filter toggles, `aria-expanded` on disclosure panels.
 - Never rely on colour alone (pins differ by shape; status has text).
-- Respect `prefers-reduced-motion`: no animated panning.
+- Respect `prefers-reduced-motion`: region zoom is instant, with no animation.
 - The list is the accessible alternative to the map; label the map container accordingly.
 - Mobile first. No horizontal scroll at 375px.
-- Exception: on phones the map pins may be smaller than 44px. The map is a static overview; the list is the primary tap target. Pins stay focusable buttons with aria-labels.
+- Pins are drawn 30px with a 44px hit area at every size, and stay focusable buttons with aria-labels (except the phone whole-state view, where the region buttons replace them).
 - Storage (if ever used) goes through `src/lib/safe-storage.ts`; the page must work without it.
 
 ## Map
 - Outline: `npm run build:outline` reads map.json `fips` and writes `src/data/outline.json` from us-atlas (U.S. Census Bureau), with a Lambert conformal projection fitted to the state, interior county lines and the state's bounding box. Credits come from map.json `credits`.
 - Pin shapes: teal circle (distillery), --accent bottle-shaped tag (tours by appointment). Keep the bottle tag abstract; it must not read as drinking imagery.
-- City labels: `src/data/cities.json` (Census Gazetteer 2023 place file for KY, with sourceUrl; optional `label` offset to avoid collisions). Pin collision nudging runs at build time in `src/lib/map-layout.ts`; `npx tsx scripts/report-nudges.ts` lists moved pins.
+- City labels: `src/data/cities.json` (Census Gazetteer 2023 place file for KY, with sourceUrl; optional `label` offset to avoid collisions). Pins are re-spaced and labels placed for each zoom in `src/lib/map-view.ts`; `npx tsx scripts/report-nudges.ts` lists pins moved at full size.
 - The map fills the column. The key is one quiet, non-interactive row under it (`MapKey`): each group's marker and shortName, plus "Tours by appointment" when a pin uses that shape. Pin graphics are shared between the map and the key (`PinGraphic`).
 
 ## Visitor UI vs admin views
-- Page order: kicker, headline, description, stats; map; map key; slim 21+ line; one filter bar (search by name, region dropdown from map.json, groups dropdown; two rows on phones); group panel or compare table; list; footer. Reset (clears all three) and "Showing X of N" appear whenever anything narrows the list.
+- Page order: kicker, headline, description, stats; map; zoom hint or "Whole state" row; map key; slim 21+ line; one filter bar (search by name, region dropdown from map.json, groups dropdown; two rows on phones); group panel or compare table; list; footer. Reset (clears all three) and "Showing X of N" appear whenever anything narrows the list.
 - Groups dropdown (`GroupsDropdown`): a button with aria-expanded and aria-controls opens a panel of native checkboxes, 44px rows, default all on. Label: "Groups: All", up to two shortNames, or "Groups: 3 selected". Closes on Escape, outside press or tabbing out. "All groups" turns every group on; turning off the last group turns them all back on (never an empty map). Independent stops (groupId null) show only while all groups are on.
 - The selection lives in the URL (`?groups=sazerac,brown-forman`; all groups = no parameter), read through `useSyncExternalStore` and written with `history.replaceState`. Unknown ids fall back to all groups. The static HTML always renders all groups.
 - One group selected: a group panel (name, HQ, Kentucky stops, all brands, website). Two or more but not all: a compare table (real <table>, column and row headers). Cards show "Part of <group>" and the brands made there (brands.json `stopId`); brands with a null stopId appear only in the group panel.
+- Region zoom: `src/data/regions.json` (generated by `build:regions`; a family addition with no state-specific fields) gives each region with pins a zoom `area` (padded bounding box) and a button `target` (at least 155 map units each way, which is 44px at a 320px screen; targets never overlap). Picking a region on the map or in the dropdown sets `?region=`, filters the list and animates the SVG viewBox (`src/lib/map-view.ts`). Pins (30px) and labels (11px cities, 12px regions) keep their on-screen size at every zoom; labels that can't be placed clear are left out of that view. On phones' whole-state view pins are drawn but not interactive, because regions are the targets. Regions with no pins stay in the dropdown only.
 - With no entries, the map still shows the outline and the list says "Distilleries are being added and verified."
 - Admin views (verified counts, unverified lists, missing coordinates) live in `npm run check:data` (`--verbose`), never in the visitor UI.
 
