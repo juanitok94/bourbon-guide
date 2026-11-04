@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import GroupMark from '@/components/GroupMark'
 import GroupsDropdown, { CONTROL, Chevron, FIELD_TEXT } from '@/components/GroupsDropdown'
 import { BrandPills, GroupCompare, GroupPanel } from '@/components/GroupSummary'
@@ -80,54 +80,117 @@ function GroupLine({ d }: { d: Stop }) {
   )
 }
 
+const directionsUrl = (d: Stop) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${d.name}, ${d.address}`)}`
+
+const CARD_LINK =
+  'inline-flex min-h-11 items-center rounded-lg border border-line px-4 text-sm font-semibold text-accent-ink transition-colors hover:border-accent'
+const NEW_TAB = <span className="sr-only"> (opens in a new tab)</span>
+
+// Shown under the card's button when it is expanded. Links can't sit inside a button, so this is its sibling.
+function CardDetails({ d, onMap, onShowOnMap }: { d: Stop; onMap: boolean; onShowOnMap: () => void }) {
+  const brands = brandsAt(d.id)
+  return (
+    <div id={`card-${d.id}-details`} className="space-y-3 border-t border-line px-4 pt-3 pb-4 text-sm">
+      {d.blurb && <p className="text-text">{d.blurb}</p>}
+      {d.address && <p className="text-text">{d.address}</p>}
+      {d.hoursNote && <p className="text-muted">{d.hoursNote}</p>}
+      {brands.length > 0 && <BrandPills brands={brands} label={`Brands at ${d.name}`} />}
+      <div className="flex flex-wrap items-center gap-2">
+        {onMap ? (
+          <button
+            type="button"
+            onClick={onShowOnMap}
+            className="min-h-11 rounded-lg bg-accent px-4 text-sm font-semibold text-text transition-colors hover:bg-accent/80"
+          >
+            Show on map
+          </button>
+        ) : (
+          <p className="flex min-h-11 items-center pr-2 text-muted">Not on the map yet</p>
+        )}
+        {d.address && (
+          <a href={directionsUrl(d)} target="_blank" rel="noopener" className={CARD_LINK}>
+            Directions{NEW_TAB}
+          </a>
+        )}
+        {d.website && (
+          <a href={d.website} target="_blank" rel="noopener" className={CARD_LINK}>
+            Website{NEW_TAB}
+          </a>
+        )}
+        {d.phone && (
+          <a href={`tel:${d.phone.replace(/[^\d+]/g, '')}`} className={`${CARD_LINK} tabular`}>
+            {d.phone}
+          </a>
+        )}
+      </div>
+      {d.verifiedOn && (
+        <p className="flex flex-wrap items-center gap-x-1 text-xs text-muted">
+          <span>Last verified: {formatDate(d.verifiedOn)}</span>
+          {d.sourceUrl && (
+            <>
+              <span aria-hidden="true">·</span>
+              <a
+                href={d.sourceUrl}
+                target="_blank"
+                rel="noopener"
+                className="inline-flex min-h-11 items-center px-1 text-accent-ink underline underline-offset-2"
+              >
+                Source{NEW_TAB}
+              </a>
+            </>
+          )}
+        </p>
+      )}
+    </div>
+  )
+}
+
 function Card({
   d,
   onMap,
-  isSelected,
-  onSelect,
+  isExpanded,
+  onToggle,
+  onShowOnMap,
 }: {
   d: Stop
   onMap: boolean
-  isSelected: boolean
-  onSelect: () => void
+  isExpanded: boolean
+  onToggle: () => void
+  onShowOnMap: () => void
 }) {
-  const body = (
-    <>
-      <Badges d={d} />
-      <span className="mt-2 block font-display text-xl leading-snug font-semibold">{d.name}</span>
-      <span className="mt-0.5 block text-sm text-muted">{d.city ?? 'Location not yet verified'}</span>
-      <GroupLine d={d} />
-      {brandsAt(d.id).length > 0 && (
-        <span className="mt-2 block">
-          <BrandPills brands={brandsAt(d.id)} label={`Brands at ${d.name}`} />
-        </span>
-      )}
-      {(!onMap || !d.verifiedOn) && (
-        <span className="mt-2 block text-xs text-muted">
-          {[!onMap ? 'Not on map yet' : null, !d.verifiedOn ? 'Details not yet verified' : null].filter(Boolean).join(' · ')}
-        </span>
-      )}
-    </>
-  )
+  const color = groupOf(d)?.color
+  // Hover and focus styles belong to the button alone: nothing else in a card should look clickable.
   return (
     <li
-      className={`overflow-hidden rounded-xl border border-l-4 bg-surface transition-colors focus-within:border-accent hover:border-accent ${
-        isSelected ? 'border-line border-l-amber' : 'border-line border-l-transparent'
-      }`}
+      id={`card-${d.id}`}
+      className="scroll-mt-4 rounded-xl border border-l-4 border-line bg-surface"
+      style={{ borderLeftColor: isExpanded ? (color ?? 'var(--amber)') : 'transparent' }}
     >
-      {onMap ? (
-        <button
-          type="button"
-          aria-expanded={isSelected}
-          aria-controls={isSelected ? 'map-panel' : undefined}
-          onClick={onSelect}
-          className="block min-h-11 w-full px-4 py-4 text-left"
-        >
-          {body}
-        </button>
-      ) : (
-        <div className="min-h-11 px-4 py-4">{body}</div>
-      )}
+      <button
+        id={`card-${d.id}-button`}
+        type="button"
+        aria-expanded={isExpanded}
+        aria-controls={isExpanded ? `card-${d.id}-details` : undefined}
+        onClick={onToggle}
+        className="flex min-h-11 w-full items-start justify-between gap-3 rounded-[inherit] p-4 text-left transition-colors hover:bg-raised focus-visible:bg-raised"
+      >
+        <span className="min-w-0">
+          <Badges d={d} />
+          <span className="mt-2 block font-display text-xl leading-snug font-semibold">{d.name}</span>
+          <span className="mt-0.5 block text-sm text-muted">{d.city ?? 'Location not yet verified'}</span>
+          <GroupLine d={d} />
+          {((!onMap && !isExpanded) || !d.verifiedOn) && (
+            <span className="mt-2 block text-xs text-muted">
+              {[!onMap && !isExpanded ? 'Not on the map yet' : null, !d.verifiedOn ? 'Details not yet verified' : null]
+                .filter(Boolean)
+                .join(' · ')}
+            </span>
+          )}
+        </span>
+        <Chevron className={`mt-1 ${isExpanded ? 'rotate-180' : ''}`} />
+      </button>
+      {isExpanded && <CardDetails d={d} onMap={onMap} onShowOnMap={onShowOnMap} />}
     </li>
   )
 }
@@ -189,6 +252,10 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
   // A region change only animates after the visitor has made one; a ?region= link opens already zoomed.
   const [regionTouched, setRegionTouched] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  // A scroll to run once the page has rendered the change that asked for it. Always a new object, so repeating one works.
+  const [jump, setJump] = useState<{ to: 'map' | 'card'; id: string } | null>(null)
+  const mapRef = useRef<HTMLDivElement>(null)
   // Ownership groups and the region live in the URL (?groups=, ?region=), so links are shareable. The static HTML renders all
   // groups (server snapshot); the client then reads the real address bar.
   const search = useSyncExternalStore(subscribeToUrl, readSearch, () => '')
@@ -232,8 +299,9 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
 
   const pinIds = useMemo(() => new Set(layout.pins.map((p) => p.id)), [layout])
   const mapped = useMemo(() => visible.filter((d) => pinIds.has(d.id)), [visible, pinIds])
-  // A selection only counts while its entry is still shown.
+  // A selection or an open card only counts while its entry is still shown.
   const selected = visible.find((d) => d.id === selectedId && pinIds.has(d.id)) ?? null
+  const expanded = visible.find((d) => d.id === expandedId)?.id ?? null
   const filtersActive = query.trim() !== '' || region !== ALL_REGIONS || !allGroups
   const selectedGroups = GROUPS.filter((g) => groups.includes(g.id))
 
@@ -245,27 +313,80 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
 
   const closePanel = () => setSelectedId(null)
 
-  function selectFromList(d: Stop) {
-    setSelectedId(selected?.id === d.id ? null : d.id)
+  // The open card and the selected pin stay linked: leaving a card also clears its pin and panel.
+  function toggleCard(id: string) {
+    const opening = expanded !== id
+    setExpandedId(opening ? id : null)
+    if (selected?.id !== id || !opening) setSelectedId(null)
   }
+
+  function showOnMap(d: Stop) {
+    setSelectedId(d.id)
+    if (d.region) setRegion(d.region)
+    setJump({ to: 'map', id: d.id })
+  }
+
+  function selectPin(id: string) {
+    setSelectedId(id)
+    setExpandedId(id)
+    setJump({ to: 'card', id })
+  }
+
+  useEffect(() => {
+    if (!jump) return
+    const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    if (jump.to === 'map') {
+      mapRef.current?.scrollIntoView({ behavior, block: 'start' })
+      // The pin is now the thing in view, so keyboard users continue from there.
+      mapRef.current?.querySelector<SVGGElement>(`[data-pin="${jump.id}"]`)?.focus({ preventScroll: true })
+    } else {
+      document.getElementById(`card-${jump.id}`)?.scrollIntoView({ behavior, block: 'start' })
+    }
+  }, [jump])
+
+  // Escape collapses the open card and leaves focus on it. Only from the card, its pin or nowhere in particular:
+  // the groups menu and the pin's panel have their own Escape, and a search field should keep its focus.
+  useEffect(() => {
+    if (!expanded) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      const card = document.getElementById(`card-${expanded}`)
+      const target = e.target instanceof Element ? e.target : null
+      if (target && target !== document.body && !card?.contains(target) && !target.closest('.dg-pin')) return
+      setExpandedId(null)
+      setSelectedId(null)
+      document.getElementById(`card-${expanded}-button`)?.focus()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [expanded])
 
   const cards = (list: Stop[]) =>
     list.map((d) => (
-      <Card key={d.id} d={d} onMap={pinIds.has(d.id)} isSelected={selected?.id === d.id} onSelect={() => selectFromList(d)} />
+      <Card
+        key={d.id}
+        d={d}
+        onMap={pinIds.has(d.id)}
+        isExpanded={expanded === d.id}
+        onToggle={() => toggleCard(d.id)}
+        onShowOnMap={() => showOnMap(d)}
+      />
     ))
 
   return (
     <div>
-      <StateMap
-        layout={layout}
-        entries={mapped}
-        selectedId={selected?.id ?? null}
-        onSelect={setSelectedId}
-        regionId={region}
-        regionCounts={regionCounts}
-        onRegion={setRegion}
-        animate={regionTouched}
-      />
+      <div ref={mapRef} className="scroll-mt-4">
+        <StateMap
+          layout={layout}
+          entries={mapped}
+          selectedId={selected?.id ?? null}
+          onSelect={selectPin}
+          regionId={region}
+          regionCounts={regionCounts}
+          onRegion={setRegion}
+          animate={regionTouched}
+        />
+      </div>
       <MapKey showTours={entries.some((d) => d.toursByAppointment && pinIds.has(d.id))} />
       {selected && <DetailPanel d={selected} onClose={closePanel} />}
       {total > 0 && mapped.length === 0 && (
@@ -355,7 +476,7 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
                 </button>
               </div>
             ) : (
-              <ul className="mt-6 grid gap-3 md:grid-cols-2">{cards(visible)}</ul>
+              <ul className="mt-6 grid items-start gap-3 md:grid-cols-2">{cards(visible)}</ul>
             )}
           </>
         )}

@@ -368,6 +368,7 @@ export default function StateMap({
             return (
               <g
                 key={d.id}
+                data-pin={d.id}
                 className="dg-pin"
                 transform={`translate(${p.x} ${p.y}) scale(${pinK})`}
                 style={pinsLive ? undefined : { pointerEvents: 'none' }}
