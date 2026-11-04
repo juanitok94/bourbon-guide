@@ -2,7 +2,7 @@
 
 /* Theme "Copper & Char": dark only. Contrast checked (WCAG AA) for every text/background pair in use:
    --text on bg/surface/raised >= 13:1, --muted on bg/surface/raised >= 5.9:1, --copper/--amber/--teal on
-   bg/surface >= 5:1, --text on --closed 4.8:1. --closed alone is only used for non-text graphics (3:1).
+   bg/surface >= 5:1.
    --accent comes from src/data/map.json (set on <html> in layout.tsx; the value here is the fallback).
    With the KY accent #a8452b: graphics/borders on --bg 3.3:1 (>= 3:1 non-text), --text on --accent 4.7:1.
    --accent is NOT text-safe on --bg; text in the accent hue uses --accent-ink (KY: ~6.9:1 on --bg). */
@@ -19,7 +19,6 @@
   --ocean: #0b1a22;
   --state: #1c1915;
   --county: #2b2520;
-  --closed: #6b625a;
   --accent: #a8452b;
   --accent-ink: color-mix(in srgb, var(--accent) 55%, var(--text));
   color-scheme: dark;
@@ -36,7 +35,6 @@
   --color-amber: var(--amber);
   --color-teal: var(--teal);
   --color-ocean: var(--ocean);
-  --color-closed: var(--closed);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

@@ -153,6 +153,8 @@ for (const b of brands) {
 }
 
 const verified = data.filter((d) => d.verifiedOn !== null).length
+// Closed stops are validated like any other but never shown to visitors (src/lib/stops.ts).
+const closedStops = data.filter((d) => d.status === 'closed')
 const pinned = data.filter((d) => d.lat !== null && d.lng !== null).length
 
 if (process.argv.includes('--verbose')) warnings.forEach((w) => console.warn(`warn: ${w}`))
@@ -160,8 +162,9 @@ else if (warnings.length) console.warn(`warn: ${warnings.length} warnings (use -
 errors.forEach((e) => console.error(`error: ${e}`))
 
 console.log(
-  `check:data ${MAP.id} | total ${data.length} | on map ${pinned} | verified ${verified} | unverified ${data.length - verified} | cities ${cities.length}`,
+  `check:data ${MAP.id} | total ${data.length} | on map ${pinned} | verified ${verified} | unverified ${data.length - verified} | closed (hidden) ${closedStops.length} | cities ${cities.length}`,
 )
+closedStops.forEach((d) => console.log(`  closed, hidden from visitors (keep in data, don't re-add): ${d.id}`))
 for (const g of groups) {
   const s = data.filter((d) => d.groupId === g.id).length
   const b = brands.filter((x) => x.groupId === g.id).length

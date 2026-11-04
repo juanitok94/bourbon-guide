@@ -56,7 +56,7 @@ To update the guide: edit `src/data/stops.json`, run `check:data`, rebuild.
 Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
 
 ## Look: "Copper & Char" (dark only, no light mode)
-- Colors are CSS variables on `:root` in `src/app/globals.css` (--bg, --surface, --raised, --line, --text, --muted, --copper, --amber, --teal, --ocean, --state, --county, --closed, --accent, --accent-ink); use the Tailwind tokens (bg-surface, text-muted, border-line, text-accent-ink...), never raw hex in components. Check WCAG AA when changing any pair; --closed is for graphics only, never text on --bg.
+- Colors are CSS variables on `:root` in `src/app/globals.css` (--bg, --surface, --raised, --line, --text, --muted, --copper, --amber, --teal, --ocean, --state, --county, --accent, --accent-ink); use the Tailwind tokens (bg-surface, text-muted, border-line, text-accent-ink...), never raw hex in components. Check WCAG AA when changing any pair.
 - `--accent` is set from map.json (inline on `<html>`), a deep bourbon red (#a8452b). It is used for pins, borders and highlights where NC used --copper. It is NOT text-safe on --bg (3.3:1): text in the accent hue uses `--accent-ink`; text on an accent fill uses --text (4.7:1).
 - Fonts via next/font (self-hosted at build): Fraunces for headings (`font-display`), Inter for body.
 - Theme color is --bg (#0f0d0b) in the viewport meta, manifest and icons.
@@ -93,7 +93,10 @@ Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
   house-number or named-place match (never a bare road midpoint); otherwise it logs "needs manual check". A manual
   fix still needs a source; set `geocodeSource` to it. Pins appear only for entries with lat/lng; the
   list shows "Not on map yet" otherwise. check:data rejects coordinates outside the state's bounding box.
-- Renames, mergers: explain in `note`. Never delete entries; closed ones stay with a Closed badge.
+- Renames, mergers: explain in `note`. Never delete entries.
+- Closed stops stay in the data for history but are never shown to visitors. `src/lib/stops.ts` (`VISITOR_STOPS`)
+  drops them before anything renders: no pin, card, search/region/group result, or count (hero, footer, group panel,
+  compare table). check:data still validates them and prints the closed count. Never re-add a closed place as new.
 - Verify mappings (region, trail, city) against explicit sources. Never assume order.
 - Re-verify every 6 months.
 
@@ -109,7 +112,7 @@ Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
 
 ## Map
 - Outline: `npm run build:outline` reads map.json `fips` and writes `src/data/outline.json` from us-atlas (U.S. Census Bureau), with a Lambert conformal projection fitted to the state, interior county lines and the state's bounding box. Credits come from map.json `credits`.
-- Pin shapes: teal circle (distillery), --accent bottle-shaped tag (tours by appointment), --closed with an X (closed). Keep the bottle tag abstract; it must not read as drinking imagery.
+- Pin shapes: teal circle (distillery), --accent bottle-shaped tag (tours by appointment). Keep the bottle tag abstract; it must not read as drinking imagery.
 - City labels: `src/data/cities.json` (Census Gazetteer 2023 place file for KY, with sourceUrl; optional `label` offset to avoid collisions). Pin collision nudging runs at build time in `src/lib/map-layout.ts`; `npx tsx scripts/report-nudges.ts` lists moved pins.
 - The key floats in a gutter to the right of the state on desktop (clipped on phones) and becomes chips under the map on phones. Pin graphics are shared between the map and the key (`PinGraphic`).
 
@@ -117,7 +120,7 @@ Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
 - The visitor UI has search by name, a region dropdown (from map.json) and ownership-group chips above the map. Reset (clears all three) and "Showing X of N" appear whenever anything narrows the list.
 - Group chips (`GroupChips`): multi-select toggles with aria-pressed, 44px tall, default all on. "All groups" turns every group on; turning off the last group turns them all back on (never an empty map). The chips are the key for pin colors and marker letters, so the map key shows shapes and status only. Independent stops (groupId null) show only while all groups are on.
 - The selection lives in the URL (`?groups=sazerac,brown-forman`; all groups = no parameter), read through `useSyncExternalStore` and written with `history.replaceState`. Unknown ids fall back to all groups. The static HTML always renders all groups.
-- One group selected: a group panel (name, HQ, Kentucky stops, all brands, website). Two or more but not all: a compare table (real <table>, column and row headers). Cards show "Part of <group>" and the brands made there (brands.json `stopId`); brands with a null stopId appear only in the group panel. Closed entries sit in a collapsed "Closed (N)" section; their pins stay on the map.
+- One group selected: a group panel (name, HQ, Kentucky stops, all brands, website). Two or more but not all: a compare table (real <table>, column and row headers). Cards show "Part of <group>" and the brands made there (brands.json `stopId`); brands with a null stopId appear only in the group panel.
 - With no entries, the map still shows the outline and the list says "Distilleries are being added and verified."
 - Admin views (verified counts, unverified lists, missing coordinates) live in `npm run check:data` (`--verbose`), never in the visitor UI.
 

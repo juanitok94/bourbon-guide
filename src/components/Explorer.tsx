@@ -66,7 +66,6 @@ function Badges({ d }: { d: Stop }) {
           Open
         </span>
       )}
-      {d.status === 'closed' && <span className={`${PILL} border-closed bg-closed text-text`}>Closed</span>}
       {d.toursByAppointment && <span className={`${PILL} border-accent text-accent-ink`}>Tours by appointment</span>}
     </span>
   )
@@ -137,7 +136,6 @@ function Card({
 }
 
 function DetailPanel({ d, onClose }: { d: Stop; onClose: () => void }) {
-  const closed = d.status === 'closed'
   const showSite = d.website && d.verifiedOn
   return (
     <div
@@ -165,7 +163,6 @@ function DetailPanel({ d, onClose }: { d: Stop; onClose: () => void }) {
         </button>
       </div>
       <ul className="mt-3 space-y-1 text-sm">
-        {closed && <li className="font-semibold">Closed</li>}
         {d.trails.map((t) => (
           <li key={t} className="text-amber">
             {withMarks(t)}
@@ -224,8 +221,6 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
   const selected = visible.find((d) => d.id === selectedId && pinIds.has(d.id)) ?? null
   const filtersActive = filters.query.trim() !== '' || filters.region !== 'all' || !allGroups
   const selectedGroups = GROUPS.filter((g) => groups.includes(g.id))
-  const openList = useMemo(() => visible.filter((d) => d.status !== 'closed'), [visible])
-  const closedList = useMemo(() => visible.filter((d) => d.status === 'closed'), [visible])
 
   const update = (patch: Partial<Filters>) => setFilters((f) => ({ ...f, ...patch }))
   const reset = () => {
@@ -318,20 +313,7 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
                 </button>
               </div>
             ) : (
-              <>
-                {openList.length > 0 && <ul className="mt-6 grid gap-3 md:grid-cols-2">{cards(openList)}</ul>}
-                {closedList.length > 0 && (
-                  <details className="group mt-8 rounded-xl border border-line bg-surface">
-                    <summary className="flex min-h-11 cursor-pointer items-center gap-2 px-4 text-sm font-semibold text-muted hover:text-text">
-                      <svg viewBox="0 0 12 12" className="h-3 w-3 transition-transform group-open:rotate-90" aria-hidden="true">
-                        <path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                      Closed ({closedList.length})
-                    </summary>
-                    <ul className="grid gap-3 border-t border-line p-3 md:grid-cols-2">{cards(closedList)}</ul>
-                  </details>
-                )}
-              </>
+              <ul className="mt-6 grid gap-3 md:grid-cols-2">{cards(visible)}</ul>
             )}
           </>
         )}

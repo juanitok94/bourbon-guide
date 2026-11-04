@@ -3,7 +3,7 @@
 // Static night-style state map: an SVG drawn from build-time data. No tiles, no map library, no panning.
 // Pins (only for entries with verified lat/lng) take their ownership group's colour and marker letter
 // (groups.json; the group chips above the map are the key for these). Shape: bottle tag = tours by
-// appointment, circle otherwise. Closed = --closed with an X. Independents (no group) = --teal, no letter.
+// appointment, circle otherwise. Independents (no group) = --teal, no letter.
 // The state outline comes from map.json's FIPS code.
 import type { KeyboardEvent } from 'react'
 import { MAP, type Stop } from '@/data/types'
@@ -30,7 +30,6 @@ export function pinLabel(d: Stop): string {
     d.city,
     groupOf(d)?.name ?? null,
     d.toursByAppointment ? 'tours by appointment' : null,
-    d.status === 'closed' ? 'closed' : null,
   ]
   return parts.filter(Boolean).join(', ')
 }
@@ -38,31 +37,21 @@ export function pinLabel(d: Stop): string {
 // The real pin graphic, shared by the map and the key.
 export function PinGraphic({
   shape,
-  closed = false,
   color = 'var(--teal)',
   marker = null,
 }: {
   shape: PinShape
-  closed?: boolean
   color?: string
   marker?: string | null
 }) {
-  const fill = closed ? 'var(--closed)' : color
   const centerY = shape === 'bottle' ? 3 : 0
   return (
     <>
       <circle className="dg-ring" r="21" fill="none" strokeWidth="2.5" />
-      <g fill={fill} stroke="var(--bg)" strokeWidth="2" strokeLinejoin="round">
+      <g fill={color} stroke="var(--bg)" strokeWidth="2" strokeLinejoin="round">
         {shape === 'bottle' ? <path d={BOTTLE} /> : <circle r="12.5" />}
       </g>
-      {closed ? (
-        <path
-          d={`M-5 ${centerY - 5} L5 ${centerY + 5} M5 ${centerY - 5} L-5 ${centerY + 5}`}
-          stroke="var(--text)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-      ) : marker ? (
+      {marker ? (
         <text
           y={centerY}
           textAnchor="middle"
@@ -129,11 +118,8 @@ function Compass() {
   )
 }
 
-// Shapes and status only; group colours and letters are keyed by the group chips above the map.
-const KEY: { label: string; shape: PinShape; closed?: boolean }[] = [
-  { label: 'Tours by appointment', shape: 'bottle' },
-  { label: 'Closed', shape: 'circle', closed: true },
-]
+// Shapes only; group colours and letters are keyed by the group chips above the map.
+const KEY: { label: string; shape: PinShape }[] = [{ label: 'Tours by appointment', shape: 'bottle' }]
 
 function MapKey() {
   return (
@@ -157,7 +143,7 @@ function MapKey() {
             className="flex items-center gap-1.5 rounded-full border border-line bg-raised py-0.5 pr-3 pl-1 text-xs text-text md:gap-2 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:text-sm"
           >
             <svg viewBox="-17 -17 34 34" className="h-6 w-6 shrink-0" aria-hidden="true">
-              <PinGraphic shape={k.shape} closed={k.closed} color="var(--muted)" />
+              <PinGraphic shape={k.shape} color="var(--muted)" />
             </svg>
             {k.label}
           </li>
@@ -273,7 +259,6 @@ export default function StateMap({
               <circle r="17" fill="transparent" />
               <PinGraphic
                 shape={shapeOf(d)}
-                closed={d.status === 'closed'}
                 color={group?.color}
                 marker={group?.marker ?? null}
               />

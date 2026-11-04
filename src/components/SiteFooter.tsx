@@ -1,5 +1,5 @@
-import stops from '@/data/stops.json'
-import { MAP, type Stop } from '@/data/types'
+import { MAP } from '@/data/types'
+import { VISITOR_STOPS } from '@/lib/stops'
 
 function formatDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number)
@@ -13,7 +13,7 @@ function formatDate(iso: string): string {
 
 // Status line computed from the data at build time; credits and trademark notices from map.json.
 export default function SiteFooter() {
-  const entries = stops as Stop[]
+  const entries = VISITOR_STOPS
   const dates = entries.map((d) => d.verifiedOn).filter((v): v is string => v !== null)
   const latest = dates.length ? dates.reduce((a, b) => (a > b ? a : b)) : null
   const parts = [

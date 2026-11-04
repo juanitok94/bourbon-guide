@@ -1,13 +1,13 @@
 import Explorer from '@/components/Explorer'
 import Notice21 from '@/components/Notice21'
-import stops from '@/data/stops.json'
-import { MAP, type Stop } from '@/data/types'
+import { MAP } from '@/data/types'
 import { GROUPS } from '@/lib/groups'
 import { computeLayout } from '@/lib/map-layout'
+import { VISITOR_STOPS } from '@/lib/stops'
 import { PLACE } from '@/lib/site'
 
 export default function Home() {
-  const entries = stops as Stop[]
+  const entries = VISITOR_STOPS
   const layout = computeLayout(entries)
   const verified = entries.filter((d) => d.verifiedOn !== null).length
   return (
