@@ -9,7 +9,7 @@ actions, database, accounts or live data. The map is a static SVG drawn at build
 Scaffolded from the NC guide at `C:\distillery-guide`, which is READ ONLY: never modify it or run git in it.
 
 ## Git
-Commit locally when asked. Push only when the user asks. There is no remote; don't create one unless asked.
+Commit locally when asked. Push only when the user asks. The repo has a GitHub remote and Vercel deploys from master, so a push to master publishes the site.
 
 ## Commands
 ```bash
