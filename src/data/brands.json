@@ -278,5 +278,37 @@
     "stopId": "willett-distillery",
     "sourceUrl": "https://www.kentuckybourbonwhiskey.com/whiskey/",
     "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "whiskey-thief",
+    "name": "Whiskey Thief",
+    "groupId": null,
+    "stopId": "whiskey-thief-distilling-co",
+    "sourceUrl": "https://whiskeythief.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "old-pogue",
+    "name": "Old Pogue",
+    "groupId": null,
+    "stopId": "the-old-pogue-distillery",
+    "sourceUrl": "https://www.oldpogue.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "augusta-distillery-kentucky-straight-bourbon",
+    "name": "Augusta Distillery Kentucky Straight Bourbon",
+    "groupId": null,
+    "stopId": "augusta-distillery",
+    "sourceUrl": "https://augustakydistillery.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "revere",
+    "name": "Revere",
+    "groupId": null,
+    "stopId": "casey-jones-distillery",
+    "sourceUrl": "https://www.caseyjonesdistillery.com/contact-us",
+    "verifiedOn": "2026-11-05"
   }
 ]

@@ -189,7 +189,7 @@
       "city": "Frankfort",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/whiskey-thief-distilling-co/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -197,7 +197,7 @@
       "city": "Maysville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/the-old-pogue-distillery/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -205,7 +205,7 @@
       "city": "Augusta",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/augusta-distillery/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -213,7 +213,7 @@
       "city": "Hopkinsville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/casey-jones-distillery/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -237,7 +237,7 @@
       "city": "Cox's Creek",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/four-roses-warehouse-and-bottling-facility/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -245,7 +245,7 @@
       "city": "Frankfort",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/j-mattingly-1845-distillery/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -270,7 +270,7 @@
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/rabbit-hole-distillery/",
       "state": "added-unverified",
-      "note": "Started: address 711 East Jefferson Street, Louisville. Own site shows conflicting hours (Tue-Sat 10-6 in booking text; Wed-Sat 10-6 in footer); resolve next run (https://www.rabbitholedistillery.com/)."
+      "note": "Own site's hours conflict (Tue-Sat vs Wed-Sat) and no phone found; left unverified."
     },
     {
       "name": "Stitzel-Weller Distillery",
