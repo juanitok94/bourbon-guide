@@ -158,6 +158,11 @@ function wrapLabel(names: string[], maxW: number): string[] {
 
 type Draft = { pins: StampPin[]; lines: string[]; w: number; h: number; key: string }
 
+function permutations<T>(items: T[]): T[][] {
+  if (items.length <= 1) return [items]
+  return items.flatMap((x, i) => permutations([...items.slice(0, i), ...items.slice(i + 1)]).map((rest) => [x, ...rest]))
+}
+
 function draftOf(pins: StampPin[], maxW: number): Draft {
   const names = [...new Set(pins.map((p) => p.city).filter((c): c is string => Boolean(c)))].sort((a, b) => a.localeCompare(b))
   const lines = wrapLabel(names, maxW)
@@ -213,7 +218,18 @@ function placeInOval(drafts: Draft[], f: Frame, view: Rect, avoid: { x: number; 
       }
     }
     if (!best) return null
-    const c = finish(d, best.x, best.y, best.y + d.h / 2 < anchor.y, false)
+    const labelAbove = best.y + d.h / 2 < anchor.y
+    // The stamps' order inside a callout is free: take the order whose leaders cross the fewest others (own and placed).
+    let c = finish(d, best.x, best.y, labelAbove, false)
+    if (d.pins.length > 1 && d.pins.length <= 5) {
+      let fewest = Infinity
+      for (const order of permutations(d.pins)) {
+        const cand = finish({ ...d, pins: order }, best.x, best.y, labelAbove, false)
+        const n = countCrossings(leadersOf(f, view, [...placed, cand]))
+        if (n < fewest) { fewest = n; c = cand }
+        if (n === 0) break
+      }
+    }
     placed.push(c)
     boxes.push({ x0: c.x, y0: c.y, x1: c.x + c.w, y1: c.y + c.h })
   }
