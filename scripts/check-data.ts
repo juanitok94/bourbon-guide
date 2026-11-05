@@ -3,7 +3,8 @@
 // Fails (exit 1) on rule violations; warns on missing details, which are expected until verified.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Brand, City, Group, Stop } from '../src/data/types'
+import type { Brand, City, Group, ImageRecord, Stop } from '../src/data/types'
+import { existsSync } from 'node:fs'
 import { MAP } from '../src/data/types'
 import { computeRegions, regionProblems, type RegionArea } from '../src/lib/regions'
 import { contrast, readTokens, textPairs } from './contrast'
@@ -18,6 +19,7 @@ const data = read<Stop[]>('src/data/stops.json')
 const groups = read<Group[]>('src/data/groups.json')
 const brands = read<Brand[]>('src/data/brands.json')
 const cities = read<City[]>('src/data/cities.json')
+const images = read<ImageRecord[]>('src/data/images.json')
 const savedRegions = read<RegionArea[]>('src/data/regions.json')
 const outline = read<{ fips: string; width: number; height: number; bounds: { south: number; north: number; west: number; east: number } }>(
   'src/data/outline.json',
@@ -71,6 +73,20 @@ for (const c of cities) {
   if (blank(c.name)) errors.push('cities.json: missing name')
   if (blank(c.sourceUrl) || !c.sourceUrl.startsWith('https://')) errors.push(`cities.json ${c.name}: sourceUrl must be https`)
   if (!inBox(c.lat, c.lng)) errors.push(`cities.json ${c.name}: outside ${MAP.state}'s bounding box`)
+}
+
+// --- images.json: only freely licensed photos, each fully recorded (the footer credit reads this)
+const FREE_LICENSE = /^(public domain|cc0( 1\.0)?|cc by( \d\.\d)?)$/i // CC BY-SA, -NC and -ND do not match
+const IMAGE_FIELDS = ['id', 'title', 'sourceUrl', 'author', 'license', 'retrievedOn', 'localPath'] as const
+for (const im of images) {
+  const at = `images.json ${im.id ?? '(no id)'}`
+  for (const k of IMAGE_FIELDS) if (blank(im[k])) errors.push(`${at}: missing ${k}`)
+  if (!('licenseUrl' in im)) errors.push(`${at}: missing licenseUrl (use null when the API gives none)`)
+  else if (im.licenseUrl !== null && (blank(im.licenseUrl) || !im.licenseUrl.startsWith('https://'))) errors.push(`${at}: licenseUrl must be https or null`)
+  if (!blank(im.license) && !FREE_LICENSE.test(im.license.trim())) errors.push(`${at}: license "${im.license}" is not public domain, CC0 or CC BY`)
+  if (!blank(im.sourceUrl) && !im.sourceUrl.startsWith('https://')) errors.push(`${at}: sourceUrl must start with https://`)
+  if (!blank(im.retrievedOn) && !DATE.test(im.retrievedOn)) errors.push(`${at}: retrievedOn must be YYYY-MM-DD`)
+  if (!blank(im.localPath) && !existsSync(join(process.cwd(), im.localPath))) errors.push(`${at}: localPath ${im.localPath} does not exist`)
 }
 
 // --- groups.json

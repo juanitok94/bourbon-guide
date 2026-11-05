@@ -1,4 +1,5 @@
-import { MAP } from '@/data/types'
+import images from '@/data/images.json'
+import { MAP, type ImageRecord } from '@/data/types'
 import { VISITOR_STOPS } from '@/lib/stops'
 
 function formatDate(iso: string): string {
@@ -13,6 +14,7 @@ function formatDate(iso: string): string {
 
 // Status line computed from the data at build time; credits and trademark notices from map.json.
 export default function SiteFooter() {
+  const photo = (images as ImageRecord[])[0] ?? null
   const entries = VISITOR_STOPS
   const dates = entries.map((d) => d.verifiedOn).filter((v): v is string => v !== null)
   const latest = dates.length ? dates.reduce((a, b) => (a > b ? a : b)) : null
@@ -30,6 +32,15 @@ export default function SiteFooter() {
         <p className="leading-relaxed tracking-[0.08em] uppercase">{parts.join(' · ')}</p>
         <div className="mt-3 space-y-1.5 leading-relaxed">
           {MAP.trademarks?.map((t) => <p key={t.term}>{t.notice}</p>)}
+          {photo && (
+            <p>
+              Photo:{' '}
+              <a href={photo.sourceUrl} className="underline underline-offset-2">
+                {photo.title}
+              </a>{' '}
+              by {photo.author}, {photo.license}
+            </p>
+          )}
           {MAP.credits.map((c) => (
             <p key={c}>{c}</p>
           ))}
