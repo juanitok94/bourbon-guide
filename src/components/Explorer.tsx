@@ -275,7 +275,6 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
     [entries, show],
   )
   const hasMajors = layer.some((d) => d.scale === 'major')
-  const verified = layer.filter((d) => d.verifiedOn !== null).length
   const groupsInView = new Set(layer.map((d) => d.groupId).filter(Boolean)).size
   const showGroups = show !== 'independents'
   const trailOptions = useMemo(
@@ -416,7 +415,7 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
   return (
     <div>
       <p className="tabular text-center text-xs text-muted">
-        {layer.length} in view · {verified} verified
+        {layer.length} in view
         {hasMajors && ` · ${groupsInView} ${groupsInView === 1 ? 'group' : 'groups'}`}
       </p>
 

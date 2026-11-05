@@ -20,9 +20,7 @@ export default function SiteFooter() {
   const latest = dates.length ? dates.reduce((a, b) => (a > b ? a : b)) : null
   const parts = [
     `${entries.length} distilleries`,
-    `${dates.length} verified`,
     latest ? `Last checked ${formatDate(latest)}` : null,
-    'Unofficial',
     '21+',
     'Built by Peachy Kean DevOps, LLC',
   ].filter(Boolean)

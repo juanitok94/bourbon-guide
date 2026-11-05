@@ -133,7 +133,7 @@ html,body{width:${W}px;height:${H}px;background:${C.wine}${photoUri ? ` url(${ph
 svg{position:absolute;left:0;top:0}
 </style></head><body>
 <div class="title">${words.join('<br>')}</div>
-<div class="ribbon">UNOFFICIAL · VERIFIED · 21+</div>
+<div class="ribbon">UNOFFICIAL · 21+</div>
 <div class="line">${map.stateName} distillery tours, majors and independents</div>
 <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <ellipse cx="${ox + ovalW / 2}" cy="${oy + ovalH / 2}" rx="${ovalW / 2}" ry="${ovalH / 2}" fill="${C.cream}" stroke="${C.gold}" stroke-width="3"/>

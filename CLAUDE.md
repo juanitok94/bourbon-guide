@@ -82,7 +82,7 @@ Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
 ## Tone and compliance (non-negotiable)
 - Copy says "visit" and "explore". Never "drink", "shot", "taste", "buzz", "collect" or "reward".
 - 21+ notice on every page (including 404 and error) and in the footer.
-- Footer status line, computed from the data: "N distilleries · X verified · Last checked <latest verifiedOn> · Unofficial · 21+ · Built by Peachy Kean DevOps, LLC".
+- Footer status line, computed from the data: "N distilleries · Last checked <latest verifiedOn> · 21+ · Built by Peachy Kean DevOps, LLC".
 - No levels, badges, streaks or rewards tied to consumption.
 - Only freely licensed photos (public domain, CC0, CC BY) recorded in `src/data/images.json`, with the credit shown in the footer; no logos or brand marks in any image. No agency or association seals or logos. No bottle imagery suggesting drinking.
 

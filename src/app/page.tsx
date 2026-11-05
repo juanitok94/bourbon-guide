@@ -12,7 +12,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: homeJsonLd(entries) }} />
       <header className="mb-3 text-center">
         <p className="inline-block bg-gold px-3 py-1 text-[11px] font-semibold tracking-[0.2em] text-wine">
-          UNOFFICIAL · VERIFIED · <span className="font-stencil text-sm font-extrabold tracking-[0.08em]">21+</span>
+          UNOFFICIAL · <span className="font-stencil text-sm font-extrabold tracking-[0.08em]">21+</span>
         </p>
         <h1 className="mt-4 font-stencil text-[62px] leading-[0.92] font-extrabold tracking-wide text-gold uppercase md:text-[96px]">
           {MAP.title.split(' ').map((word, i) => (
@@ -22,7 +22,7 @@ export default function Home() {
             </span>
           ))}
         </h1>
-        <p className="mx-auto mt-4 max-w-3xl text-sm">An unofficial guide to {PLACE}&apos;s distilleries, from the major producers to the independents.</p>
+        <p className="mx-auto mt-4 max-w-3xl text-sm">A guide to {PLACE}&apos;s distilleries, from the major producers to the independents.</p>
       </header>
       <Explorer entries={entries} layout={layout} />
     </main>
