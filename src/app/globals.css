@@ -9,6 +9,8 @@
   --cream: #f4e8d6;
   --paper: #e9d3a8;
   --muted: #d9b9a0;
+  /* Flat wine wash over the hero photo (no gradient). npm run hero reads this alpha and checks text contrast against it. */
+  --hero-overlay: rgb(58 13 25 / 0.55);
   color-scheme: dark;
 }
 
@@ -39,6 +41,44 @@ body {
   font-family: var(--font-mono);
   font-weight: 500;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Hero band: the toned photo (public/hero) edge to edge, a flat wine wash over it, the header text centred on top. */
+.dg-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  height: 340px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 1rem;
+  text-align: center;
+  background: var(--wine-deep);
+}
+.dg-hero picture,
+.dg-hero img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.dg-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--hero-overlay);
+}
+@media (min-width: 768px) {
+  .dg-hero {
+    height: 460px;
+  }
 }
 
 .tabular {
