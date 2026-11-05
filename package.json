@@ -14,6 +14,7 @@
     "build:outline": "tsx scripts/build-outline.ts",
     "build:regions": "tsx scripts/build-regions.ts",
     "geocode": "tsx scripts/geocode.ts",
+    "og": "tsx scripts/make-og.mjs",
     "fabric:export": "tsx scripts/fabric/export.ts",
     "fabric:pull": "tsx scripts/fabric/pull.ts"
   },

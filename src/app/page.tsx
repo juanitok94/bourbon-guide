@@ -22,7 +22,7 @@ export default function Home() {
             </span>
           ))}
         </h1>
-        <p className="mx-auto mt-4 max-w-3xl text-sm">An unofficial guide to {PLACE}&apos;s distilleries, grouped by owner.</p>
+        <p className="mx-auto mt-4 max-w-3xl text-sm">An unofficial guide to {PLACE}&apos;s distilleries, from the major producers to the independents.</p>
       </header>
       <Explorer entries={entries} layout={layout} />
     </main>

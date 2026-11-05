@@ -8,12 +8,17 @@ import { MAP } from '@/data/types'
 import { SEO_DESCRIPTION, SEO_TITLE, SITE_URL } from '@/lib/site'
 import './globals.css'
 
+// Makes the share image URL absolute: the configured site address, else the Vercel production domain, else none.
+const VERCEL_HOST = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim()
+const BASE_URL = SITE_URL ?? (VERCEL_HOST ? `https://${VERCEL_HOST}` : null)
+
 export const metadata: Metadata = {
-  ...(SITE_URL ? { metadataBase: new URL(SITE_URL), alternates: { canonical: '/' } } : {}),
+  ...(BASE_URL ? { metadataBase: new URL(BASE_URL) } : {}),
+  ...(SITE_URL ? { alternates: { canonical: '/' } } : {}),
   title: SEO_TITLE,
   description: SEO_DESCRIPTION,
   openGraph: { title: SEO_TITLE, description: SEO_DESCRIPTION, type: 'website', siteName: MAP.title },
-  twitter: { card: 'summary', title: SEO_TITLE, description: SEO_DESCRIPTION },
+  twitter: { card: 'summary_large_image', title: SEO_TITLE, description: SEO_DESCRIPTION },
 }
 
 export const viewport: Viewport = {
