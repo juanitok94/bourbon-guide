@@ -1,5 +1,5 @@
 {
-  "note": "Candidate list for the independents run. Not served to visitors. Each run processes up to 20 \"pending\" entries. States: pending | added | skipped-no-visits | owned-by-larger-company | could-not-confirm | 429-retry.",
+  "note": "Candidate list for the independents run. Not served to visitors. Each run processes up to 20 \"pending\" entries. States: pending | added | added-unverified | skipped-no-visits | owned-by-larger-company | could-not-confirm | 429-retry.",
   "sources": [
     {
       "name": "Kentucky Bourbon Trail® member list (kybourbontrail.com), the single program since the Craft Tour merged into it",
@@ -29,7 +29,7 @@
       "city": "Newport",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/pensive-distilling-co/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -53,7 +53,7 @@
       "city": "Danville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/wilderness-trail-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -77,7 +77,7 @@
       "city": "Sparta",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/neeley-family-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -93,7 +93,7 @@
       "city": "Radcliff",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/boundary-oak-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -101,7 +101,7 @@
       "city": "Independence",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/boone-county-distilling-co/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -109,7 +109,7 @@
       "city": "Bardstown",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/bardstown-bourbon-co/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -117,7 +117,7 @@
       "city": "Crestwood",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/kentucky-artisan-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -141,7 +141,7 @@
       "city": "Lawrenceburg",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/larrikin-bourbon-co/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -173,15 +173,15 @@
       "city": null,
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/chicken-cock-whiskey-circa-1856/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
       "name": "Bespoken Spirits",
-      "city": null,
+      "city": "Lexington",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/bespoken-spirits/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -189,7 +189,7 @@
       "city": "Frankfort",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/whiskey-thief-distilling-co/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -197,7 +197,7 @@
       "city": "Maysville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/the-old-pogue-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -205,7 +205,7 @@
       "city": "Augusta",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/augusta-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -213,7 +213,7 @@
       "city": "Hopkinsville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/casey-jones-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -221,7 +221,7 @@
       "city": "Paducah",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/purple-toad-winery-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -234,10 +234,10 @@
     },
     {
       "name": "Four Roses Warehouse & Bottling Facility",
-      "city": null,
+      "city": "Cox's Creek",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/four-roses-warehouse-and-bottling-facility/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -245,7 +245,7 @@
       "city": "Frankfort",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/j-mattingly-1845-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -253,7 +253,7 @@
       "city": "Covington",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/wenzel-whiskey/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -261,7 +261,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/bardstown-bourbon-co-louisville-tasting-room/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -269,7 +269,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/rabbit-hole-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": "Started: address 711 East Jefferson Street, Louisville. Own site shows conflicting hours (Tue-Sat 10-6 in booking text; Wed-Sat 10-6 in footer); resolve next run (https://www.rabbitholedistillery.com/)."
     },
     {
@@ -277,7 +277,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/stitzel-weller-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -285,7 +285,7 @@
       "city": null,
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/chicken-cock-whiskey-circa-1856-louisville/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -293,7 +293,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/whiskey-thief-tasting-and-listening-room/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -306,10 +306,10 @@
     },
     {
       "name": "Dark Arts Whiskey House",
-      "city": null,
+      "city": "Lexington",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/dark-arts-whiskey-house/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -317,31 +317,31 @@
       "city": "Paris",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/hartfield-co-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
       "name": "James E. Pepper Distillery",
-      "city": null,
+      "city": "Lexington",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/james-e-pepper-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
       "name": "RD1 Distillery",
-      "city": null,
+      "city": "Lexington",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/rd1-spirits/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
       "name": "Town Branch Distillery",
-      "city": null,
+      "city": "Lexington",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/town-branch-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -349,7 +349,7 @@
       "city": "Midway",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/bluegrass-distillers-at-elkwood-farm/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -373,7 +373,7 @@
       "city": "Owensboro",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/green-river-distilling-co/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -386,10 +386,10 @@
     },
     {
       "name": "Bard Distillery",
-      "city": null,
+      "city": "Graham",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/the-bard-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -405,7 +405,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/whistlepig-the-vault/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -413,7 +413,7 @@
       "city": "Brandenburg",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/whistlepig-development-depot/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -429,7 +429,7 @@
       "city": "Bowling Green",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/purple-toad-winery-distillery-bowling-green/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -437,7 +437,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/pursuit-spirits/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -445,7 +445,7 @@
       "city": "Cave City",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/cave-city-distilling-co/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -453,7 +453,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/pursuit-spirits-on-whiskey-row/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -461,7 +461,7 @@
       "city": "Augusta",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/becker-bird-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -477,7 +477,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/green-river-louisville-tasting-room/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -485,7 +485,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/buzzards-roost-distillery-tasting-room/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -509,7 +509,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/left-bank-and-safai-bourbon/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -517,7 +517,7 @@
       "city": "Burkesville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/southern-kentucky-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -525,15 +525,15 @@
       "city": "Franklin",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/dueling-grounds-distillery/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
       "name": "General George Stillhouse",
-      "city": null,
+      "city": "Falls of Rough",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/general-george-stillhouse/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -541,7 +541,7 @@
       "city": "Adairville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/b-h-james-distillers/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -549,7 +549,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/uncle-boojies-distilling-company/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {
@@ -557,7 +557,7 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/uncle-boojies-distilling-company-broadway/",
-      "state": "pending",
+      "state": "added-unverified",
       "note": ""
     },
     {

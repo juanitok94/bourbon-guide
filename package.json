@@ -15,6 +15,7 @@
     "build:regions": "tsx scripts/build-regions.ts",
     "geocode": "tsx scripts/geocode.ts",
     "og": "tsx scripts/make-og.mjs",
+    "unverified": "tsx scripts/unverified.ts",
     "fabric:export": "tsx scripts/fabric/export.ts",
     "fabric:pull": "tsx scripts/fabric/pull.ts"
   },
