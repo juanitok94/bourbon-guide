@@ -310,5 +310,29 @@
     "stopId": "casey-jones-distillery",
     "sourceUrl": "https://www.caseyjonesdistillery.com/contact-us",
     "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "james-e-pepper",
+    "name": "James E. Pepper",
+    "groupId": null,
+    "stopId": "james-e-pepper-distillery",
+    "sourceUrl": "https://jamesepepper.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "town-branch",
+    "name": "Town Branch",
+    "groupId": null,
+    "stopId": "town-branch-distillery",
+    "sourceUrl": "https://lexingtonbrewingco.com/whiskey-spirits/town-branch",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "green-river",
+    "name": "Green River",
+    "groupId": null,
+    "stopId": "green-river-distilling-co",
+    "sourceUrl": "https://greenriverwhiskey.com/",
+    "verifiedOn": "2026-11-05"
   }
 ]

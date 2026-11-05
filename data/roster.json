@@ -277,8 +277,8 @@
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/stitzel-weller-distillery/",
-      "state": "added-unverified",
-      "note": ""
+      "state": "owned-by-larger-company",
+      "note": "Own site footer reads \"© Diageo 2026\" (https://www.stitzelwellerdistillery.com/). Part of a larger company; owner to decide."
     },
     {
       "name": "Chicken Cock Whiskey Circa 1856 - Louisville",
@@ -286,14 +286,14 @@
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/chicken-cock-whiskey-circa-1856-louisville/",
       "state": "added-unverified",
-      "note": ""
+      "note": "Own site shows no visitor address or hours; left unverified."
     },
     {
       "name": "Whiskey Thief Tasting & Listening Room",
       "city": "Louisville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/whiskey-thief-tasting-and-listening-room/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -309,7 +309,7 @@
       "city": "Lexington",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/dark-arts-whiskey-house/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -325,7 +325,7 @@
       "city": "Lexington",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/james-e-pepper-distillery/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -341,7 +341,7 @@
       "city": "Lexington",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/town-branch-distillery/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -349,7 +349,7 @@
       "city": "Midway",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/bluegrass-distillers-at-elkwood-farm/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -373,7 +373,7 @@
       "city": "Owensboro",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/green-river-distilling-co/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
