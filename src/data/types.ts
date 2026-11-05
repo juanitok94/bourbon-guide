@@ -45,7 +45,7 @@ export type Group = {
 export type Brand = {
   id: string
   name: string
-  groupId: string // must exist in groups.json
+  groupId: string | null // must exist in groups.json, or null for a brand made at an independent's stop (stopId must then be set)
   stopId: string | null // a stop where the group's or brand's own site says it is made or offers its visitor experience; else null
   sourceUrl: string | null // required (https) once verifiedOn is set
   verifiedOn: string | null // YYYY-MM-DD

@@ -99,16 +99,22 @@ export function computeRegions(stops: Stop[], mapW: number, mapH: number): Regio
     })
   }
 
-  return found.map((f, i) => ({
-    id: f.id,
-    area: {
-      x: r1(f.x0 - AREA_PAD),
-      y: r1(f.y0 - AREA_PAD),
-      w: r1(f.x1 - f.x0 + AREA_PAD * 2),
-      h: r1(f.y1 - f.y0 + AREA_PAD * 2),
-    },
-    target: { x: r1(targets[i].x), y: r1(targets[i].y), w: r1(targets[i].w), h: r1(targets[i].h) },
-  }))
+  // A target that still can't reach MIN_TARGET (its seed is boxed in by a neighbour or the map edge, as with a lone pin near
+  // the top of the oval) means that region has no button on the map. It keeps its place in the dropdown, which filters the
+  // list without zooming, the same as a scattered region.
+  const usable = found.map((_, i) => targets[i].w >= MIN_TARGET && targets[i].h >= MIN_TARGET)
+  return found
+    .map((f, i) => ({
+      id: f.id,
+      area: {
+        x: r1(f.x0 - AREA_PAD),
+        y: r1(f.y0 - AREA_PAD),
+        w: r1(f.x1 - f.x0 + AREA_PAD * 2),
+        h: r1(f.y1 - f.y0 + AREA_PAD * 2),
+      },
+      target: { x: r1(targets[i].x), y: r1(targets[i].y), w: r1(targets[i].w), h: r1(targets[i].h) },
+    }))
+    .filter((_, i) => usable[i])
 }
 
 // Rule violations for check:data. Empty means the regions are usable.

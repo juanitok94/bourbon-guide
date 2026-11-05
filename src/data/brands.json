@@ -1,26 +1,282 @@
 [
-  { "id": "jim-beam", "name": "Jim Beam", "groupId": "suntory", "stopId": "james-b-beam-distilling-co", "sourceUrl": "https://www.jimbeam.com/en-us/", "verifiedOn": "2026-11-03" },
-  { "id": "makers-mark", "name": "Maker's Mark", "groupId": "suntory", "stopId": "makers-mark-distillery", "sourceUrl": "https://www.makersmark.com/", "verifiedOn": "2026-11-03" },
-  { "id": "knob-creek", "name": "Knob Creek", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
-  { "id": "basil-hayden", "name": "Basil Hayden", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
-  { "id": "bookers", "name": "Booker's", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
-  { "id": "bakers", "name": "Baker's", "groupId": "suntory", "stopId": null, "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey", "verifiedOn": "2026-11-03" },
-
-  { "id": "buffalo-trace", "name": "Buffalo Trace", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
-  { "id": "blantons", "name": "Blanton's", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
-  { "id": "eagle-rare", "name": "Eagle Rare", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
-  { "id": "e-h-taylor", "name": "E.H. Taylor", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
-  { "id": "w-l-weller", "name": "W.L. Weller", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
-  { "id": "pappy-van-winkle", "name": "Pappy Van Winkle", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
-  { "id": "1792-bourbon", "name": "1792 Bourbon", "groupId": "sazerac", "stopId": null, "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon", "verifiedOn": "2026-11-03" },
-  { "id": "sazerac-rye", "name": "Sazerac Rye", "groupId": "sazerac", "stopId": "buffalo-trace-distillery", "sourceUrl": "https://www.sazerac.com/our-brands/?type=whiskey", "verifiedOn": "2026-11-03" },
-
-  { "id": "woodford-reserve", "name": "Woodford Reserve", "groupId": "brown-forman", "stopId": "woodford-reserve-distillery", "sourceUrl": "https://www.brown-forman.com/brand/woodford-reserve", "verifiedOn": "2026-11-03" },
-  { "id": "old-forester", "name": "Old Forester", "groupId": "brown-forman", "stopId": "old-forester-distilling-co", "sourceUrl": "https://www.oldforester.com/distillery/", "verifiedOn": "2026-11-03" },
-
-  { "id": "evan-williams", "name": "Evan Williams", "groupId": "heaven-hill", "stopId": "evan-williams-bourbon-experience", "sourceUrl": "https://evanwilliams.com/plan-your-trip", "verifiedOn": "2026-11-03" },
-  { "id": "elijah-craig", "name": "Elijah Craig", "groupId": "heaven-hill", "stopId": "heaven-hill-bourbon-experience", "sourceUrl": "https://elijahcraig.com/", "verifiedOn": "2026-11-03" },
-  { "id": "heaven-hill-bottled-in-bond", "name": "Heaven Hill Bottled-in-Bond", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/brands/heaven-hill-bottled-in-bond/", "verifiedOn": "2026-11-03" },
-  { "id": "larceny", "name": "Larceny", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/our-portfolio/", "verifiedOn": "2026-11-03" },
-  { "id": "old-fitzgerald", "name": "Old Fitzgerald", "groupId": "heaven-hill", "stopId": null, "sourceUrl": "https://heavenhill.com/our-portfolio/", "verifiedOn": "2026-11-03" }
+  {
+    "id": "jim-beam",
+    "name": "Jim Beam",
+    "groupId": "suntory",
+    "stopId": "james-b-beam-distilling-co",
+    "sourceUrl": "https://www.jimbeam.com/en-us/",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "makers-mark",
+    "name": "Maker's Mark",
+    "groupId": "suntory",
+    "stopId": "makers-mark-distillery",
+    "sourceUrl": "https://www.makersmark.com/",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "knob-creek",
+    "name": "Knob Creek",
+    "groupId": "suntory",
+    "stopId": null,
+    "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "basil-hayden",
+    "name": "Basil Hayden",
+    "groupId": "suntory",
+    "stopId": null,
+    "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "bookers",
+    "name": "Booker's",
+    "groupId": "suntory",
+    "stopId": null,
+    "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "bakers",
+    "name": "Baker's",
+    "groupId": "suntory",
+    "stopId": null,
+    "sourceUrl": "https://www.suntoryglobalspirits.com/our-brands/whiskey",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "buffalo-trace",
+    "name": "Buffalo Trace",
+    "groupId": "sazerac",
+    "stopId": "buffalo-trace-distillery",
+    "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "blantons",
+    "name": "Blanton's",
+    "groupId": "sazerac",
+    "stopId": "buffalo-trace-distillery",
+    "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "eagle-rare",
+    "name": "Eagle Rare",
+    "groupId": "sazerac",
+    "stopId": "buffalo-trace-distillery",
+    "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "e-h-taylor",
+    "name": "E.H. Taylor",
+    "groupId": "sazerac",
+    "stopId": "buffalo-trace-distillery",
+    "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "w-l-weller",
+    "name": "W.L. Weller",
+    "groupId": "sazerac",
+    "stopId": "buffalo-trace-distillery",
+    "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "pappy-van-winkle",
+    "name": "Pappy Van Winkle",
+    "groupId": "sazerac",
+    "stopId": "buffalo-trace-distillery",
+    "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "1792-bourbon",
+    "name": "1792 Bourbon",
+    "groupId": "sazerac",
+    "stopId": null,
+    "sourceUrl": "https://www.sazerac.com/our-brands/?type=bourbon",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "sazerac-rye",
+    "name": "Sazerac Rye",
+    "groupId": "sazerac",
+    "stopId": "buffalo-trace-distillery",
+    "sourceUrl": "https://www.sazerac.com/our-brands/?type=whiskey",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "woodford-reserve",
+    "name": "Woodford Reserve",
+    "groupId": "brown-forman",
+    "stopId": "woodford-reserve-distillery",
+    "sourceUrl": "https://www.brown-forman.com/brand/woodford-reserve",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "old-forester",
+    "name": "Old Forester",
+    "groupId": "brown-forman",
+    "stopId": "old-forester-distilling-co",
+    "sourceUrl": "https://www.oldforester.com/distillery/",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "evan-williams",
+    "name": "Evan Williams",
+    "groupId": "heaven-hill",
+    "stopId": "evan-williams-bourbon-experience",
+    "sourceUrl": "https://evanwilliams.com/plan-your-trip",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "elijah-craig",
+    "name": "Elijah Craig",
+    "groupId": "heaven-hill",
+    "stopId": "heaven-hill-bourbon-experience",
+    "sourceUrl": "https://elijahcraig.com/",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "heaven-hill-bottled-in-bond",
+    "name": "Heaven Hill Bottled-in-Bond",
+    "groupId": "heaven-hill",
+    "stopId": null,
+    "sourceUrl": "https://heavenhill.com/brands/heaven-hill-bottled-in-bond/",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "larceny",
+    "name": "Larceny",
+    "groupId": "heaven-hill",
+    "stopId": null,
+    "sourceUrl": "https://heavenhill.com/our-portfolio/",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "old-fitzgerald",
+    "name": "Old Fitzgerald",
+    "groupId": "heaven-hill",
+    "stopId": null,
+    "sourceUrl": "https://heavenhill.com/our-portfolio/",
+    "verifiedOn": "2026-11-03"
+  },
+  {
+    "id": "castle-and-key-small-batch-bourbon",
+    "name": "Castle & Key Small Batch Bourbon",
+    "groupId": null,
+    "stopId": "castle-key-distillery",
+    "sourceUrl": "https://castleandkey.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "castle-and-key-small-batch-wheated-bourbon",
+    "name": "Castle & Key Small Batch Wheated Bourbon",
+    "groupId": null,
+    "stopId": "castle-key-distillery",
+    "sourceUrl": "https://castleandkey.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "castle-and-key-restoration-rye-whiskey",
+    "name": "Castle & Key Restoration Rye Whiskey",
+    "groupId": null,
+    "stopId": "castle-key-distillery",
+    "sourceUrl": "https://castleandkey.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "new-riff-bottled-in-bond-bourbon",
+    "name": "New Riff Bottled In Bond Bourbon",
+    "groupId": null,
+    "stopId": "new-riff-distilling",
+    "sourceUrl": "https://newriffdistilling.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "new-riff-bottled-in-bond-rye",
+    "name": "New Riff Bottled In Bond Rye",
+    "groupId": null,
+    "stopId": "new-riff-distilling",
+    "sourceUrl": "https://newriffdistilling.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "new-riff-6-year-old-malted-rye",
+    "name": "New Riff 6 Year Old Malted Rye",
+    "groupId": null,
+    "stopId": "new-riff-distilling",
+    "sourceUrl": "https://newriffdistilling.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "jeptha-creed-four-grain-bourbon",
+    "name": "Jeptha Creed Four Grain Bourbon",
+    "groupId": null,
+    "stopId": "jeptha-creed-distillery",
+    "sourceUrl": "https://jepthacreed.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "jeptha-creed-bottled-in-bond-bourbon",
+    "name": "Jeptha Creed Bottled-in-Bond Bourbon",
+    "groupId": null,
+    "stopId": "jeptha-creed-distillery",
+    "sourceUrl": "https://jepthacreed.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "jeptha-creed-6-year-old-wheated-bourbon",
+    "name": "Jeptha Creed 6 Year Old Wheated Bourbon",
+    "groupId": null,
+    "stopId": "jeptha-creed-distillery",
+    "sourceUrl": "https://jepthacreed.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "yellowstone-bourbon-whiskey",
+    "name": "Yellowstone Bourbon Whiskey",
+    "groupId": null,
+    "stopId": "limestone-branch-distillery",
+    "sourceUrl": "https://limestonebranch.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "minor-case-straight-rye-whiskey",
+    "name": "Minor Case Straight Rye Whiskey",
+    "groupId": null,
+    "stopId": "limestone-branch-distillery",
+    "sourceUrl": "https://limestonebranch.com/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "willett-pot-still-reserve",
+    "name": "Willett Pot Still Reserve",
+    "groupId": null,
+    "stopId": "willett-distillery",
+    "sourceUrl": "https://www.kentuckybourbonwhiskey.com/whiskey/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "willett-family-estate-small-batch-4-year-bourbon",
+    "name": "Willett Family Estate Small Batch 4 Year Bourbon",
+    "groupId": null,
+    "stopId": "willett-distillery",
+    "sourceUrl": "https://www.kentuckybourbonwhiskey.com/whiskey/",
+    "verifiedOn": "2026-11-05"
+  },
+  {
+    "id": "willett-family-estate-small-batch-4-year-rye",
+    "name": "Willett Family Estate Small Batch 4 Year Rye",
+    "groupId": null,
+    "stopId": "willett-distillery",
+    "sourceUrl": "https://www.kentuckybourbonwhiskey.com/whiskey/",
+    "verifiedOn": "2026-11-05"
+  }
 ]

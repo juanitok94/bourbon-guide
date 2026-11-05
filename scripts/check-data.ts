@@ -167,7 +167,16 @@ for (const b of brands) {
   else if (brandIds.has(b.id)) errors.push(`${at}: duplicate id`)
   else brandIds.add(b.id)
   if (blank(b.name)) errors.push(`${at}: missing name`)
-  if (!groupIds.has(b.groupId)) errors.push(`${at}: unknown groupId "${b.groupId}"`)
+  if (b.groupId === null) {
+    // A brand with no group belongs to an independent's stop.
+    const stop = b.stopId === null ? undefined : data.find((d) => d.id === b.stopId)
+    if (!stop) errors.push(`${at}: groupId is null, so stopId must name an existing stop`)
+    else if (stop.scale !== 'independent') errors.push(`${at}: groupId is null but stop ${stop.id} is not an independent`)
+  } else {
+    if (!groupIds.has(b.groupId)) errors.push(`${at}: unknown groupId "${b.groupId}"`)
+    const stop = b.stopId === null ? undefined : data.find((d) => d.id === b.stopId)
+    if (stop && stop.groupId !== b.groupId) errors.push(`${at}: stop ${stop.id} belongs to another group`)
+  }
   if (b.stopId !== null && !ids.has(b.stopId)) errors.push(`${at}: unknown stopId "${b.stopId}"`)
   checkSource(at, b)
   if (b.verifiedOn === null) warnings.push(`${at}: not verified`)

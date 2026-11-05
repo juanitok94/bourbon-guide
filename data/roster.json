@@ -1,0 +1,580 @@
+{
+  "note": "Candidate list for the independents run. Not served to visitors. Each run processes up to 20 \"pending\" entries. States: pending | added | skipped-no-visits | owned-by-larger-company | could-not-confirm | 429-retry.",
+  "sources": [
+    {
+      "name": "Kentucky Bourbon Trail® member list (kybourbontrail.com), the single program since the Craft Tour merged into it",
+      "url": "https://kybourbontrail.com/distilleries/",
+      "crawled": "2026-11-05",
+      "entries": 69
+    },
+    {
+      "name": "kentuckytourism.com distilleries with visitor experiences",
+      "url": "https://www.kentuckytourism.com",
+      "crawled": null,
+      "entries": 0,
+      "note": "Not yet crawled; do this before the roster is called complete."
+    }
+  ],
+  "entries": [
+    {
+      "name": "Maker’s Mark Distillery",
+      "city": "Loretto",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/makers-mark-distillery-2/",
+      "state": "added",
+      "note": "Already in stops.json as a Major (group-owned); not an independent."
+    },
+    {
+      "name": "Pensive Distilling Co.",
+      "city": "Newport",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/pensive-distilling-co/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Second Sight Spirits",
+      "city": "Ludlow",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/second-sight-spirits/",
+      "state": "added",
+      "note": "Added in batch 1."
+    },
+    {
+      "name": "Limestone Branch Distillery",
+      "city": "Lebanon",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/limestone-branch-distilling/",
+      "state": "added",
+      "note": "Added in batch 1."
+    },
+    {
+      "name": "Wilderness Trail Distillery",
+      "city": "Danville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/wilderness-trail-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Wild Turkey Distillery",
+      "city": "Lawrenceburg",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/wild-turkey-distillery/",
+      "state": "could-not-confirm",
+      "note": "Own site names no parent company (https://www.wildturkeybourbon.com/). Big-company status not confirmed from allowed sources; owner to decide whether to add."
+    },
+    {
+      "name": "Preservation Distillery",
+      "city": "Bardstown",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/preservation-distillery/",
+      "state": "added",
+      "note": "Added in batch 1."
+    },
+    {
+      "name": "Neeley Family Distillery",
+      "city": "Sparta",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/neeley-family-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Bulleit Distilling Co.",
+      "city": "Shelbyville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/bulleit-distilling-co/",
+      "state": "owned-by-larger-company",
+      "note": "Own site footer reads \"© The Bulleit Distilling Co., Louisville, KY. © DIAGEO 2026\" with a Diageo Careers link (https://www.bulleit.com/visit-us). Owner to decide."
+    },
+    {
+      "name": "Boundary Oak Distillery",
+      "city": "Radcliff",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/boundary-oak-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Boone County Distilling Co.",
+      "city": "Independence",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/boone-county-distilling-co/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Bardstown Bourbon Co.",
+      "city": "Bardstown",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/bardstown-bourbon-co/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Kentucky Artisan Distillery",
+      "city": "Crestwood",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/kentucky-artisan-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Old Forester Distilling Co.",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/old-forester-distilling-co/",
+      "state": "added",
+      "note": "Already in stops.json as a Major (group-owned); not an independent."
+    },
+    {
+      "name": "James B. Beam Distilling Co.",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/james-b-beam-distilling-co/",
+      "state": "added",
+      "note": "Already in stops.json as a Major (group-owned); not an independent."
+    },
+    {
+      "name": "Larrikin Bourbon Co.",
+      "city": "Lawrenceburg",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/larrikin-bourbon-co/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Jeptha Creed Distillery",
+      "city": "Shelbyville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/jeptha-creed-distillery/",
+      "state": "added",
+      "note": "Added in batch 1."
+    },
+    {
+      "name": "New Riff Distilling",
+      "city": "Newport",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/new-riff-distillery/",
+      "state": "added",
+      "note": "Added in batch 1."
+    },
+    {
+      "name": "Heaven Hill Bourbon Experience",
+      "city": "Bardstown",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/heaven-hill-bourbon-experience/",
+      "state": "added",
+      "note": "Already in stops.json as a Major (group-owned); not an independent."
+    },
+    {
+      "name": "Chicken Cock Whiskey Circa 1856",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/chicken-cock-whiskey-circa-1856/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Bespoken Spirits",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/bespoken-spirits/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Whiskey Thief Distilling Co.",
+      "city": "Frankfort",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/whiskey-thief-distilling-co/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "The Old Pogue Distillery",
+      "city": "Maysville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/the-old-pogue-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Augusta Distillery",
+      "city": "Augusta",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/augusta-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Casey Jones Distillery",
+      "city": "Hopkinsville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/casey-jones-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Purple Toad Winery & Distillery",
+      "city": "Paducah",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/purple-toad-winery-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Four Roses Distillery",
+      "city": "Lawrenceburg",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/four-roses-distillery/",
+      "state": "could-not-confirm",
+      "note": "Own site names no parent company (footer: © 2026 Four Roses Distillery LLC, https://www.fourrosesbourbon.com/). Big-company status not confirmed from allowed sources; owner to decide whether to add."
+    },
+    {
+      "name": "Four Roses Warehouse & Bottling Facility",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/four-roses-warehouse-and-bottling-facility/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "J. Mattingly 1845 Distillery",
+      "city": "Frankfort",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/j-mattingly-1845-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Wenzel Distillery",
+      "city": "Covington",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/wenzel-whiskey/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Bardstown Bourbon Co. Tasting Room",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/bardstown-bourbon-co-louisville-tasting-room/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Rabbit Hole Distillery",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/rabbit-hole-distillery/",
+      "state": "pending",
+      "note": "Started: address 711 East Jefferson Street, Louisville. Own site shows conflicting hours (Tue-Sat 10-6 in booking text; Wed-Sat 10-6 in footer); resolve next run (https://www.rabbitholedistillery.com/)."
+    },
+    {
+      "name": "Stitzel-Weller Distillery",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/stitzel-weller-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Chicken Cock Whiskey Circa 1856 - Louisville",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/chicken-cock-whiskey-circa-1856-louisville/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Whiskey Thief Tasting & Listening Room",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/whiskey-thief-tasting-and-listening-room/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Barrel House Distilling Co.",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/barrel-house-distilling-co/",
+      "state": "added",
+      "note": "Added in batch 1."
+    },
+    {
+      "name": "Dark Arts Whiskey House",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/dark-arts-whiskey-house/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Hartfield & Co. Distillery",
+      "city": "Paris",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/hartfield-co-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "James E. Pepper Distillery",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/james-e-pepper-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "RD1 Distillery",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/rd1-spirits/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Town Branch Distillery",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/town-branch-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Bluegrass Distillers at Elkwood Farm",
+      "city": "Midway",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/bluegrass-distillers-at-elkwood-farm/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Castle & Key Distillery",
+      "city": "Frankfort",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/castle-key-distillery/",
+      "state": "added",
+      "note": "Added in batch 1."
+    },
+    {
+      "name": "Woodford Reserve Distillery",
+      "city": "Versailles",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/woodford-reserve-distillery/",
+      "state": "added",
+      "note": "Already in stops.json as a Major (group-owned); not an independent."
+    },
+    {
+      "name": "Green River Distilling Co.",
+      "city": "Owensboro",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/green-river-distilling-co/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Willett Distillery",
+      "city": "Bardstown",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/willett-distillery/",
+      "state": "added",
+      "note": "Added in batch 1."
+    },
+    {
+      "name": "Bard Distillery",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/the-bard-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Lux Row Distillers",
+      "city": "Bardstown",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/lux-row-distillers/",
+      "state": "owned-by-larger-company",
+      "note": "Own site lists Luxco brands (Blood Oath, David Nicholson, Daviess County, Ezra Brooks, Rebel) and an \"About Luxco\" link (https://luxrowdistillers.com/). Part of Luxco, a larger company. Owner to decide."
+    },
+    {
+      "name": "WhistlePig, The Vault Tasting Experience",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/whistlepig-the-vault/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "WhistlePig Development Depot",
+      "city": "Brandenburg",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/whistlepig-development-depot/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Angel’s Envy Distillery",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/angels-envy/",
+      "state": "could-not-confirm",
+      "note": "Own site names no parent company (footer: © 2026 Louisville Distilling Co LLC, https://www.angelsenvy.com/us/en/). Big-company status not confirmed from allowed sources; owner to decide whether to add."
+    },
+    {
+      "name": "Purple Toad Winery & Distillery – Bowling Green",
+      "city": "Bowling Green",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/purple-toad-winery-distillery-bowling-green/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Pursuit Spirits",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/pursuit-spirits/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Cave City Distilling Company",
+      "city": "Cave City",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/cave-city-distilling-co/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Pursuit Spirits on Whiskey Row",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/pursuit-spirits-on-whiskey-row/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Becker & Bird Distillery",
+      "city": "Augusta",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/becker-bird-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Michter’s Distillery",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/michters-distillery/",
+      "state": "could-not-confirm",
+      "note": "Own contact page says \"We regret that we cannot accept tours of our facilities at this time\" for 2351 New Millennium Dr.; the KDA lists 801 West Main Street. Visitability not confirmed (https://michters.com/contact-us/)."
+    },
+    {
+      "name": "Green River Louisville Tasting Room",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/green-river-louisville-tasting-room/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Buzzard’s Roost Distillery & Tasting Room",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/buzzards-roost-distillery-tasting-room/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Kentucky Peerless Distilling Co.",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/kentucky-peerless-distilling-co/",
+      "state": "added",
+      "note": "Added in batch 1."
+    },
+    {
+      "name": "Evan Williams Bourbon Experience",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/evan-williams/",
+      "state": "added",
+      "note": "Already in stops.json as a Major (group-owned); not an independent."
+    },
+    {
+      "name": "Left Bank and Safai Bourbon",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/left-bank-and-safai-bourbon/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Southern Kentucky Distillery",
+      "city": "Burkesville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/southern-kentucky-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Dueling Grounds Distillery",
+      "city": "Franklin",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/dueling-grounds-distillery/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "General George Stillhouse",
+      "city": null,
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/general-george-stillhouse/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "B.H. James Distillers",
+      "city": "Adairville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/b-h-james-distillers/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Uncle Boojie's Distilling Company",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/uncle-boojies-distilling-company/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Uncle Boojie's Distilling Company - Broadway",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/uncle-boojies-distilling-company-broadway/",
+      "state": "pending",
+      "note": ""
+    },
+    {
+      "name": "Copper & Kings Distillery",
+      "city": "Louisville",
+      "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
+      "listUrl": "https://kybourbontrail.com/distillery/copper-kings/",
+      "state": "added",
+      "note": "Added in batch 1."
+    },
+    {
+      "name": "Buffalo Trace Distillery",
+      "city": "Frankfort",
+      "listedBy": "Sazerac corporate site",
+      "listUrl": "https://www.sazerac.com/distilleries-and-facilities/",
+      "state": "added",
+      "note": "Already in stops.json as a Major."
+    }
+  ]
+}

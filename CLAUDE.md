@@ -117,6 +117,7 @@ Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
   compare table). check:data still validates them and prints the closed count. Never re-add a closed place as new.
 - Verify mappings (region, trail, city) against explicit sources. Never assume order.
 - Re-verify every 6 months.
+- Independents (scale "independent", groupId null) come from `data/roster.json` (repo root, not served): candidates from the Kentucky Bourbon Trail® member list (the Craft Tour is now merged into that one program) and, still to crawl, kentuckytourism.com. Each run processes up to 20 "pending" entries and updates the roster. Confirm each on the distillery's own site; a site that states a larger parent is not an independent (roster state owned-by-larger-company, owner decides). Trail membership is stored as "Kentucky Bourbon Trail" (no ®, trademarks.ts adds it) with sourceNote "Listed by Kentucky Bourbon Trail® member list (KDA)" and the KDA page URL in `note`. A brand with groupId null must name an independent's stopId (check:data enforces it). Region for a new city: nearest hub by straight line from the Census Gazetteer point, "elsewhere" beyond 40 km. A region whose zoom button can't reach the minimum target (a lone pin near the oval's edge) gets no regions.json entry and stays in the dropdown.
 
 ## Accessibility rules
 - Everything interactive is keyboard reachable, has a visible focus ring and a 44px minimum target.
