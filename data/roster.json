@@ -29,7 +29,7 @@
       "city": "Newport",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/pensive-distilling-co/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -53,8 +53,8 @@
       "city": "Danville",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/wilderness-trail-distillery/",
-      "state": "added-unverified",
-      "note": ""
+      "state": "owned-by-larger-company",
+      "note": "Own site contact page footer reads \"©2026 Campari America, New York, NY\" (https://www.wildernesstraildistillery.com/en-us/contact-us/). Part of a larger company; owner to decide."
     },
     {
       "name": "Wild Turkey Distillery",
@@ -77,7 +77,7 @@
       "city": "Sparta",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/neeley-family-distillery/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -93,7 +93,7 @@
       "city": "Radcliff",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/boundary-oak-distillery/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -101,7 +101,7 @@
       "city": "Independence",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/boone-county-distilling-co/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -109,7 +109,7 @@
       "city": "Bardstown",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/bardstown-bourbon-co/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -117,7 +117,7 @@
       "city": "Crestwood",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/kentucky-artisan-distillery/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -141,7 +141,7 @@
       "city": "Lawrenceburg",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/larrikin-bourbon-co/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
@@ -174,14 +174,14 @@
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/chicken-cock-whiskey-circa-1856/",
       "state": "added-unverified",
-      "note": ""
+      "note": "Own site shows no visitor address or hours (https://chickencockwhiskey.com/pages/find-us); stop left unverified."
     },
     {
       "name": "Bespoken Spirits",
       "city": "Lexington",
       "listedBy": "Kentucky Bourbon Trail® (Kentucky Distillers' Association)",
       "listUrl": "https://kybourbontrail.com/distillery/bespoken-spirits/",
-      "state": "added-unverified",
+      "state": "added",
       "note": ""
     },
     {
