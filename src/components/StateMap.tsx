@@ -17,6 +17,7 @@ import {
   fitView,
   inOval,
   layoutCallouts,
+  leadersOf,
   lerpView,
   placeCities,
   placeDots,
@@ -215,13 +216,7 @@ export default function StateMap({
     }
   }
 
-  const leaders = callouts.flatMap((c) =>
-    c.cells.map((cell) => {
-      const spot = toPx(frame, view, cell.pin.x, cell.pin.y)
-      const y1 = cell.cy + (spot.y < cell.cy ? -STAMP_PX / 2 : STAMP_PX / 2)
-      return { key: cell.pin.id, x1: cell.cx, y1, x2: spot.x, y2: spot.y }
-    }),
-  )
+  const leaders = leadersOf(frame, view, callouts)
 
   return (
     <>

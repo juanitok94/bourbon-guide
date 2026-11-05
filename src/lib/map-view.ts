@@ -11,6 +11,7 @@ const LINE_H = 13
 const CHAR_W = 6.4 // IBM Plex Mono is 0.6em wide, plus the letter spacing
 const BAND_BELOW_PX = 600 // narrower than this, callouts sit outside the oval: there is no room for 44px targets in it
 const CLUSTER_KM = 40 // at the whole-state view; it tightens as the map zooms in
+const MAX_BAND_ROWS = 3 // rows tried on each side while looking for uncrossed leaders
 const MIN_VIEW_W = 260 // never zoom tighter than this many map units
 
 export type Work = { id: string; x0: number; y0: number; x: number; y: number }
@@ -219,39 +220,102 @@ function placeInOval(drafts: Draft[], f: Frame, view: Rect, avoid: { x: number; 
   return placed
 }
 
-// Places every cluster in rows above and below the oval, or returns null if they don't fit in this many rows.
-// The northern half prefers the rows above and the southern half those below, so leaders don't cross.
-function placeInBands(drafts: Draft[], f: Frame, view: Rect, rowH: number, rows: number): Callout[] | null {
+type Banded = { callouts: Callout[]; crossings: number }
+
+// Lays the callouts out in rows above and below the oval for one fixed choice of side (above[i] for drafts[i]).
+// Each side is ordered west to east by its pins' x. A callout takes the row nearest the oval that still has room for
+// it; within a row each sits as near its pins' x as its neighbours allow. Null if they don't fit in this many rows.
+function bandsFor(drafts: Draft[], above: boolean[], f: Frame, view: Rect, rowH: number, rows: number): Callout[] | null {
+  const GAP = 6
+  const anchorX = (d: Draft) => d.pins.reduce((s, p) => s + toPx(f, view, p.x, p.y).x, 0) / d.pins.length
   const placed: Callout[] = []
-  const boxes: Box[] = []
-  const rowTops: { y: number; above: boolean }[] = []
-  for (let r = 0; r < rows; r++) {
-    rowTops.push({ y: f.bandH - rowH * (r + 1), above: true })
-    rowTops.push({ y: f.pxH - f.bandH + rowH * r + 2, above: false })
-  }
-  const anchorOf = (d: Draft) => {
-    const own = d.pins.map((p) => toPx(f, view, p.x, p.y))
-    return { x: own.reduce((s, p) => s + p.x, 0) / own.length, y: own.reduce((s, p) => s + p.y, 0) / own.length }
-  }
-  const northToSouth = [...drafts].sort((a, b) => anchorOf(a).y - anchorOf(b).y || a.key.localeCompare(b.key))
-  for (const d of drafts) {
-    const anchor = anchorOf(d)
-    const prefersAbove = northToSouth.indexOf(d) < drafts.length / 2
-    let best: { x: number; y: number; above: boolean; cost: number } | null = null
-    for (const row of rowTops) {
-      for (let x = 2; x + d.w <= f.pxW - 2; x += 4) {
-        const b: Box = { x0: x, y0: row.y, x1: x + d.w, y1: row.y + d.h }
-        if (boxes.some((o) => hits({ ...b, x0: b.x0 - 6, x1: b.x1 + 6 }, o))) continue
-        const cost = boxDistance(anchor, b) + (row.above === prefersAbove ? 0 : 1000)
-        if (!best || cost < best.cost) best = { x, y: row.y, above: row.above, cost }
-      }
+  for (const onTop of [true, false]) {
+    const mine = drafts.filter((_, i) => above[i] === onTop).sort((p, q) => anchorX(p) - anchorX(q) || p.key.localeCompare(q.key))
+    const rowItems: Draft[][] = Array.from({ length: rows }, () => [])
+    const used = Array.from({ length: rows }, () => 4)
+    for (const d of mine) {
+      const r = used.findIndex((u) => u + d.w <= f.pxW)
+      if (r < 0) return null
+      rowItems[r].push(d)
+      used[r] += d.w + GAP
     }
-    if (!best) return null
-    const c = finish(d, best.x, best.y, best.above, true)
-    placed.push(c)
-    boxes.push({ x0: c.x, y0: c.y, x1: c.x + c.w, y1: c.y + c.h })
+    rowItems.forEach((items, r) => {
+      const xs: number[] = []
+      items.forEach((d, i) => {
+        const ideal = anchorX(d) - d.w / 2
+        xs.push(Math.max(ideal, i === 0 ? 2 : xs[i - 1] + items[i - 1].w + GAP))
+      })
+      for (let i = items.length - 1; i >= 0; i--) {
+        const limit = i === items.length - 1 ? f.pxW - 2 - items[i].w : xs[i + 1] - GAP - items[i].w
+        xs[i] = Math.min(xs[i], limit)
+      }
+      const y = onTop ? f.bandH - rowH * (r + 1) : f.pxH - f.bandH + rowH * r + 2
+      items.forEach((d, i) => placed.push(finish(d, xs[i], y, onTop, true)))
+    })
   }
   return placed
+}
+
+// Places every cluster in rows above and below the oval. Each goes to the side nearer its pins; if leaders still cross,
+// other assignments are tried (fewest changes from the default first) and the first uncrossed one wins. Null if
+// nothing fits in this many rows; otherwise the layout with the fewest crossings found.
+function placeInBands(drafts: Draft[], f: Frame, view: Rect, rowH: number, rows: number): Banded | null {
+  const midY = f.ey + f.eh / 2
+  const natural = drafts.map((d) => d.pins.reduce((s, p) => s + toPx(f, view, p.x, p.y).y, 0) / d.pins.length < midY)
+  const masks: number[] = []
+  const n = drafts.length
+  if (n <= 10) for (let m = 0; m < 1 << n; m++) masks.push(m)
+  else {
+    masks.push(0)
+    for (let i = 0; i < n; i++) masks.push(1 << i)
+  }
+  const bits = (m: number) => m.toString(2).split('1').length - 1
+  masks.sort((p, q) => bits(p) - bits(q) || p - q)
+  let best: (Banded & { length: number }) | null = null
+  for (const m of masks) {
+    const above = natural.map((v, i) => (m >> i) & 1 ? !v : v)
+    const callouts = bandsFor(drafts, above, f, view, rowH, rows)
+    if (!callouts) continue
+    const leaders = leadersOf(f, view, callouts)
+    const crossings = countCrossings(leaders)
+    if (crossings === 0) return { callouts, crossings }
+    const length = leaders.reduce((s, l) => s + Math.hypot(l.x2 - l.x1, l.y2 - l.y1), 0)
+    if (!best || crossings < best.crossings || (crossings === best.crossings && length < best.length)) best = { callouts, crossings, length }
+  }
+  return best
+}
+
+// A leader runs from the edge of a stamp to its pin's true spot.
+export type Leader = { key: string; x1: number; y1: number; x2: number; y2: number }
+
+export function leadersOf(f: Frame, view: Rect, callouts: Callout[]): Leader[] {
+  return callouts.flatMap((c) =>
+    c.cells.map((cell) => {
+      const spot = toPx(f, view, cell.pin.x, cell.pin.y)
+      const y1 = cell.cy + (spot.y < cell.cy ? -STAMP_PX / 2 : STAMP_PX / 2)
+      return { key: cell.pin.id, x1: cell.cx, y1, x2: spot.x, y2: spot.y }
+    }),
+  )
+}
+
+const side = (ax: number, ay: number, bx: number, by: number, px: number, py: number) => (bx - ax) * (py - ay) - (by - ay) * (px - ax)
+
+// True when two segments cross or touch (shared ends included: no two leaders should meet anywhere).
+export function segmentsMeet(a: Leader, b: Leader): boolean {
+  const d1 = side(a.x1, a.y1, a.x2, a.y2, b.x1, b.y1)
+  const d2 = side(a.x1, a.y1, a.x2, a.y2, b.x2, b.y2)
+  const d3 = side(b.x1, b.y1, b.x2, b.y2, a.x1, a.y1)
+  const d4 = side(b.x1, b.y1, b.x2, b.y2, a.x2, a.y2)
+  if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) return true
+  const within = (p: number, q: number, r: number) => r >= Math.min(p, q) && r <= Math.max(p, q)
+  const onSeg = (s: Leader, px: number, py: number, d: number) => d === 0 && within(s.x1, s.x2, px) && within(s.y1, s.y2, py)
+  return onSeg(a, b.x1, b.y1, d1) || onSeg(a, b.x2, b.y2, d2) || onSeg(b, a.x1, a.y1, d3) || onSeg(b, a.x2, a.y2, d4)
+}
+
+export function countCrossings(leaders: Leader[]): number {
+  let n = 0
+  for (let i = 0; i < leaders.length; i++) for (let j = i + 1; j < leaders.length; j++) if (segmentsMeet(leaders[i], leaders[j])) n++
+  return n
 }
 
 // Clusters the stamps for one view and finds them room. Biggest clusters choose first, then by id, so it is deterministic.
@@ -281,10 +345,14 @@ export function layoutCallouts({
     if (inside) return { frame, callouts: inside }
   }
   const rowH = Math.max(...drafts.map((d) => d.h)) + 4
+  // Prefer the fewest rows that give uncrossed leaders; if a few rows can't, keep the least-crossed layout found.
+  let fallback: { frame: Frame; banded: Banded } | null = null
   for (let rows = 1; ; rows++) {
     const frame = makeFrame(pxW, aspect, rows * rowH + 2)
-    const inBands = placeInBands(drafts, frame, view, rowH, rows)
-    if (inBands) return { frame, callouts: inBands }
+    const banded = placeInBands(drafts, frame, view, rowH, rows)
+    if (banded && banded.crossings === 0) return { frame, callouts: banded.callouts }
+    if (banded && (!fallback || banded.crossings < fallback.banded.crossings)) fallback = { frame, banded }
+    if (fallback && rows >= MAX_BAND_ROWS) return { frame: fallback.frame, callouts: fallback.banded.callouts }
   }
 }
 

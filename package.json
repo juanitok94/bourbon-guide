@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "check:data": "tsx scripts/check-data.ts",
+    "check:data": "tsx scripts/check-data.ts && tsx scripts/check-leaders.ts",
     "check:contrast": "tsx scripts/contrast.ts",
     "prebuild": "npm run check:data",
     "build": "next build",

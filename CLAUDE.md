@@ -17,7 +17,7 @@ npm run dev            # localhost:3000
 npm run build          # runs check:data first
 npm run lint
 npm run tsc            # tsc --noEmit, required before finishing any task
-npm run check:data     # --verbose lists every warning
+npm run check:data     # --verbose lists every warning; also runs scripts/check-leaders.ts (no two callout leaders may meet at 320/375/768/1280px, whole state and each region)
 npm run build:outline  # regenerate src/data/outline.json after changing map.json fips
 npm run build:regions  # regenerate src/data/regions.json after any pin or region change (check:data fails if stale)
 npm run build:icons    # regenerate icons after changing map.json accent
@@ -137,6 +137,7 @@ Next.js 16 App Router, TypeScript strict, Tailwind CSS 4. No plain JavaScript.
 - Island: `src/lib/island.ts` computes the oval at build time from the outline: the smallest 2.3:1 ellipse that holds every point of the state, plus 2%. Nothing about it is hard-coded. The state zooms inside it (nested viewBox); the drawing around it is in screen pixels, so stamps, dots and labels keep their size.
 - Majors are square stamps (group colour, marker letter, -4 degrees); independents are gold dots. Tours by appointment has no pin shape of its own: the row and the pin's aria-label say it.
 - Callouts (`layoutCallouts` in `src/lib/map-view.ts`, computed from the data, no city or state named in code): pins cluster when within 40 km of another pin in the same region (40 km at the whole-state view, tightening with zoom, so a cluster separates as you zoom in). Each cluster is one callout: its distinct city names plus its stamps side by side, with a leader from each stamp to its true position. From 600px up callouts sit inside the oval; narrower, they sit in rows above and below it because the oval has no room for 44px targets, and the leaders cross the ring.
+- Band callouts (narrow screens): each goes above or below by the nearer side of its pins, ordered west to east by pin x; if leaders still cross, other side assignments and up to 3 rows are tried. `leadersOf`/`countCrossings` in map-view.ts are shared by the component and check-leaders.
 - City labels: `src/data/cities.json` (Census Gazetteer 2023 place file for KY, with sourceUrl). A reference city that already has a callout, or can't be placed clear, is left out of that view.
 - The key is one quiet, non-interactive row under the map (`MapKey`): each group's stamp and shortName, plus the gold dot when independents show.
 
