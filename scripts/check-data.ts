@@ -76,14 +76,14 @@ for (const c of cities) {
 }
 
 // --- images.json: only freely licensed photos, each fully recorded (the footer credit reads this)
-const FREE_LICENSE = /^(public domain|cc0( 1\.0)?|cc by( \d\.\d)?)$/i // CC BY-SA, -NC and -ND do not match
+const FREE_LICENSE = /^(public domain|cc0( 1\.0)?|cc by(-sa)?( \d\.\d)?)$/i // CC BY-NC and -ND do not match
 const IMAGE_FIELDS = ['id', 'title', 'sourceUrl', 'author', 'license', 'retrievedOn', 'localPath'] as const
 for (const im of images) {
   const at = `images.json ${im.id ?? '(no id)'}`
   for (const k of IMAGE_FIELDS) if (blank(im[k])) errors.push(`${at}: missing ${k}`)
   if (!('licenseUrl' in im)) errors.push(`${at}: missing licenseUrl (use null when the API gives none)`)
   else if (im.licenseUrl !== null && (blank(im.licenseUrl) || !im.licenseUrl.startsWith('https://'))) errors.push(`${at}: licenseUrl must be https or null`)
-  if (!blank(im.license) && !FREE_LICENSE.test(im.license.trim())) errors.push(`${at}: license "${im.license}" is not public domain, CC0 or CC BY`)
+  if (!blank(im.license) && !FREE_LICENSE.test(im.license.trim())) errors.push(`${at}: license "${im.license}" is not public domain, CC0, CC BY or CC BY-SA`)
   if (!blank(im.sourceUrl) && !im.sourceUrl.startsWith('https://')) errors.push(`${at}: sourceUrl must start with https://`)
   if (!blank(im.retrievedOn) && !DATE.test(im.retrievedOn)) errors.push(`${at}: retrievedOn must be YYYY-MM-DD`)
   if (!blank(im.localPath) && !existsSync(join(process.cwd(), im.localPath))) errors.push(`${at}: localPath ${im.localPath} does not exist`)

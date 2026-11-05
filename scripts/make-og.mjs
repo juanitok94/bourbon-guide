@@ -31,8 +31,11 @@ const SHADOW = rgb('#3a0d19')
 const HIGHLIGHT = rgb('#e2bf7a')
 let photoUri = null
 if (images.length > 0) {
-  const { data } = await sharp(join(root, images[0].localPath))
-    .resize({ width: 2400, withoutEnlargement: true })
+  const photo = images[0]
+  let pipeline = sharp(join(root, photo.localPath)).resize({ width: 2400, withoutEnlargement: true })
+  // An optional crop (in the stored file's pixels) keeps marks or brand text out of frame; otherwise the centre is used.
+  if (photo.crop) pipeline = sharp(await pipeline.toBuffer()).extract(photo.crop)
+  const { data } = await pipeline
     .resize(W, H, { fit: 'cover', position: 'centre' })
     .greyscale()
     .normalise()

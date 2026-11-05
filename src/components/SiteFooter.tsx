@@ -36,7 +36,14 @@ export default function SiteFooter() {
               <a href={photo.sourceUrl} className="underline underline-offset-2">
                 {photo.title}
               </a>{' '}
-              by {photo.author}, {photo.license}
+              by {photo.author},{' '}
+              {photo.licenseUrl ? (
+                <a href={photo.licenseUrl} className="underline underline-offset-2">
+                  {photo.license}
+                </a>
+              ) : (
+                photo.license
+              )}
             </p>
           )}
           {MAP.credits.map((c) => (

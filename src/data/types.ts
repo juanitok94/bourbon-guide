@@ -87,7 +87,7 @@ export type City = {
   label?: { dx: number; dy: number; anchor: 'start' | 'middle' | 'end' } // map label offset
 }
 
-// Matches src/data/images.json. Only freely licensed photos (public domain, CC0, CC BY), with the credit shown in the footer.
+// Matches src/data/images.json. Only freely licensed photos (public domain, CC0, CC BY, CC BY-SA), with the credit shown in the footer.
 // `licenseUrl` is null when the Commons API gives none (public domain has no license page). localPath is outside public/.
 export type ImageRecord = {
   id: string
@@ -98,4 +98,5 @@ export type ImageRecord = {
   licenseUrl: string | null
   retrievedOn: string // YYYY-MM-DD
   localPath: string // original, downscaled to at most 2400 px wide; not served publicly
+  crop?: { left: number; top: number; width: number; height: number } // share-image crop in localPath pixels; default is the centre
 }

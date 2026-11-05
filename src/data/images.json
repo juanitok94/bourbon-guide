@@ -1,12 +1,13 @@
 [
   {
-    "id": "woodford-reserve-27527-8",
-    "title": "Woodford Reserve Distillery-27527-8.jpg",
-    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Woodford_Reserve_Distillery-27527-8.jpg",
-    "author": "Ken Thomas",
-    "license": "Public domain",
-    "licenseUrl": null,
+    "id": "beam-rack-house",
+    "title": "Beam Rack House.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beam_Rack_House.jpg",
+    "author": "Bbadgett",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "retrievedOn": "2026-11-05",
-    "localPath": "assets/images/woodford-reserve-27527-8.jpg"
+    "localPath": "assets/images/beam-rack-house.jpg",
+    "crop": { "left": 57, "top": 0, "width": 2286, "height": 1200 }
   }
 ]
