@@ -8,6 +8,12 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "retrievedOn": "2026-11-05",
     "localPath": "assets/images/beam-rack-house.jpg",
-    "crop": { "left": 57, "top": 0, "width": 2286, "height": 1200 }
+    "crop": {
+      "left": 57,
+      "top": 0,
+      "width": 2286,
+      "height": 1200
+    },
+    "changes": "Cropped, color-toned, light effects added."
   }
 ]

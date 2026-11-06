@@ -43,7 +43,7 @@ export default function SiteFooter() {
                 </a>
               ) : (
                 photo.license
-              )}
+              )}{photo.changes ? `. ${photo.changes}` : null}
             </p>
           )}
           {MAP.credits.map((c) => (

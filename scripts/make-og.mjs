@@ -24,48 +24,23 @@ const C = { wine: '#6a1a2e', wineDeep: '#3a0d19', gold: '#e2bf7a', cream: '#f4e8
 
 // Hero photo: centre-cropped, then a wine-to-gold duotone kept dark enough that the gold headline and the muted line
 // stay at AA contrast (4.5:1) over it. The photo is the first record in images.json; with none, the plain wine ground is used.
-const rgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
-const lum = ([r, g, b]) => [r, g, b].map((v) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0)
-const ratio = (a, b) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b)) + 0.05)
-const SHADOW = rgb('#3a0d19')
-const HIGHLIGHT = rgb('#e2bf7a')
+import { rgb, tone } from './lib/hero-tone.mjs'
 let photoUri = null
 if (images.length > 0) {
   const photo = images[0]
   let pipeline = sharp(join(root, photo.localPath)).resize({ width: 2400, withoutEnlargement: true })
   // An optional crop (in the stored file's pixels) keeps marks or brand text out of frame; otherwise the centre is used.
   if (photo.crop) pipeline = sharp(await pipeline.toBuffer()).extract(photo.crop)
-  const { data } = await pipeline
-    .resize(W, H, { fit: 'cover', position: 'centre' })
-    .greyscale()
-    .normalise()
-    .raw()
-    .toBuffer({ resolveWithObject: true })
-  const TMAX = 0.3 // how far toward gold the brightest pixel goes; the right side, behind the map, may go further
-  const tAt = (i) => {
-    const x = i % W
-    const f = 1 + 0.8 * Math.max(0, Math.min(1, (x - 780) / 220))
-    return (data[i] / 255) * TMAX * f
-  }
-  const out3 = Buffer.alloc(W * H * 3)
-  for (let i = 0; i < W * H; i++) {
-    const t = tAt(i)
-    for (let c = 0; c < 3; c++) out3[i * 3 + c] = Math.round(SHADOW[c] + t * (HIGHLIGHT[c] - SHADOW[c]))
-  }
-  // Worst case under each piece of text: the brightest pixel in its box.
-  const worst = (x0, y0, x1, y1) => {
-    let tMax = 0
-    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) tMax = Math.max(tMax, tAt(y * W + x))
-    return SHADOW.map((v, c) => Math.round(v + tMax * (HIGHLIGHT[c] - v)))
-  }
-  const checks = [
-    ['headline', rgb('#e2bf7a'), worst(M, M - 4, M + 520, M + 280)],
-    ['tagline', rgb('#d9b9a0'), worst(M, H - M - 30, M + 700, H - M + 4)],
+  const { data } = await pipeline.resize(W, H, { fit: 'cover', position: 'centre' }).greyscale().normalise().raw().toBuffer({ resolveWithObject: true })
+  // Brighter warm tone, wine veil and light shafts (scripts/lib/hero-tone.mjs); the guard darkens only the pixels under the text.
+  const zones = [
+    { name: 'headline', x0: M, y0: M - 4, x1: M + 520, y1: M + 280, fg: rgb(C.gold), min: 4.5 },
+    { name: 'tagline', x0: M, y0: H - M - 30, x1: M + 700, y1: H - M + 4, fg: rgb(C.muted), min: 4.5 },
   ]
-  for (const [name, fg, bg] of checks) {
-    const r = ratio(fg, bg)
-    console.log(`Contrast over photo, ${name}: ${r.toFixed(2)}:1`)
-    if (r < 4.5) throw new Error(`${name} is ${r.toFixed(2)}:1 over the photo; AA needs 4.5:1. Lower TMAX.`)
+  const { rgb: out3, report } = await tone(data, W, H, zones)
+  for (const r of report) {
+    console.log(`Contrast over photo, ${r.name}: ${r.ratio.toFixed(2)}:1 (needs ${r.min}:1)`)
+    if (r.ratio < r.min) throw new Error(`${r.name} is ${r.ratio.toFixed(2)}:1 over the photo; needs ${r.min}:1.`)
   }
   const jpg = await sharp(out3, { raw: { width: W, height: H, channels: 3 } }).jpeg({ quality: 88 }).toBuffer()
   photoUri = `data:image/jpeg;base64,${jpg.toString('base64')}`

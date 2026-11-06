@@ -99,5 +99,6 @@ export type ImageRecord = {
   licenseUrl: string | null
   retrievedOn: string // YYYY-MM-DD
   localPath: string // original, downscaled to at most 2400 px wide; not served publicly
+  changes?: string // what was done to the photo; shown in the footer credit
   crop?: { left: number; top: number; width: number; height: number } // share-image crop in localPath pixels; default is the centre
 }
