@@ -70,6 +70,7 @@ export type Stop = {
   geocodeSource: string | null // e.g. "OpenStreetMap Nominatim"; set whenever lat/lng are filled by a geocoder
   phone: string | null
   website: string | null
+  instagram: string | null // full profile URL https://www.instagram.com/<handle>/, from the distillery's own site
   hoursNote: string | null
   status: Status
   blurb: string | null

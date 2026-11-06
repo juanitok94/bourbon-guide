@@ -146,6 +146,7 @@ data.forEach((d, i) => {
   checkSource(at, d)
   if (d.verifiedOn === null) warnings.push(`${at}: not verified`)
   if (d.website !== null && !d.website.startsWith('https://')) warnings.push(`${at}: website is not https`)
+  if (d.instagram != null && !/^https:\/\/www\.instagram\.com\/[A-Za-z0-9._]+\/$/.test(d.instagram)) errors.push(`${at}: instagram must be https://www.instagram.com/<handle>/`)
 
   if ((d.lat === null) !== (d.lng === null)) errors.push(`${at}: lat and lng must both be set or both null`)
   if (d.lat !== null && d.lng !== null && !inBox(d.lat, d.lng)) errors.push(`${at}: lat/lng outside ${MAP.state}'s bounding box`)

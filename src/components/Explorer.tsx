@@ -94,6 +94,12 @@ function RowDetails({ d, onMap, onShowOnMap }: { d: Stop; onMap: boolean; onShow
             Website{NEW_TAB}
           </a>
         )}
+        {d.instagram && (
+          <a href={d.instagram} target="_blank" rel="noopener noreferrer" aria-label={`${d.name} on Instagram`} className={ROW_LINK}>
+            Instagram @{d.instagram.split('/')[3]}
+            {NEW_TAB}
+          </a>
+        )}
         {d.phone && (
           <a href={`tel:${d.phone.replace(/[^\d+]/g, '')}`} className={`${ROW_LINK} tabular`}>
             {d.phone}

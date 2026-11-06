@@ -29,6 +29,7 @@ export function homeJsonLd(stops: Stop[]): string {
         name: d.name,
         ...(d.address ? { address: d.address } : {}),
         ...(d.website ? { url: d.website } : {}),
+        ...(d.instagram ? { sameAs: [d.instagram] } : {}),
       },
     })),
   }
