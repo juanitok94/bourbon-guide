@@ -44,8 +44,8 @@ export function pinLabel(d: Stop): string {
   return parts.filter(Boolean).join(', ')
 }
 
-// One quiet, non-interactive row under the map: each group's stamp, plus the independents' dot when any are shown.
-export function MapKey({ showIndependents }: { showIndependents: boolean }) {
+// One quiet, non-interactive row under the map: each group's stamp.
+export function MapKey() {
   const item = 'flex items-center gap-1.5'
   return (
     <ul aria-label="Map key" className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-muted">
@@ -55,12 +55,6 @@ export function MapKey({ showIndependents }: { showIndependents: boolean }) {
           {g.shortName}
         </li>
       ))}
-      {showIndependents && (
-        <li className={item}>
-          <span aria-hidden="true" className="dg-dot" />
-          Independent
-        </li>
-      )}
     </ul>
   )
 }

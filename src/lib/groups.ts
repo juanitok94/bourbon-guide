@@ -58,10 +58,10 @@ export function writeRegion(id: string): void {
 export type Show = 'majors' | 'independents' | 'all'
 export const DEFAULT_SHOW: Show = 'majors'
 export const SHOW_PARAM = 'show'
-export const SHOW_OPTIONS: { id: Show; label: string; heading: string }[] = [
-  { id: 'majors', label: 'Majors', heading: 'Majors' },
-  { id: 'independents', label: 'Independents', heading: 'Independents' },
-  { id: 'all', label: 'All', heading: 'All distilleries' },
+export const SHOW_OPTIONS: { id: Show; label: string }[] = [
+  { id: 'majors', label: 'Majors' },
+  { id: 'independents', label: 'Independents' },
+  { id: 'all', label: 'All' },
 ]
 
 // Reads ?show= from a query string. Unknown values fall back to the default view.

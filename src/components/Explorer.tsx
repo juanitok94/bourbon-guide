@@ -12,7 +12,6 @@ import {
   ALL_REGIONS,
   ALL_TRAILS,
   BRANDS,
-  DEFAULT_SHOW,
   GROUPS,
   SHOW_OPTIONS,
   brandsAt,
@@ -39,7 +38,6 @@ const PILL = 'inline-flex items-center border border-gold/60 px-2 py-0.5 text-xs
 const TEXT_BUTTON = 'min-h-11 border-[1.5px] border-gold px-4 text-sm text-gold transition-colors hover:bg-wine-deep'
 const EMPTY_MESSAGE = 'Distilleries are being added and verified.'
 const NO_INDEPENDENTS = 'Independent distilleries are being added and verified.'
-const DEFINITION = 'Majors are the groups shown in this guide. Independents are every other distillery.'
 
 function formatDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number)
@@ -146,8 +144,7 @@ function Row({
 }) {
   const group = groupOf(d)
   const city = d.city ?? 'Location not yet verified'
-  const owner =
-    d.scale === 'major' && group ? ownershipLine(group) : ['Independent', ...d.trails.map(withMarks)].join(' · ')
+  const details = d.scale === 'major' && group ? [ownershipLine(group)] : d.trails.map(withMarks)
   return (
     <li id={`card-${d.id}`} data-highlighted={isHighlighted || undefined} className="dg-row scroll-mt-4">
       <button
@@ -164,7 +161,7 @@ function Row({
         <span className="min-w-0 flex-1">
           <span className="block font-serif text-lg leading-snug font-semibold">{d.name}</span>
           <span className="mt-0.5 block text-[10px] leading-snug text-muted">
-            {city} · {owner}
+            {[city, ...details].join(' · ')}
           </span>
           {brandNote && <span className="mt-0.5 block text-[10px] leading-snug text-gold">Brand: {brandNote}</span>}
         </span>
@@ -437,7 +434,7 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
           animate={regionTouched}
         />
       </div>
-      {show !== 'independents' && <MapKey showIndependents={show === 'all' && layer.some((d) => d.scale === 'independent')} />}
+      {show !== 'independents' && <MapKey />}
       {layer.length > 0 && mapped.length === 0 && (
         <p className="mt-3 text-center text-xs text-muted">
           {layout.pins.length === 0 || !filtersActive
@@ -454,7 +451,6 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
           Find a distillery
         </h2>
         <LayerSwitch show={show} onChange={setShow} />
-        <p className="mt-2 text-[11px] leading-snug text-muted">{DEFINITION}</p>
 
         {entries.length > 0 && (
           <div className="mt-4 space-y-2">
@@ -504,41 +500,34 @@ export default function Explorer({ entries, layout }: { entries: Stop[]; layout:
           <div role="status" className="dg-ruled mt-8 py-6 text-center">
             <p className="font-serif text-xl font-semibold">{entries.length === 0 ? EMPTY_MESSAGE : NO_INDEPENDENTS}</p>
           </div>
+        ) : visible.length === 0 ? (
+          <div className="dg-ruled mt-6 py-6 text-center">
+            <p className="font-serif text-xl font-semibold">No distilleries match</p>
+            <button type="button" onClick={reset} className={`${TEXT_BUTTON} mt-3`}>
+              Reset
+            </button>
+          </div>
         ) : (
-          <>
-            <h2 className="mt-8 text-xs tracking-[0.2em] text-gold uppercase">
-              {SHOW_OPTIONS.find((o) => o.id === show)?.heading ?? SHOW_OPTIONS.find((o) => o.id === DEFAULT_SHOW)?.heading}
-            </h2>
-            {visible.length === 0 ? (
-              <div className="dg-ruled mt-2 py-6 text-center">
-                <p className="font-serif text-xl font-semibold">No distilleries match</p>
-                <button type="button" onClick={reset} className={`${TEXT_BUTTON} mt-3`}>
-                  Reset
-                </button>
-              </div>
-            ) : (
-              <ul className="dg-ruled mt-2">
-                {visible.map((d, i) => {
-                  const hits = brandHits.get(d.id)
-                  // A brand named after its distillery needs no note: the row already matched by name.
-                  const brandNote = hits && !d.name.toLowerCase().includes(q) ? hits.join(', ') : null
-                  return (
-                    <Row
-                      key={d.id}
-                      d={d}
-                      number={i + 1}
-                      brandNote={brandNote}
-                      onMap={pinIds.has(d.id)}
-                      isExpanded={expanded === d.id}
-                      isHighlighted={selected?.id === d.id}
-                      onToggle={() => toggleRow(d.id)}
-                      onShowOnMap={() => showOnMap(d)}
-                    />
-                  )
-                })}
-              </ul>
-            )}
-          </>
+          <ul className="dg-ruled mt-6">
+            {visible.map((d, i) => {
+              const hits = brandHits.get(d.id)
+              // A brand named after its distillery needs no note: the row already matched by name.
+              const brandNote = hits && !d.name.toLowerCase().includes(q) ? hits.join(', ') : null
+              return (
+                <Row
+                  key={d.id}
+                  d={d}
+                  number={i + 1}
+                  brandNote={brandNote}
+                  onMap={pinIds.has(d.id)}
+                  isExpanded={expanded === d.id}
+                  isHighlighted={selected?.id === d.id}
+                  onToggle={() => toggleRow(d.id)}
+                  onShowOnMap={() => showOnMap(d)}
+                />
+              )
+            })}
+          </ul>
         )}
       </section>
     </div>
